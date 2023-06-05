@@ -3,6 +3,7 @@ import NotFound from './views/NotFound'
 import DefaultLayout from './Layouts/DefaultLayout'
 import HomePage from './views/HomePage'
 import PreviewAnnouncement from './views/PreviewAnnouncement'
+import CreateAnnouncement from './views/CreateAnnouncement'
 
 const router = createBrowserRouter([
 	{
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
 			{
 				path: '/',
 				element: <HomePage />,
+			},
+			{
+				path: '/createAnnouncement',
+				element: <CreateAnnouncement />,
 			},
 			{
 				path: '/announcement/:id',
