@@ -1,68 +1,99 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosClient from '../axios-client'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 
 import '../assets/styles/CreateAnnouncement.css'
+
+import withReactContent from 'sweetalert2-react-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import TopCategories from '../components/TopCategories'
+import ReactLoading from 'react-loading'
+import ScrollLock from '../ScrollLock'
 
-const EmptyImageUploader = ({ onAddImage }) => {
+const LoadingImage = () => (
+	<div className='d-flex flex-column justify-content-center align-items-center '>
+		<ReactLoading type={'bubbles'} color={'#00A2FF'} width={'100px'} />
+		<p>Wczytywanie</p>
+	</div>
+)
+
+const EmptyImageUploader = ({ addImage }) => {
+	const fileInput = useRef()
+
+	const handleClick = () => {
+		fileInput.current.click()
+	}
+
+	const handleChange = ({ target: { files } }) => {
+		if (files) {
+			for (let index = 0; index < files.length; index++) {
+				addImage(files[index])
+			}
+		}
+	}
+
 	return (
-		<div className='col-md-2 mt-3'>
-			<div className='create-announcement-image-box' onClick={onAddImage}>
+		<div className='col-md-3 mt-3'>
+			<div className='create-announcement-image-box' onClick={handleClick}>
 				<div className='create-announcement-image-box-content'>
 					<i>
 						<FontAwesomeIcon icon='plus' />
 					</i>
-					<p>Dodaj następne</p>
+					<p>Dodaj zdjęcie</p>
+					<input ref={fileInput} type='file' accept='image/*' multiple hidden onChange={handleChange} />
 				</div>
 			</div>
 		</div>
 	)
 }
 
-const ImageUploader = ({ image, onChange, onDelete }) => {
-	const fileInput = useRef()
-
-	const handleClick = () => {
-		if (image != null) return
-		fileInput.current.click()
-	}
-
-	const handleChange = ({ target: { files } }) => {
-		if (files) {
-			onChange(files[0])
-		}
-	}
+const ImageUploader = ({ image, onDelete }) => {
+	const [loading, setLoading] = useState(true)
 
 	const handleImageClick = () => {
 		onDelete()
 	}
 
+	const handleImageLoad = () => {
+		setLoading(false)
+	}
+
+	const handleImageError = () => {
+		console.log(`Nie udało się wczytywać zdjęcia`)
+	}
+
 	return (
-		<div className='col-md-2 mt-3'>
-			<div onClick={handleClick} className='create-announcement-image-box'>
+		<div className='col-md-3 mt-3'>
+			<div className='create-announcement-image-box'>
 				<div className='create-announcement-image-box-content'>
 					{image ? (
-						<div className='image-preview' onClick={handleImageClick}>
-							<img src={image} alt='preview' />
-							<div className='image-overlay'>
-								<FontAwesomeIcon icon='trash-alt' />
-							</div>
+						<div className='image-preview'>
+							{loading && <LoadingImage />}
+							<>
+								<img
+									className={loading ? 'loading-image' : ''}
+									src={image}
+									alt='preview'
+									onLoad={handleImageLoad}
+									onError={handleImageError}
+								/>
+								<div className='image-overlay'>
+									<i onClick={handleImageClick}>
+										<FontAwesomeIcon icon='trash-alt' />
+									</i>
+								</div>
+							</>
 						</div>
 					) : (
 						<>
 							<i>
 								<FontAwesomeIcon icon='camera-retro' />
 							</i>
-							<p>Dodaj zdjęcie</p>
+							<p>Brak zdjęcia</p>
 						</>
 					)}
 				</div>
-				<input ref={fileInput} type='file' accept='image/*' hidden onChange={handleChange} />
 			</div>
 		</div>
 	)
@@ -70,21 +101,21 @@ const ImageUploader = ({ image, onChange, onDelete }) => {
 
 const CreateAnnouncement = () => {
 	const [images, setImages] = useState([])
+	const [loadingScreen, setLoadingScreen] = useState(false)
 
-	const addImage = () => {
-		setImages([...images, null])
+	const addImage = file => {
+		console.log(`wywolanie`)
+		setImages(prevImages => {
+			const newImage = {
+				id: prevImages.length + 1,
+				file: URL.createObjectURL(file),
+			}
+			return [...prevImages, newImage]
+		})
 	}
 
-	const handleImageChange = (index, file) => {
-		const updatedImages = [...images]
-		updatedImages[index] = URL.createObjectURL(file)
-		setImages(updatedImages)
-	}
-
-	const deleteImage = index => {
-		const updatedImages = [...images]
-		updatedImages.splice(index, 1)
-		setImages(updatedImages)
+	const deleteImage = id => {
+		setImages(prevImages => prevImages.filter(image => image.id !== id))
 	}
 
 	const titleInput = useRef()
@@ -100,9 +131,42 @@ const CreateAnnouncement = () => {
 	let navigate = useNavigate()
 
 	const handleSubmitAnnouncement = async () => {
+		const fields = [
+			titleInput,
+			// categoryInput,
+			priceInput,
+			// tagsInput,
+			descriptionInput,
+			// cityInput,
+			// zipCodeInput,
+			// emailInput,
+			// phoneNumberInput,
+		]
+
+		let hasEmptyFields = false
+
+		fields.forEach(field => {
+			if (field.current.value === '') {
+				field.current.classList.add('empty-field')
+				hasEmptyFields = true
+			} else {
+				field.current.classList.remove('empty-field')
+			}
+		})
+
+		if (hasEmptyFields) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Wypełnij wszystkie pola',
+				text: 'Proszę wypełnić wszystkie pola formularza',
+				confirmButtonColor: '#3085d6',
+			})
+			return
+		}
+
 		const convertedImages = await Promise.all(
 			images.map(async blobURL => {
-				const response = await fetch(blobURL)
+				const response = await fetch(blobURL.file)
 				const blob = await response.blob()
 				return blob
 			})
@@ -117,39 +181,79 @@ const CreateAnnouncement = () => {
 			formData.append(`images[${index}]`, image)
 		})
 
-		axiosClient
-			.post('/announcements', formData)
-			.then(({ data }) => {
-				Swal.fire({
-					icon: 'success',
-					title: 'Ogłoszenie dodane',
-					text: 'Twoje ogłoszenie zostało pomyślnie dodane',
-					showCloseButton: true,
-					showCancelButton: true,
-					focusConfirm: false,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#D9D9D9',
-					confirmButtonText: 'Przejdź do ogłoszenia',
-					cancelButtonText: 'Powrót do strony',
-				}).then(result => {
-					if (result.isConfirmed) {
-						navigate(`/announcement/${data.id}`)
-					} else if (result.isDismissed) {
-						navigate('/')
-					}
+		setLoadingScreen(true)
+
+		setTimeout(() => {
+			axiosClient
+				.post('/announcements', formData)
+				.then(({ data }) => {
+					Swal.fire({
+						icon: 'success',
+						title: 'Ogłoszenie dodane',
+						text: 'Twoje ogłoszenie zostało pomyślnie dodane',
+						showCloseButton: true,
+						showCancelButton: true,
+						focusConfirm: false,
+						confirmButtonColor: '#3085d6',
+						cancelButtonColor: '#D9D9D9',
+						confirmButtonText: 'Przejdź do ogłoszenia',
+						cancelButtonText: 'Powrót do strony',
+					}).then(result => {
+						if (result.isConfirmed) {
+							navigate(`/announcement/${data.id}`)
+						} else if (result.isDismissed) {
+							navigate('/')
+						}
+						setLoadingScreen(false)
+					})
 				})
-			})
-			.catch(err => {
-				const response = err.response
-				if (response && response.status === 422) {
-					console.log(response.data.errors)
-				}
-			})
+				.catch(err => {
+					const response = err.response
+					if (response && response.status === 422) {
+						console.log(response.data.errors)
+						Swal.fire({
+							icon: 'error',
+							title: 'Wystąpił błąd',
+							text: 'Przekazane dane nie są prawidłowe',
+							confirmButtonColor: '#3085d6',
+						})
+					} else if (response && response.status === 413) {
+						Swal.fire({
+							icon: 'error',
+							title: 'Wystąpił błąd',
+							text: 'Zdjęcia posiadają zbyt wysoką rozdzielczość. Przed dodaniem ogłoszenia, zalecamy skompresowanie zdjęć, aby zmniejszyć ich rozmiar',
+							confirmButtonColor: '#3085d6',
+						})
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: 'Wystąpił błąd',
+							text: 'Nie udało się dodać ogłoszenia. Spróbuj ponownie później',
+							confirmButtonColor: '#3085d6',
+						})
+					}
+					setLoadingScreen(false)
+				})
+		}, 1000)
 	}
+
+	const LoadingComponent = () => (
+		<>
+			<ScrollLock />
+
+			<div className='LoadingPageContainer'>
+				<div className='loading-content'>
+					<ReactLoading type={'bubbles'} color={'#fff'} width={'200px'} height={'200px'} />
+					<span>Dodawanie ogłoszenia</span>
+				</div>
+			</div>
+		</>
+	)
 
 	return (
 		<>
 			<TopCategories />
+
 			<div className='container mt-5'>
 				<h3 className='home-title'>Dodaj ogłoszenie</h3>
 
@@ -177,14 +281,9 @@ const CreateAnnouncement = () => {
 					<h3 className='create-announcement-title'>Zdjęcia</h3>
 					<div className='row'>
 						{images.map((image, index) => (
-							<ImageUploader
-								key={index}
-								image={image}
-								onChange={file => handleImageChange(index, file)}
-								onDelete={() => deleteImage(index)}
-							/>
+							<ImageUploader key={index} image={image.file} onDelete={() => deleteImage(image.id)} />
 						))}
-						<EmptyImageUploader onAddImage={addImage} />
+						<EmptyImageUploader addImage={addImage} />
 					</div>
 				</section>
 
@@ -243,6 +342,7 @@ const CreateAnnouncement = () => {
 					</div>
 				</section>
 			</div>
+			{loadingScreen && <LoadingComponent />}
 		</>
 	)
 }

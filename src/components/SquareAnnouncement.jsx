@@ -5,7 +5,7 @@ import noImage from '/images/no-image.png'
 
 export default function SquareAnnouncement({ id, title, price, created_at, image }) {
 	return (
-		<div className='col-md-3 mt-3'>
+		<div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4'>
 			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
 				<div className='announcement-box'>
 					<div className='announcement-image'>

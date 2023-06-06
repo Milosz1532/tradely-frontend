@@ -20,9 +20,9 @@ $section-background: #fff;
 }
 
 .create-announcement-image-box {
-	background-color: #d9d9d9;
+	position: relative;
+	background-color: #efefef;
 	border-radius: 10px;
-	height: 200px;
 	cursor: pointer;
 	opacity: 0.8;
 	transition: all 0.4s;
@@ -32,12 +32,12 @@ $section-background: #fff;
 	}
 
 	.create-announcement-image-box-content {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		align-items: center;
-		height: 100%;
-
+		height: 200px;
+		text-align: center;
 		i {
 			font-size: 50px;
 		}
@@ -45,10 +45,41 @@ $section-background: #fff;
 			margin-top: 10px;
 		}
 
-		img {
-			padding: 5px;
-			width: 100%;
-			height: 100%;
+		.image-preview {
+			img {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				max-width: 100%;
+				max-height: 100%;
+				cursor: auto;
+			}
+
+			.image-overlay {
+				// opacity: 0;
+				scale: 0;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				pointer-events: none;
+				transform: translate(-50%, -50%);
+				transition: all 0.4s;
+				background-color: #ffffff94;
+				border-radius: 50%;
+				width: 60px;
+				height: 60px;
+
+				i {
+					font-size: 40px;
+					color: #fff;
+				}
+			}
+			&:hover > .image-overlay {
+				opacity: 1;
+				scale: 1;
+				pointer-events: visible;
+			}
 		}
 	}
 }
@@ -56,4 +87,9 @@ $section-background: #fff;
 .create-announcement-buttons {
 	display: flex;
 	justify-content: end;
+}
+
+input.empty-field,
+textarea.empty-field {
+	border-bottom: 2px solid tomato;
 }

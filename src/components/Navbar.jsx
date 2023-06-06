@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import '../assets/styles/Header.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -30,6 +30,9 @@ export default function Navbar() {
 							<FontAwesomeIcon icon='fa-solid fa-chevron-down' />
 						</i>
 					</span>
+					<NavLink to='/createAnnouncement'>
+						<button className='color-button-design mb-2'>Dodaj ogłoszenie</button>
+					</NavLink>
 				</div>
 			</div>
 		</header>

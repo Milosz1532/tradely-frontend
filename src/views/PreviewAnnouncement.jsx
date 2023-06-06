@@ -16,36 +16,36 @@ import TopCategories from '../components/TopCategories'
 
 const LoadingScreen = () => {
 	return (
-		<div class='container annoucement-section'>
-			<div class='row'>
-				<div class='col-md-8 p-3'>
-					<div class='announcement-images-box p-4'>
+		<div className='container annoucement-section'>
+			<div className='row'>
+				<div className='col-md-8 p-3'>
+					<div className='announcement-images-box p-4'>
 						<Skeleton height={350} />
 					</div>
 
-					<div class='annoucement-informations'>
+					<div className='annoucement-informations'>
 						<Skeleton height={30} />
 						<Skeleton height={20} width={200} className='mt-3' />
 						<Skeleton height={150} className='mt-3' />
 					</div>
 				</div>
 
-				<div class='col-md-4 p-3'>
-					<div class='announcement-user-box'>
-						<div class='announcement-user-info'>
+				<div className='col-md-4 p-3'>
+					<div className='announcement-user-box'>
+						<div className='announcement-user-info'>
 							<Skeleton circle={true} width={60} height={60} />
-							<div class='annoucement-user-info-user-data p-2'>
+							<div className='annoucement-user-info-user-data p-2'>
 								<Skeleton height={10} width={200} />
 								<Skeleton height={10} width={150} />
 								<Skeleton height={10} width={150} />
 							</div>
 						</div>
-						<div class='p-2'>
+						<div className='p-2'>
 							<Skeleton height={90} />
 						</div>
 					</div>
 
-					<div class='annoucement-user-contact'>
+					<div className='annoucement-user-contact'>
 						<Skeleton height={120} />
 					</div>
 				</div>
@@ -57,7 +57,6 @@ const LoadingScreen = () => {
 const ShowAnnouncement = ({ data }) => {
 	const [images, setImages] = useState(data.images)
 	const [selectedImage, setSelectedImages] = useState(0)
-	console.log(images)
 
 	const handleChangePhoto = e => {
 		if (e === 'next') {
@@ -195,7 +194,6 @@ export default function PreviewAnnouncement() {
 		axiosClient
 			.get(API_URL)
 			.then(({ data }) => {
-				console.log(data)
 				setAnnouncementData(data)
 				setLoadingAnnouncement(false)
 			})

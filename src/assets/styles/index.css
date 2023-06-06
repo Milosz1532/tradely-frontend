@@ -3,6 +3,10 @@ body {
   background-color: #ececec;
 }
 
+.scroll-lock {
+  overflow: hidden;
+}
+
 .search-input-box {
   position: relative;
   display: flex;
@@ -138,4 +142,39 @@ body {
 
 .white-button-design:hover {
   opacity: 1;
+}
+
+.LoadingPageContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  height: 100%;
+  z-index: 99;
+}
+
+.LoadingPageContainer .loading-content {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #fff;
+  overflow: none;
+  pointer-events: none;
+}
+
+.LoadingPageContainer .loading-content span {
+  margin-top: -30px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+img.loading-image {
+  display: none;
 }
