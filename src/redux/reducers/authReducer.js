@@ -1,24 +1,49 @@
-import { LOGIN_SUCCESS, LOGOUT } from '../actions/actionTypes'
-
-
 const initialState = {
-	token: null,
+	user: null,
 	isAuthenticated: false,
+	loading: false,
+	error: null,
 }
 
 const authReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case LOGIN_SUCCESS:
+		case 'LOGIN_SUCCESS':
 			return {
 				...state,
-				token: action.payload,
+				user: action.payload.user,
 				isAuthenticated: true,
+				loading: false,
+				error: null,
 			}
-		case LOGOUT:
+		case 'AUTH_SUCCESS':
 			return {
 				...state,
-				token: null,
+				user: action.payload.user,
+				isAuthenticated: true,
+				loading: false,
+				error: null,
+			}
+
+		case 'LOGIN_FAILURE':
+			return {
+				...state,
+				user: null,
 				isAuthenticated: false,
+				loading: false,
+				error: action.payload.error,
+			}
+		case 'LOGOUT_SUCCESS':
+			return {
+				...state,
+				user: null,
+				isAuthenticated: false,
+				loading: false,
+				error: null,
+			}
+		case 'LOGOUT_FAILURE':
+			return {
+				...state,
+				error: action.payload.error,
 			}
 		default:
 			return state
