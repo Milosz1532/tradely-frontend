@@ -177,6 +177,10 @@ const CreateAnnouncement = () => {
 		formData.append('description', descriptionInput.current.value)
 		formData.append('price', priceInput.current.value)
 		formData.append('user_id', 1)
+		formData.append('category_id', 1)
+		formData.append('location', 'Włocławek')
+		formData.append('postal_code', '87-800')
+		formData.append('phone_number', '123456789')
 		convertedImages.forEach((image, index) => {
 			formData.append(`images[${index}]`, image)
 		})
