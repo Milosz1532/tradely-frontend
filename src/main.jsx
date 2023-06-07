@@ -15,13 +15,16 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 import { RouterProvider } from 'react-router-dom'
-import router from './router.jsx'
-import { ContextProvider } from './contexts/ContextProvider.jsx'
+import router from './routes/router.jsx'
+import { Provider } from 'react-redux'
+import store from './redux/store/store'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-	<React.StrictMode>
-		<ContextProvider>
-			<RouterProvider router={router} />
-		</ContextProvider>
-	</React.StrictMode>
+	<div className='App'>
+		<React.StrictMode>
+			<Provider store={store}>
+				<RouterProvider router={router} />
+			</Provider>
+		</React.StrictMode>
+	</div>
 )

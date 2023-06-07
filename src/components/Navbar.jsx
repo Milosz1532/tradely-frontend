@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Navbar() {
 	return (
-		<header className='container'>
+		<header className='container mt-0 pt-2'>
 			<div className='logo'>
 				<Link to='/'>
 					<h2>Tradely</h2>

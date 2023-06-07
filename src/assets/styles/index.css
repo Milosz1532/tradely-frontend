@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
-body {
-  background-color: #ececec;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.App {
+  background-color: #f8f8f8;
 }
 
 .scroll-lock {
@@ -11,6 +17,8 @@ body {
   position: relative;
   display: flex;
   flex-grow: 2;
+  min-height: 70px;
+  transition: all 0.4s;
 }
 
 .search-input-box .search-input {
@@ -56,16 +64,28 @@ body {
 }
 
 .search-input-box .search-input .submit-search-input {
+  display: flex;
   border: none;
   font-size: 18px;
   color: #3d3d3d;
   border-radius: 0px 10px 10px 0px;
   background-color: #67ade0;
+  padding: 0px 25px;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   color: #fff;
+  opacity: 0.8;
+  transition: all 0.4s;
 }
 
 .search-input-box .search-input .submit-search-input i {
+  margin-right: 10px;
   color: #fff;
+}
+
+.search-input-box .search-input .submit-search-input:hover {
+  opacity: 1;
 }
 
 .preview-announcement-search-section {
