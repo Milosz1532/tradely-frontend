@@ -21,9 +21,8 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/createAnnouncement',
-				// element: <CreateAnnouncement />,
 				element: (
-					<AuthRoute>
+					<AuthRoute mustByLogin={true}>
 						<CreateAnnouncement />
 					</AuthRoute>
 				),

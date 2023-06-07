@@ -7,7 +7,7 @@ import '../assets/styles/Auth.css'
 import axiosClient from '../helpers/axios-client'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { loginSuccess, loginFailure } from '../redux/actions/actions'
+import { loginSuccess } from '../actions/authActions'
 
 export default function LoginPage() {
 	const emailRef = useRef()
@@ -25,10 +25,9 @@ export default function LoginPage() {
 			.post('/login', payload)
 			.then(({ data }) => {
 				console.log(`Zgadza się`)
-				const user = data.user
+				const token = data.token
 
-				// Wywołaj akcję logowania i przekaż użytkownika
-				dispatch(loginSuccess(user))
+				dispatch(loginSuccess(token))
 			})
 			.catch(err => {
 				const response = err.response
