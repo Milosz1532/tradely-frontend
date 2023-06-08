@@ -20,8 +20,9 @@ axiosClient.interceptors.response.use(
 
 axiosClient.interceptors.request.use(config => {
 	const token = Cookies.get('ACCESS_TOKEN')
-	console.log(token)
-	config.headers.Authorization = `Bearer ${token}`
+	if (token) {
+		config.headers.Authorization = `Bearer ${token}`
+	}
 	return config
 })
 
@@ -52,14 +53,18 @@ export const login = async (email, password) => {
 }
 
 export const getUserData = async () => {
-	try {
-		const response = await axiosClient.get('/verify_token')
-		return response.data
-	} catch (error) {
-		throw error.response.data
+	if (Cookies.get('ACCESS_TOKEN')) {
+		try {
+			const response = await axiosClient.get('/verify_token')
+			return [response.data, Cookies.get('ACCESS_TOKEN')]
+		} catch (error) {
+			throw error.response.data
+		}
 	}
 }
 
 export const logout = () => {
 	setAuthHeader(null)
 }
+
+export default axiosClient

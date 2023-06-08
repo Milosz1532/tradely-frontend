@@ -4,7 +4,23 @@ import '../assets/styles/Header.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+// TEMP //
+import { useSelector, useDispatch } from 'react-redux'
+import { logout } from '../redux/actions/authActions'
+// TEMP
+
 export default function Navbar() {
+
+	const dispatch = useDispatch();
+
+	// TEMP
+	const handleLogout = () => {
+		console.log(`logout`)
+		dispatch(logout());
+
+	}
+	//TEMP
+
 	return (
 		<header className='container mt-0 pt-2'>
 			<div className='logo'>
@@ -24,7 +40,7 @@ export default function Navbar() {
 				</i>
 
 				<div className='header-right-section-account'>
-					<span>
+					<span onClick={handleLogout}>
 						Moje konto{' '}
 						<i>
 							<FontAwesomeIcon icon='fa-solid fa-chevron-down' />

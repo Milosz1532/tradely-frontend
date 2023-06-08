@@ -10,7 +10,6 @@ export default function App() {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		console.log(`Test`)
 		dispatch(initAuth())
 	})
 

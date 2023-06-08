@@ -1,36 +1,54 @@
+// const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
+// 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+// 	const navigate = useNavigate()
+
+// 	useEffect(() => {
+// 		const checkAuth = async () => {
+// 			try {
+// 				await axiosClient.get('/verify_token')
+// 			} catch (error) {
+// 				console.log(`Navigate`)
+// 				navigate(navigateTo ?? '/login', { replace: true })
+// 			}
+// 		}
+
+// 		if (mustByLogin) {
+// 			checkAuth()
+// 		}
+// 	}, [mustByLogin, navigateTo])
+
+// 	if (!mustByLogin || isAuthenticated) {
+// 		return children
+// 	} else {
+// 		console.log(`Nie ma uprawnień`)
+// 		return <LoadingPage />
+// 	}
+// }
+
 import React, { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import axiosClient from '../helpers/axios-client'
 
-const AuthRoute = ({ children, mustByLogin }) => {
-	const [isAuthenticated, setIsAuthenticated] = useState(false)
-	const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+import { useSelector, useDispatch } from 'react-redux'
+import { initAuth } from '../redux/actions/authActions.js'
 
-	useEffect(() => {
-		const verifyToken = async () => {
-			try {
-				const response = await axiosClient.get('/verify_token')
-				if (response.status === 200) {
-					setIsAuthenticated(true)
-				}
-			} catch (error) {
-				setIsAuthenticated(false)
-			} finally {
-				setIsCheckingAuth(false)
-			}
-		}
+import LoadingPage from '../components/LoadingPage'
 
-		if (mustByLogin) {
-			verifyToken()
-		} else {
-			setIsAuthenticated(true)
-			setIsCheckingAuth(false)
-		}
-	}, [mustByLogin])
+const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
+	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+	const isVerifying = useSelector(state => state.auth.verifying) // Pobierz stan weryfikacji autoryzacji
 
-	if (mustByLogin && !isAuthenticated) {
-		return <Navigate to='/login' />
-	} else {
+	if (isVerifying) {
+		return <LoadingPage /> // Wyświetl komponent ładowania podczas weryfikacji autoryzacji
+	}
+
+	if (mustByLogin && isAuthenticated) {
+		return children
+	} else if (mustByLogin && !isAuthenticated) {
+		return <Navigate to={'/login'} />
+	} else if (!mustByLogin && isAuthenticated) {
+		return <Navigate to={'/'} />
+	} else if (!mustByLogin && !isAuthenticated) {
 		return children
 	}
 }

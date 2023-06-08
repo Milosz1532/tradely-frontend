@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import SquareAnnouncement from '../components/SquareAnnouncement'
 import Searchbar from '../components/Searchbar'
-import axiosClient from '../helpers/axios-client'
-
+import axiosClient from '../services/Api'
 
 import '../assets/styles/Home.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
