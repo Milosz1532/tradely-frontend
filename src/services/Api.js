@@ -28,11 +28,8 @@ axiosClient.interceptors.request.use(config => {
 
 const setAuthHeader = token => {
 	if (token) {
-		// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-		// const token = Cookies.get('ACCESS_TOKEN')
 		Cookies.set('ACCESS_TOKEN', token, { expires: 60 })
 	} else {
-		// delete axios.defaults.headers.common['Authorization']
 		Cookies.remove('ACCESS_TOKEN')
 	}
 }
@@ -63,8 +60,13 @@ export const getUserData = async () => {
 	}
 }
 
-export const logout = () => {
-	setAuthHeader(null)
+export const logout = async () => {
+	try {
+		await axiosClient.post('/logout')
+		setAuthHeader(null)
+	} catch (error) {
+		throw error.response.data
+	}
 }
 
 export default axiosClient

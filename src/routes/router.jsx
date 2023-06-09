@@ -35,7 +35,6 @@ const router = createBrowserRouter([
 	},
 	{
 		path: '/login',
-		// element: <LoginPage />,
 		element: (
 			<AuthRoute mustByLogin={false} navigateTo={'/'}>
 				<LoginPage />

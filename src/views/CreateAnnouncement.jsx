@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import axiosClient from '../helpers/axios-client'
+import axiosClient from '../services/Api'
 
 import '../assets/styles/CreateAnnouncement.css'
 
@@ -59,10 +59,6 @@ const ImageUploader = ({ image, onDelete }) => {
 		setLoading(false)
 	}
 
-	const handleImageError = () => {
-		console.log(`Nie udało się wczytywać zdjęcia`)
-	}
-
 	return (
 		<div className='col-md-3 mt-3'>
 			<div className='create-announcement-image-box'>
@@ -76,7 +72,7 @@ const ImageUploader = ({ image, onDelete }) => {
 									src={image}
 									alt='preview'
 									onLoad={handleImageLoad}
-									onError={handleImageError}
+									onError={false}
 								/>
 								<div className='image-overlay'>
 									<i onClick={handleImageClick}>
@@ -104,7 +100,6 @@ const CreateAnnouncement = () => {
 	const [loadingScreen, setLoadingScreen] = useState(false)
 
 	const addImage = file => {
-		console.log(`wywolanie`)
 		setImages(prevImages => {
 			const newImage = {
 				id: prevImages.length + 1,
@@ -214,7 +209,6 @@ const CreateAnnouncement = () => {
 				.catch(err => {
 					const response = err.response
 					if (response && response.status === 422) {
-						console.log(response.data.errors)
 						Swal.fire({
 							icon: 'error',
 							title: 'Wystąpił błąd',

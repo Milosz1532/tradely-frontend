@@ -16,30 +16,9 @@ export default function LoginPage() {
 		e.preventDefault()
 
 		dispatch(login(emailRef.current.value, passwordRef.current.value))
-		console.log(`Click`)
-
-		// axiosClient
-		// 	.post('/login', payload)
-		// 	.then(({ data }) => {
-		// 		console.log(`Zgadza się`)
-		// 		const token = data.token
-
-		// 		dispatch(loginSuccess(token))
-		// 	})
-		// 	.catch(err => {
-		// 		const response = err.response
-		// 		console.log(err)
-		// 		if (response && response.status === 422) {
-		// 			if (response.data.errors) {
-		// 				console.log('Errors')
-		// 			}
-		// 			console.log('Error')
-		// 		}
-		// 	})
 	}
 
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
-	console.log(isAuthenticated)
 
 	return (
 		<div className='auth-form animated fadeInDown'>

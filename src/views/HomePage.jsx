@@ -110,7 +110,6 @@ export default function HomePage() {
 		axiosClient
 			.get(API_URL)
 			.then(({ data }) => {
-				console.log(data.data)
 				setNewAnnouncementsData(data.data)
 				_setLoadingAnnouncements(false)
 			})

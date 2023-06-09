@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
 import '../assets/styles/previewAnnouncement.css'
-import axiosClient from '../helpers/axios-client'
+import axiosClient from '../services/Api'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import SearchBar from '../components/Searchbar'

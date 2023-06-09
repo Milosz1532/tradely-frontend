@@ -15,7 +15,6 @@ export default function Navbar() {
 
 	// TEMP
 	const handleLogout = () => {
-		console.log(`logout`)
 		dispatch(logout());
 
 	}
