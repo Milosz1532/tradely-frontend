@@ -6,12 +6,24 @@ import router from './routes/router.jsx'
 import { useDispatch } from 'react-redux'
 import { initAuth } from './redux/actions/authActions.js'
 
+import { useSelector } from 'react-redux'
+
+import LoadingPage from './components/LoadingPage'
+
 export default function App() {
 	const dispatch = useDispatch()
+	const isLoading = useSelector(state => state.loading.isLoading)
+	const loadingFullSize = useSelector(state => state.loading.fullSize)
 
 	useEffect(() => {
 		dispatch(initAuth())
 	})
 
-	return <RouterProvider router={router} />
+	// return <RouterProvider router={router} />
+	return (
+		<>
+			{isLoading && <LoadingPage fullSize={loadingFullSize} />}
+			<RouterProvider router={router} />
+		</>
+	)
 }
