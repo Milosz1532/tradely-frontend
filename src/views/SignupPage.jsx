@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
+import { useDispatch } from 'react-redux'
+import { signup } from '../redux/actions/authActions'
+
 export default function SignupPage() {
-	const handleSubmit = e => {
+	const dispatch = useDispatch()
+
+	const loginRef = useRef()
+	const emailRef = useRef()
+	const passwordRef = useRef()
+	const confirmPasswordRef = useRef()
+
+	const handleSubmit = async e => {
 		e.preventDefault()
+		const login = loginRef.current.value
+		const email = emailRef.current.value
+		const password = passwordRef.current.value
+		dispatch(signup(login, email, password))
+			.then(() => {
+				console.log(`Rejestracja się udała`)
+			})
+			.catch(error => {
+				console.log(`Nie udało się zarejestrować:`, error)
+			})
 	}
+
 	return (
 		<div className='auth-form animated fadeInDown'>
 			<div className='form'>
@@ -15,24 +36,24 @@ export default function SignupPage() {
 					<div className='form-content'>
 						<div className='standard-input-design mt-2'>
 							<p className='text-start'>Nazwa uzytkownika</p>
-							<input type='text' placeholder='Wprowadź nazwę uzytkownika...' />
+							<input ref={loginRef} type='text' placeholder='Wprowadź nazwę uzytkownika...' />
 						</div>
 						<div className='standard-input-design mt-2'>
 							<p className='text-start'>Adres Email</p>
-							<input type='text' placeholder='Wprowadź adres email...' />
+							<input ref={emailRef} type='text' placeholder='Wprowadź adres email...' />
 						</div>
 						<div className='standard-input-design mt-2'>
 							<p className='text-start'>Hasło</p>
-							<input type='password' placeholder='Wprowadź hasło...' />
+							<input ref={passwordRef} type='password' placeholder='Wprowadź hasło...' />
 						</div>
 						<div className='standard-input-design mt-2'>
 							<p className='text-start'>Powtórz hasło</p>
-							<input type='password' placeholder='Wprowadź ponownie hasło...' />
+							<input ref={confirmPasswordRef} type='password' placeholder='Wprowadź ponownie hasło...' />
 						</div>
 					</div>
 					<button className='form-btn mt-3'>Dołącz do nas</button>
 					<NavLink to='/login'>
-						<button className='form-btn empty mt-1'>Mam już konto</button>
+						<button className='form-btn empty mt-2'>Mam już konto</button>
 					</NavLink>
 				</form>
 			</div>

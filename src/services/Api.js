@@ -49,6 +49,23 @@ export const login = async (email, password) => {
 	}
 }
 
+export const signup = async (login, email, password) => {
+	try {
+		const data = {
+			login,
+			email,
+			password,
+		}
+		const response = await axiosClient.post('/signup', data)
+		const { token, user } = response.data
+		setAuthHeader(token)
+		return user
+	} catch (error) {
+		console.log(error.response.data)
+		throw error.response.data
+	}
+}
+
 export const getUserData = async () => {
 	if (Cookies.get('ACCESS_TOKEN')) {
 		try {

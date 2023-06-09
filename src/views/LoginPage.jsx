@@ -16,6 +16,12 @@ export default function LoginPage() {
 		e.preventDefault()
 
 		dispatch(login(emailRef.current.value, passwordRef.current.value))
+			.then(() => {
+				console.log(`Logowanie się udało`)
+			})
+			.catch(error => {
+				console.log(`Nie udało się zalogować:`, error)
+			})
 	}
 
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
@@ -25,6 +31,7 @@ export default function LoginPage() {
 			<div className='form'>
 				<form onSubmit={handleSubmit}>
 					{isAuthenticated ? 'Login' : 'Nie login'}
+					<br />
 
 					<h2 className='auth-form-logo'>Tradely</h2>
 					<p className='auth-form-title'>Panel Logowania</p>
@@ -41,7 +48,7 @@ export default function LoginPage() {
 					</div>
 					<button className='form-btn mt-3'>Zaloguj się</button>
 					<NavLink to='/signup'>
-						<p className='text-start mt-1'>Dołącz do Tradely </p>
+						<button className='form-btn empty mt-2'>Dołącz do Tradely</button>
 					</NavLink>
 				</form>
 			</div>

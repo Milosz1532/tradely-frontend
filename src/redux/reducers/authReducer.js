@@ -1,8 +1,7 @@
 const initialState = {
 	user: null,
 	isAuthenticated: false,
-	loading: false,
-	verifying: true, 
+	verifying: true,
 	error: null,
 }
 
@@ -13,30 +12,27 @@ const authReducer = (state = initialState, action) => {
 				...state,
 				verifying: true,
 			}
-		case 'LOGIN_SUCCESS':
-			return {
-				...state,
-				user: action.payload.user,
-				isAuthenticated: true,
-				verifying: false, 
-
-				loading: false,
-				error: null,
-			}
 		case 'AUTH_SUCCESS':
 			return {
 				...state,
 				user: action.payload.user,
 				isAuthenticated: true,
-				verifying: false, 
-				loading: false,
+				verifying: false,
 				error: null,
 			}
 		case 'AUTH_FAILURE':
 			return {
 				...state,
-				verifying: false, 
+				verifying: false,
 				error: action.payload.error,
+			}
+		case 'LOGIN_SUCCESS':
+			return {
+				...state,
+				user: action.payload.user,
+				isAuthenticated: true,
+				verifying: false,
+				error: null,
 			}
 
 		case 'LOGIN_FAILURE':
@@ -44,21 +40,30 @@ const authReducer = (state = initialState, action) => {
 				...state,
 				user: null,
 				isAuthenticated: false,
-				loading: false,
 				error: action.payload.error,
 			}
-		case 'LOGOUT_SUCCESS':
+		case 'SIGNUP_SUCCESS':
+			return {
+				...state,
+				user: action.payload.user,
+				isAuthenticated: true,
+				verifying: false,
+				error: null,
+			}
+
+		case 'SIGNUP_FAILURE':
 			return {
 				...state,
 				user: null,
 				isAuthenticated: false,
-				loading: false,
-				error: null,
+				error: action.payload.error,
 			}
-		case 'LOGOUT_FAILURE':
+		case 'LOGOUT':
 			return {
 				...state,
-				error: action.payload.error,
+				user: null,
+				isAuthenticated: false,
+				error: null,
 			}
 		default:
 			return state

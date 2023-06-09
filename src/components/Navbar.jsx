@@ -10,13 +10,11 @@ import { logout } from '../redux/actions/authActions'
 // TEMP
 
 export default function Navbar() {
-
-	const dispatch = useDispatch();
+	const dispatch = useDispatch()
 
 	// TEMP
 	const handleLogout = () => {
-		dispatch(logout());
-
+		dispatch(logout())
 	}
 	//TEMP
 
