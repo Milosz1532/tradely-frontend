@@ -10,6 +10,9 @@ import { useSelector } from 'react-redux'
 
 import LoadingPage from './components/LoadingPage'
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 export default function App() {
 	const dispatch = useDispatch()
 	const isLoading = useSelector(state => state.loading.isLoading)
@@ -24,6 +27,7 @@ export default function App() {
 		<>
 			{isLoading && <LoadingPage fullSize={loadingFullSize} />}
 			<RouterProvider router={router} />
+			<ToastContainer />
 		</>
 	)
 }

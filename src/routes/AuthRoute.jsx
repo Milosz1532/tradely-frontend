@@ -1,15 +1,20 @@
 import { Navigate } from 'react-router-dom'
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import LoadingPage from '../components/LoadingPage'
+import { startLoading, stopLoading } from '../redux/actions/loadingActions'
 
 const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
 	const isVerifying = useSelector(state => state.auth.verifying)
+	const dispatch = useDispatch()
 
 	if (isVerifying) {
-		return <LoadingPage />
+		dispatch(startLoading(true))
+		return
+	} else {
+		dispatch(stopLoading())
 	}
 
 	if (mustByLogin && isAuthenticated) {

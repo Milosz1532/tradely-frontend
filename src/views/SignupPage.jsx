@@ -1,14 +1,18 @@
 import { useRef, useState } from 'react'
 
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 import { useDispatch } from 'react-redux'
 import { signup } from '../redux/actions/authActions'
+
+import { toast } from 'react-toastify'
 
 import { startLoading, stopLoading } from '../redux/actions/loadingActions'
 
 export default function SignupPage() {
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
+
 	const [formErrors, setFormErrors] = useState({
 		login: false,
 		email: false,
@@ -29,7 +33,24 @@ export default function SignupPage() {
 			confirmPassword: confirmPassword === '' || confirmPassword !== password,
 		}
 
-		setFormErrors(errors)
+		const errorMessages = {
+			login: 'Wprowadź nazwę użytkownika',
+			email: 'Wprowadź adres email',
+			password: 'Wprowadź hasło',
+			confirmPassword: 'Hasło musi być takie samo',
+		}
+
+		for (const field in errors) {
+			if (errors[field]) {
+				setFormErrors(prevErrors => ({
+					...prevErrors,
+					[field]: errorMessages[field],
+				}))
+				toast.error(errorMessages[field], {
+					autoClose: 3000,
+				})
+			}
+		}
 
 		return Object.values(errors).every(error => !error)
 	}
@@ -47,10 +68,13 @@ export default function SignupPage() {
 		dispatch(startLoading())
 		dispatch(signup(login, email, password))
 			.then(() => {
-				console.log(`Rejestracja się udała`)
+				toast.success('Konto zarejestrowane pomyślnie!')
+				navigate('/')
 			})
-			.catch(error => {
-				console.log(`Nie udało się zarejestrować:`, error)
+			.catch(() => {
+				toast.error('Nie udało się zarejestrować', {
+					autoClose: 2000,
+				})
 			})
 			.finally(() => {
 				dispatch(stopLoading())
@@ -65,7 +89,9 @@ export default function SignupPage() {
 		<div className='auth-form animated fadeInDown'>
 			<div className='form'>
 				<form onSubmit={handleSubmit}>
-					<h2 className='auth-form-logo'>Tradely</h2>
+					<NavLink to={'/'}>
+						<h2 className='auth-form-logo'>Tradely</h2>
+					</NavLink>
 					<p className='auth-form-title'>Dołącz do nas</p>
 					<hr />
 					<div className='form-content'>
