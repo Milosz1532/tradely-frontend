@@ -12,7 +12,6 @@ import noImage from '/images/no-image.png'
 
 import userIcon from '/images/user.png'
 import Skeleton from 'react-loading-skeleton'
-import TopCategories from '../components/TopCategories'
 
 const LoadingScreen = () => {
 	return (
@@ -305,7 +304,6 @@ export default function PreviewAnnouncement() {
 
 	return (
 		<>
-			<TopCategories />
 			<div className='preview-announcement-search-section mb-3'>
 				<div className='container'>
 					<h2>Wyszukaj ogłoszenie</h2>

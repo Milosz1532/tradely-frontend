@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import searchBackground from '/images/search-background.jpg'
 import adBackground from '/images/advertisement.jpg'
 import Skeleton from 'react-loading-skeleton'
-import TopCategories from '../components/TopCategories'
 
 const LoadingAnnouncement = () => {
 	return (
@@ -120,7 +119,6 @@ export default function HomePage() {
 
 	return (
 		<>
-			<TopCategories />
 			<section className='search-section' style={{ backgroundImage: `url(${searchBackground}` }}>
 				<div className='container p-5'>
 					<div className='row'>

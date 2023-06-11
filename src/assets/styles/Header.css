@@ -1,4 +1,9 @@
 header {
+  background-color: #fff;
+  padding: 5px;
+}
+
+header article {
   margin: 0;
   padding: 0;
   margin-top: 10px;
@@ -9,23 +14,24 @@ header {
   transition: all 0.4s;
 }
 
-header .logo a {
+header article .logo a {
   color: #67ade0;
 }
 
-header .logo h2 {
+header article .logo h2 {
   font-weight: bold;
 }
 
-header a {
+header article a {
   text-decoration: none;
 }
 
-header .header-right-section {
+header article .header-right-section {
   display: flex;
+  align-items: center;
 }
 
-header .header-right-section > i {
+header article .header-right-section > i {
   margin-left: 20px;
   font-size: 24px;
   opacity: 0.8;
@@ -33,23 +39,36 @@ header .header-right-section > i {
   cursor: pointer;
 }
 
-header .header-right-section > i:hover {
+header article .header-right-section > i:hover {
   opacity: 1;
 }
 
-header .header-right-section .header-right-section-account {
-  margin-top: 5px;
-  margin-left: 20px;
+header article .header-right-section .header-right-section-account {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-header .header-right-section .header-right-section-account span {
+header article .header-right-section .header-right-section-account .nav-profile {
+  position: relative;
+}
+
+header article .header-right-section .header-right-section-account .nav-profile span {
   padding: 10px;
   font-size: 18px;
   transition: all 0.4s;
+  cursor: pointer;
 }
 
-header .header-right-section .header-right-section-account span:hover {
-  background-color: #f0f0f0;
-  border-radius: 5px;
-  cursor: pointer;
+header article .header-right-section .header-right-section-account .nav-profile .nav-profile-dropdown {
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 18px 0px #dadada;
+  -moz-box-shadow: 0px 0px 18px 0px #dadada;
+  box-shadow: 0px 0px 18px 0px #dadada;
+  transition: all 0.4s;
+  margin-top: 10px;
+  left: 0;
+  position: absolute;
+  padding: 20px;
+  width: 200px;
 }

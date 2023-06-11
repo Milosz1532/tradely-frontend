@@ -7,7 +7,6 @@ import '../assets/styles/CreateAnnouncement.css'
 
 import withReactContent from 'sweetalert2-react-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import TopCategories from '../components/TopCategories'
 import ReactLoading from 'react-loading'
 import ScrollLock from '../ScrollLock'
 
@@ -250,7 +249,6 @@ const CreateAnnouncement = () => {
 
 	return (
 		<>
-			<TopCategories />
 
 			<div className='container mt-5'>
 				<h3 className='home-title'>Dodaj ogłoszenie</h3>

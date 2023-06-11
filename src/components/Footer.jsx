@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Footer() {
 	return (
-		<footer className='text-center text-lg-start bg-light text-muted mt-5'>
+		<footer className='text-center text-muted mt-5' style={{ backgroundColor: '#fff' }}>
 			<section className='pt-2'>
 				<div className='container text-center text-md-start mt-5'>
 					<div className='row mt-3'>
