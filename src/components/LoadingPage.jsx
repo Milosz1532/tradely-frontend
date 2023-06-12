@@ -3,7 +3,6 @@ import ScrollLock from '../ScrollLock'
 import ReactLoading from 'react-loading'
 
 export default function LoadingPage({ fullSize, text }) {
-	console.log(fullSize)
 	return (
 		<>
 			<ScrollLock />

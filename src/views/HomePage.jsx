@@ -140,7 +140,7 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img src='/images/categories_icons/cars.png' alt='Elektronika' />
+										<img draggable='false' src='/images/categories_icons/cars.png' alt='Elektronika' />
 									</div>
 									<div className='title'>Motoryzacja</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -149,7 +149,7 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img src='/images/categories_icons/bikes.png' alt='Elektronika' />
+										<img draggable='false' src='/images/categories_icons/bikes.png' alt='Elektronika' />
 									</div>
 									<div className='title'>Rowery</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -158,7 +158,7 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img src='/images/categories_icons/clothes.png' alt='Elektronika' />
+										<img draggable='false' src='/images/categories_icons/clothes.png' alt='Elektronika' />
 									</div>
 									<div className='title'>Ubrania</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -176,7 +176,7 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img src='/images/categories_icons/bikes.png' alt='Elektronika' />
+										<img draggable='false' src='/images/categories_icons/bikes.png' alt='Elektronika' />
 									</div>
 									<div className='title'>Motoryzacja</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -185,7 +185,7 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img src='/images/categories_icons/bikes.png' alt='Elektronika' />
+										<img draggable='false' src='/images/categories_icons/bikes.png' alt='Elektronika' />
 									</div>
 									<div className='title'>Motoryzacja</div>
 									<p className='count'>13 543 ogłoszeń</p>

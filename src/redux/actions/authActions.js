@@ -30,7 +30,6 @@ export const initAuth = () => {
 export const login = (email, password) => dispatch => {
 	return Api.login(email, password).then(
 		response => {
-			console.log(response)
 			dispatch({
 				type: LOGIN_SUCCESS,
 				payload: { user: response },
