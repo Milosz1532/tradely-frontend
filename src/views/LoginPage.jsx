@@ -18,9 +18,10 @@ export default function LoginPage() {
 				toast.success('Pomyślnie zalogowano')
 			})
 			.catch(error => {
+				console.log(error.message)
 				Swal.fire({
 					icon: 'error',
-					text: 'Wprowadzone dane są nieprawidłowe',
+					text: error.message,
 				})
 			})
 			.finally(() => {
@@ -29,7 +30,7 @@ export default function LoginPage() {
 	}
 
 	const validationSchema = Yup.object().shape({
-		email: Yup.string().required('Wypełnij to pole'),
+		email: Yup.string().email('Wprowadź poprawny adres email').required('Wprowadź adres email'),
 		password: Yup.string().required('Wypełnij to pole'),
 	})
 

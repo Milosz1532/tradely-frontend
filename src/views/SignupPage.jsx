@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { signup } from '../redux/actions/authActions'
 import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 import { startLoading, stopLoading } from '../redux/actions/loadingActions'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
@@ -30,9 +31,10 @@ export default function SignupPage() {
 				navigate('/')
 			})
 			.catch(error => {
-				console.log(error)
-				toast.error('Nie udało się zarejestrować', {
-					autoClose: 2000,
+				console.log(error.message)
+				Swal.fire({
+					icon: 'error',
+					text: error.message,
 				})
 			})
 			.finally(() => {
@@ -46,8 +48,8 @@ export default function SignupPage() {
 			<div className='form'>
 				<Formik
 					initialValues={{ login: '', email: '', password: '', confirmPassword: '' }}
-					validationSchema={validationSchema}
-					onSubmit={handleSubmit}>
+					onSubmit={handleSubmit}
+					validationSchema={validationSchema}>
 					{({ isSubmitting }) => (
 						<Form>
 							<NavLink to={'/'}>

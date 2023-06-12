@@ -18,7 +18,7 @@ export const initAuth = () => {
 
 			dispatch({ type: AUTH_INIT })
 
-			dispatch({ type: AUTH_SUCCESS, payload: { user: user[0] } })
+			dispatch({ type: AUTH_SUCCESS, payload: { user } })
 			return true
 		} catch (error) {
 			dispatch({ type: AUTH_FAILURE, payload: { error } })
@@ -40,10 +40,10 @@ export const login = (email, password) => dispatch => {
 		error => {
 			dispatch({
 				type: LOGIN_FAILURE,
-				payload: { error: error.errors },
+				payload: { error: error },
 			})
 
-			return Promise.reject(error.errors)
+			return Promise.reject(error)
 		}
 	)
 }
@@ -61,10 +61,10 @@ export const signup = (login, email, password) => dispatch => {
 		error => {
 			dispatch({
 				type: SIGNUP_FAILURE,
-				payload: { error: error.errors },
+				payload: { error: error },
 			})
 
-			return Promise.reject(error.errors)
+			return Promise.reject(error)
 		}
 	)
 }

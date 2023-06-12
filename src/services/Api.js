@@ -23,6 +23,11 @@ axiosClient.interceptors.request.use(config => {
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`
 	}
+	const preferredLanguage = 'pl'
+	if (preferredLanguage) {
+		config.headers['X-localization'] = preferredLanguage
+	}
+
 	return config
 })
 
@@ -69,7 +74,7 @@ export const getUserData = async () => {
 	if (Cookies.get('ACCESS_TOKEN')) {
 		try {
 			const response = await axiosClient.get('/verify_token')
-			return [response.data, Cookies.get('ACCESS_TOKEN')]
+			return response.data
 		} catch (error) {
 			throw error.response.data
 		}

@@ -17,6 +17,7 @@ export default function Navbar() {
 	const dispatch = useDispatch()
 	const [showUserProfile, setShowUserProfile] = useState(false)
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+	const user = useSelector(state => state.auth.user)
 	const userProfileRef = useRef(null)
 
 	const handleProfileMenu = () => {
@@ -78,8 +79,8 @@ export default function Navbar() {
 											<div className='nav-profile-user-info'>
 												<img draggable={false} src={userIcon} alt='user-icon' />
 												<div className='nav-profile-user-info-content'>
-													<p className='user-first_last_name'>Miłosz Konopka</p>
-													<p className='user-id'>ID: 6450032</p>
+													<p className='user-first_last_name'>{user && user.login}</p>
+													<p className='user-id'>ID: {user.id}</p>
 												</div>
 											</div>
 											<hr />
