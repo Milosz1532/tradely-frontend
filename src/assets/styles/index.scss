@@ -3,6 +3,7 @@
 $main-color: #67ade0;
 $text-color: #676767;
 $light-text-color: #fff;
+$app-background-color: #f8f8f8;
 
 * {
 	box-sizing: border-box;
@@ -11,7 +12,7 @@ $light-text-color: #fff;
 }
 
 .App {
-	background-color: #f8f8f8;
+	background-color: $app-background-color;
 }
 
 .scroll-lock {
@@ -49,6 +50,17 @@ $light-text-color: #fff;
 			display: flex;
 			align-items: center;
 			padding: 0 10px;
+		}
+
+		.location {
+			margin-left: 5px;
+			background: none;
+			border: none;
+			color: $text-color;
+
+			&:focus {
+				outline: none;
+			}
 		}
 
 		.main-input {
@@ -204,4 +216,82 @@ $light-text-color: #fff;
 
 img.loading-image {
 	display: none;
+}
+
+// rectangular-announcement
+
+.rectangular-announcement {
+	background-color: #fff;
+	border-radius: 3px;
+	.rectangular-announcement-image {
+		text-align: center;
+		img {
+			padding: 5px;
+			max-width: 100%;
+			max-height: 150px;
+		}
+	}
+	.rectangular-announcement-content {
+		display: flex;
+		position: relative;
+		justify-content: space-around;
+		flex-direction: column;
+		padding-right: 30px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		.reactangular-announement-top-section {
+			display: flex;
+			justify-content: space-between;
+		}
+		.price {
+			color: $main-color;
+		}
+		.tags {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			li {
+				display: inline-block;
+				margin-left: 10px;
+				font-size: 12px;
+				background-color: #e9e9e9;
+				border-radius: 10px;
+				padding: 5px 10px;
+
+				&:first-child {
+					margin: 0;
+				}
+			}
+		}
+		.location {
+			margin-top: 5px;
+			display: flex;
+			flex-direction: column;
+			color: $text-color;
+			font-size: 12px;
+		}
+		.favorite-icon {
+			position: absolute;
+			color: $text-color;
+			font-size: 18px;
+			bottom: 5px;
+			right: 30px;
+			cursor: pointer;
+		}
+	}
+}
+
+.sort-icon {
+	font-size: 20px;
+	color: $text-color;
+	opacity: 0.6;
+	transition: all 0.4s;
+	cursor: pointer;
+	&:hover {
+		opacity: 0.8;
+	}
+	&.active {
+		opacity: 1;
+		color: $main-color;
+	}
 }

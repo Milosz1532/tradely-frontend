@@ -1,6 +1,8 @@
 $main-color: #67ade0;
 $text-color: #676767;
 $light-text-color: #fff;
+$image-background: rgb(235, 235, 235);
+
 
 .top-bar {
 	background-color: $main-color;
@@ -137,6 +139,8 @@ $light-text-color: #fff;
 		width: 100%;
 		height: 200px;
 		text-align: center;
+		background-color: $image-background;
+		border-radius: 10px 10px 0px 0px;
 
 		img {
 			max-width: 100%;

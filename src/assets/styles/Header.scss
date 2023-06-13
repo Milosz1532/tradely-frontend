@@ -149,13 +149,11 @@ header {
 										margin: 0;
 										padding: 0;
 										text-align: left;
-										border-bottom-width: 0px;
 										opacity: 0.8;
 
 										transition: all 0.2s;
 										&:hover {
-											border-bottom: 1px solid $logo-color;
-											border-bottom-width: 2px;
+											border-bottom: 2px solid $logo-color;
 											opacity: 1;
 										}
 									}

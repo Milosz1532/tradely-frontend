@@ -7,6 +7,7 @@ import LoginPage from '../views/LoginPage'
 import PreviewAnnouncement from '../views/PreviewAnnouncement'
 import CreateAnnouncement from '../views/CreateAnnouncement'
 import SignupPage from '../views/SignupPage'
+import SearchAnnouncements from '../views/SearchAnnouncements'
 
 import AuthRoute from './AuthRoute'
 
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
 			{
 				path: '/announcement/:id',
 				element: <PreviewAnnouncement />,
+			},
+			{
+				path: '/announcements/:location/:category/:keyword?',
+				element: <SearchAnnouncements />,
 			},
 		],
 	},

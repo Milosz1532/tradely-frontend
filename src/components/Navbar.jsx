@@ -7,11 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NotLoginIcon from '../assets/images/nav-profile-notLoign-icon.svg'
 import userIcon from '/images/user.png'
 
-// TEMP //
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { logout } from '../redux/actions/authActions'
-// TEMP
 
 export default function Navbar() {
 	const dispatch = useDispatch()

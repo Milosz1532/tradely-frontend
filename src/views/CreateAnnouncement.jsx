@@ -71,7 +71,7 @@ const ImageUploader = ({ image, onDelete }) => {
 									src={image}
 									alt='preview'
 									onLoad={handleImageLoad}
-									onError={false}
+									onError={null}
 								/>
 								<div className='image-overlay'>
 									<i onClick={handleImageClick}>
@@ -249,7 +249,6 @@ const CreateAnnouncement = () => {
 
 	return (
 		<>
-
 			<div className='container mt-5'>
 				<h3 className='home-title'>Dodaj ogłoszenie</h3>
 
