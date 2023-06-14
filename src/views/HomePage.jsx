@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import SquareAnnouncement from '../components/SquareAnnouncement'
 import Searchbar from '../components/Searchbar'
-import axiosClient from '../services/Api'
+import { indexAnnouncements } from '../services/SearchService'
 
 import '../assets/styles/Home.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -78,7 +78,7 @@ const LoadingAnnouncement = () => {
 }
 
 const AnnouncementList = ({ data }) => {
-	const announcementsList = data.map(a => (
+	const newAnnouncementsList = data.latest_announcements.map(a => (
 		<SquareAnnouncement
 			key={a.id}
 			id={a.id}
@@ -88,12 +88,55 @@ const AnnouncementList = ({ data }) => {
 			image={a.first_image}
 		/>
 	))
+
+	const categoryAnnouncementsList = data.category_announcements.map(a => (
+		<SquareAnnouncement
+			key={a.id}
+			id={a.id}
+			title={a.title}
+			price={a.price}
+			created_at={a.created_at}
+			image={a.first_image}
+		/>
+	))
+
+	if (data.location_announcements.length !== 0) {
+		const locationAnnouncementsList = data.location_announcements.map(a => (
+			<SquareAnnouncement
+				key={a.id}
+				id={a.id}
+				title={a.title}
+				price={a.price}
+				created_at={a.created_at}
+				image={a.first_image}
+			/>
+		))
+	}
+
 	return (
 		<div className='container'>
 			<section className='new-announcements'>
-				<h2 className='home-title'>Najnowsze ogłoszenia</h2>
+				{data.latest_announcements.length !== 0 && (
+					<>
+						<h2 className='home-title'>Najnowsze ogłoszenia</h2>
 
-				<div className='row'>{announcementsList}</div>
+						<div className='row'>{newAnnouncementsList}</div>
+					</>
+				)}
+				{data.location_announcements.length !== 0 && (
+					<>
+						<h2 className='home-title'>W twojej okolicy</h2>
+						<div className='row'>{locationAnnouncementsList}</div>
+					</>
+				)}
+
+				{data.category_announcements.length !== 0 && (
+					<>
+						<h2 className='home-title mt-4'>Motoryzacja</h2>
+
+						<div className='row'>{categoryAnnouncementsList}</div>
+					</>
+				)}
 			</section>
 		</div>
 	)
@@ -101,20 +144,32 @@ const AnnouncementList = ({ data }) => {
 
 export default function HomePage() {
 	const [_loadingAnnouncements, _setLoadingAnnouncements] = useState(true)
-	const [newAnnouncementsData, setNewAnnouncementsData] = useState([null])
+	const [announcementsData, setAnnouncementsData] = useState([null])
+
+	// useEffect(() => {
+	// 	_setLoadingAnnouncements(true)
+	// 	const API_URL = `/announcements`
+	// 	axiosClient
+	// 		.get(API_URL)
+	// 		.then(({ data }) => {
+	// 			setNewAnnouncementsData(data.data)
+	// 			_setLoadingAnnouncements(false)
+	// 		})
+	// 		.catch(error => {
+	// 			_setLoadingAnnouncements(true)
+	// 		})
+	// }, [])
 
 	useEffect(() => {
-		_setLoadingAnnouncements(true)
-		const API_URL = `/announcements`
-		axiosClient
-			.get(API_URL)
-			.then(({ data }) => {
-				setNewAnnouncementsData(data.data)
+		const loadAnnouncements = async () => {
+			try {
+				const response = await indexAnnouncements()
+				setAnnouncementsData(response.data)
 				_setLoadingAnnouncements(false)
-			})
-			.catch(error => {
-				_setLoadingAnnouncements(true)
-			})
+			} catch {}
+		}
+
+		loadAnnouncements()
 	}, [])
 
 	return (
@@ -201,7 +256,7 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			{_loadingAnnouncements ? <LoadingAnnouncement /> : <AnnouncementList data={newAnnouncementsData} />}
+			{_loadingAnnouncements ? <LoadingAnnouncement /> : <AnnouncementList data={announcementsData} />}
 		</>
 	)
 }

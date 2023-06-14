@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import moment from 'moment'
 
 import '../assets/styles/previewAnnouncement.css'
 import axiosClient from '../services/Api'
@@ -70,6 +71,8 @@ const ShowAnnouncement = ({ data }) => {
 		}
 	}
 
+	console.log(data.user.created_at)
+
 	const images_dots = images.map((dot, index) => {
 		return (
 			<i onClick={e => setSelectedImages(index)} key={index} className={`${selectedImage === index ? 'active' : ''}`}>
@@ -107,7 +110,7 @@ const ShowAnnouncement = ({ data }) => {
 					</section>
 					<section className='announcement-section announcement-description-section mt-3'>
 						<div className='announcement-description-top'>
-							<p className='date'>Dodane 02.06.2023</p>
+							<p className='date'>Dodane {moment(data.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY HH:mm')}</p>
 							<i>
 								<FontAwesomeIcon icon='fa-regular fa-heart' />
 							</i>
@@ -129,9 +132,16 @@ const ShowAnnouncement = ({ data }) => {
 						<div className='announcement-user-info-box'>
 							<img src={userIcon} alt='user-icon' />
 							<div className='announcement-user-info-box-content'>
-								<p className='user-first_last_name'>Miłosz Konopka</p>
-								<p className='user-date'>Sprzedawca od: 14.06.2022</p>
-								<p className='user-items'>Wystawione przedmioty: 14</p>
+								<p className='user-first_last_name'>
+									{data.user.first_name && data.user.last_name
+										? `${data.user.first_name} ${data.user.last_name}`
+										: 'Anonimowy uzytkownik'}
+								</p>
+								<p className='user-date'>
+									Sprzedawca od: {moment(data.user.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY')}
+								</p>
+
+								<p className='user-items'>Wystawione przedmioty: {data.user.total_announcements}</p>
 							</div>
 						</div>
 						<div className='announcement-user-rate'>
@@ -200,107 +210,6 @@ export default function PreviewAnnouncement() {
 				setLoadingAnnouncement(true)
 			})
 	}, [])
-
-	// return (
-	// 	<div className='container previewAnnouncement'>
-	// 		<div className='row'>
-	// 			<div className='top-information'>
-	// 				<p className='top-information-category'>Ogłoszenie - Motoryzacja - Samochody osobowe</p>
-	// 				<p className='top-information-back'>Wróć</p>
-	// 				<p className='top-information-announcement-id'>Ogłoszenie: 123</p>
-	// 			</div>
-	// 			<div className='col-lg-8'>
-	// 				<section className='announcement-section announcement-image-section'>
-	// 					<div className='image'>
-	// 						<img src={adBackground} />
-	// 						<div className='image-arrows'>
-	// 							<span>1</span>
-	// 							<span>2</span>
-	// 						</div>
-	// 					</div>
-	// 				</section>
-	// 				<section className='announcement-section announcement-description-section mt-3'>
-	// 					<div className='announcement-description-top'>
-	// 						<p className='date'>Dodane 02.06.2023</p>
-	// 						<i>
-	// 							<FontAwesomeIcon icon='fa-regular fa-heart' />
-	// 						</i>
-	// 					</div>
-	// 					<div className='announcement-description-title'>
-	// 						<h4 className='announcement-title'>Audi A5 40 TFSI MHEV Quatro S Line S tronic</h4>
-	// 						<h4 className='announcement-price'>32 443 zł</h4>
-	// 						<hr />
-	// 					</div>
-	// 					<div className='announcement-description-content'>
-	// 						<h5>Opis</h5>
-	// 						<p>
-	// 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores pariatur dolor unde libero laboriosam
-	// 							sed laborum sequi non maxime laudantium tenetur, hic ratione adipisci commodi voluptates ipsum
-	// 							asperiores accusantium fugit. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia quis
-	// 							inventore praesentium vero similique error temporibus. Eligendi necessitatibus consectetur quasi
-	// 							assumenda, natus harum possimus cumque totam nulla delectus numquam sequi. Lorem ipsum dolor sit amet
-	// 							consectetur, adipisicing elit. Voluptatum ducimus, quidem et omnis sed, dolorum, cum quia illum magni
-	// 							quasi mollitia! Eius aliquid delectus enim sapiente? Praesentium voluptate ducimus dolore.
-	// 						</p>
-	// 					</div>
-	// 				</section>
-	// 			</div>
-	// 			<div className='col-lg-4'>
-	// 				<div className='announcement-section announcement-user-section'>
-	// 					<h5>Osoba prywatna</h5>
-	// 					<div className='announcement-user-info-box'>
-	// 						<img src={userIcon} alt='user-icon' />
-	// 						<div className='announcement-user-info-box-content'>
-	// 							<p className='user-first_last_name'>Miłosz Konopka</p>
-	// 							<p className='user-date'>Sprzedawca od: 14.06.2022</p>
-	// 							<p className='user-items'>Wystawione przedmioty: 14</p>
-	// 						</div>
-	// 					</div>
-	// 					<div className='announcement-user-rate'>
-	// 						<p className='rate-title'>Opinia sprzedającego</p>
-	// 						<p className='rate-text'>
-	// 							<b>Bardzo dobrze:</b> Większość kupujących jest zadowolonych z tego sprzedawcy
-	// 						</p>
-	// 						<div className='rate-stars'>
-	// 							<i>
-	// 								<FontAwesomeIcon icon='fa-solid fa-star' />
-	// 							</i>
-	// 							<i>
-	// 								<FontAwesomeIcon icon='fa-solid fa-star' />
-	// 							</i>
-	// 							<i>
-	// 								<FontAwesomeIcon icon='fa-solid fa-star' />
-	// 							</i>
-	// 							<i>
-	// 								<FontAwesomeIcon icon='fa-solid fa-star' />
-	// 							</i>
-	// 							<i>
-	// 								<FontAwesomeIcon icon='fa-regular fa-star' />
-	// 							</i>
-	// 						</div>
-	// 					</div>
-
-	// 					<div className='announcement-user-note mt-4'>
-	// 						<h5>Notatka</h5>
-	// 						<p>
-	// 							Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-	// 							industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-	// 							scrambled it to make a type specimen book.
-	// 						</p>
-	// 					</div>
-	// 					<div className='announcement-user-buttons'>
-	// 						<button>
-	// 							<FontAwesomeIcon icon='fa-solid fa-phone' /> Zadzwoń
-	// 						</button>
-	// 						<button>
-	// 							<FontAwesomeIcon icon='fa-regular fa-comments' /> Wyślij wiadomość
-	// 						</button>
-	// 					</div>
-	// 				</div>
-	// 			</div>
-	// 		</div>
-	// 	</div>
-	// )
 
 	return (
 		<>

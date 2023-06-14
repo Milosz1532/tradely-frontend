@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import noImage from '/images/no-image.png'
 
@@ -15,7 +16,10 @@ export default function SquareAnnouncement({ id, title, price, created_at, image
 						<div className='announcement-top-section'>
 							<span className='announcement-category'>Motoryzacja Samochody uzywane</span>
 							<span className='announcement-likes'>
-								<i className='fa-solid fa-heart'></i> 300
+								<i className='me-1'>
+									<FontAwesomeIcon icon='fa-solid fa-heart' />
+								</i>
+								300
 							</span>
 						</div>
 
@@ -31,8 +35,12 @@ export default function SquareAnnouncement({ id, title, price, created_at, image
 								<span>87-800 Włocławek</span>
 							</div>
 							<div className='announcement-buttons'>
-								<i className='fa-regular fa-comment mx-2'></i>
-								<i className='fa-regular fa-heart'></i>
+								<i className='me-2'>
+									<FontAwesomeIcon icon='fa-regular fa-heart' />
+								</i>
+								<i>
+									<FontAwesomeIcon icon='fa-regular fa-comments' />
+								</i>
 							</div>
 						</div>
 					</div>

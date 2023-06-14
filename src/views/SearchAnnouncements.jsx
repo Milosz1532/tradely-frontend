@@ -10,6 +10,8 @@ import Skeleton from 'react-loading-skeleton'
 import RectangularAnnouncement from '../components/RectangularAnnouncement'
 import SquareAnnouncement from '../components/SquareAnnouncement'
 
+import NoAnnouncementsImg from '/images/noAnnouncements.svg'
+
 const SkelletonAnnouncement = () => {
 	return (
 		<div className='col-12 rectangular-announcement mt-2'>
@@ -111,6 +113,20 @@ const ShowAnnouncements = ({ announcements }) => {
 	)
 }
 
+const NoAnnouncements = () => {
+	return (
+		<div className='no-announcements d-flex align-items-center flex-column'>
+			<h3>Nie znaleziono żadnych ogłoszeń</h3>
+			<img
+				className='mt-3'
+				style={{ maxWidth: '400px', maxHeigh: '400px' }}
+				src={NoAnnouncementsImg}
+				alt='Brak ogłoszeń zdjęcie'
+			/>
+		</div>
+	)
+}
+
 function SearchAnnouncements() {
 	const { location, category, keyword } = useParams()
 	const [announcements, setAnnouncements] = useState(false)
@@ -118,11 +134,12 @@ function SearchAnnouncements() {
 	useEffect(() => {
 		const fetchAnnouncements = async () => {
 			try {
-				const announcementsData = await searchAnnouncements(location, '', keyword)
+				const announcementsData = await searchAnnouncements(location, category, keyword)
 				setAnnouncements(announcementsData)
 				setLoadingAnnouncements(false)
 			} catch (error) {
 				console.error('Wystąpił błąd podczas pobierania ogłoszeń:', error)
+				setLoadingAnnouncements(false)
 			}
 		}
 
@@ -138,7 +155,13 @@ function SearchAnnouncements() {
 				</div>
 			</section>
 			<section className='search-announcements container mt-5' style={{ minHeight: '400px' }}>
-				{loadingAnnouncements ? <LoadingAnnouncementsScreen /> : <ShowAnnouncements announcements={announcements} />}
+				{loadingAnnouncements ? (
+					<LoadingAnnouncementsScreen />
+				) : announcements && announcements.data.length > 0 ? (
+					<ShowAnnouncements announcements={announcements} />
+				) : (
+					<NoAnnouncements />
+				)}
 			</section>
 		</>
 	)

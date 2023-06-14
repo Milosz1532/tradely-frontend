@@ -330,8 +330,8 @@ const CreateAnnouncement = () => {
 
 				<section className='create-announcement-section'>
 					<div className='create-announcement-buttons'>
-						<button className='white-button-design'>Podgląd ogłoszenia</button>
-						<button onClick={handleSubmitAnnouncement} className='color-button-design'>
+						<button className='btn-design white me-2'>Podgląd ogłoszenia</button>
+						<button onClick={handleSubmitAnnouncement} className='btn-design'>
 							Dodaj ogłoszenie
 						</button>
 					</div>

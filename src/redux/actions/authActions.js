@@ -15,14 +15,14 @@ export const initAuth = () => {
 	return async dispatch => {
 		try {
 			const user = await Api.getUserData()
-
 			dispatch({ type: AUTH_INIT })
-
-			dispatch({ type: AUTH_SUCCESS, payload: { user } })
-			return true
+			if (user) {
+				dispatch({ type: AUTH_SUCCESS, payload: { user } })
+			} else {
+				dispatch({ type: AUTH_FAILURE, payload: { error } })
+			}
 		} catch (error) {
 			dispatch({ type: AUTH_FAILURE, payload: { error } })
-			return false
 		}
 	}
 }

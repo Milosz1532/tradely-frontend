@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import SearchService from '../services/SearchService'
+import { searchCategories } from '../services/SearchService'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Searchbar() {
-	const [category, setCategory] = useState('Samochody osobowe')
-	const [location, setLocation] = useState('Włocławek')
+	const [category, setCategory] = useState('all_categories')
+	const [location, setLocation] = useState('')
 	const [keyword, setKeyword] = useState('')
 	const navigate = useNavigate()
+	const [categories, setCategories] = useState([])
 
 	const handleSearch = () => {
-		let url = `/announcements/${location}/${category}`
+		let url = `/announcements/${location ? location : 'all_locations'}/${category}`
 
 		if (keyword.trim() !== '') {
 			url += `/${keyword}`
@@ -20,6 +21,20 @@ export default function Searchbar() {
 
 		navigate(url)
 	}
+
+	useEffect(() => {
+		const getCategoriesList = async () => {
+			try {
+				const categoriesData = await searchCategories()
+				setCategories(categoriesData)
+			} catch {
+				setCategories([])
+			}
+		}
+		if (categories.length === 0) {
+			getCategoriesList()
+		}
+	}, [])
 
 	const handleKeyDown = event => {
 		if (event.key === 'Enter') {
@@ -34,9 +49,7 @@ export default function Searchbar() {
 					<i>
 						<FontAwesomeIcon icon='fa-solid fa-location-dot' />
 					</i>
-					{/* <select name='location' className='location'>
-						<option value='default'>Lokalizacja</option>
-					</select> */}
+
 					<input
 						onChange={e => setLocation(e.target.value)}
 						value={location}
@@ -49,8 +62,13 @@ export default function Searchbar() {
 					<i>
 						<FontAwesomeIcon icon='fa-solid fa-shapes' />
 					</i>
-					<select name='category' className='category'>
-						<option value='default'>Wszystkie kategorie</option>
+					<select onChange={e => setCategory(e.target.value)} name='category' className='category'>
+						<option value='all_categories'>Wszystkie kategorie</option>
+						{categories.map(option => (
+							<option key={option.id} value={option.name}>
+								{option.name}
+							</option>
+						))}
 					</select>
 				</div>
 

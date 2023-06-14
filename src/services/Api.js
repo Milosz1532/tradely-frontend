@@ -71,13 +71,13 @@ export const signup = async (login, email, password) => {
 }
 
 export const getUserData = async () => {
-	if (Cookies.get('ACCESS_TOKEN')) {
-		try {
+	try {
+		if (Cookies.get('ACCESS_TOKEN')) {
 			const response = await axiosClient.get('/verify_token')
 			return response.data
-		} catch (error) {
-			throw error.response.data
 		}
+	} catch (error) {
+		throw error.response.data
 	}
 }
 
