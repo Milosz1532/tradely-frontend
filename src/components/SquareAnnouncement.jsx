@@ -26,7 +26,7 @@ export function SquareAnnouncement({ id, title, price, created_at, image, locati
 
 						<div className='announcement-title-section'>
 							<p className='announcement-title'>{title}</p>
-							<p className='announcement-price'>{price} zł</p>
+							<p className='announcement-price'>{price ? `${price} zł` : 'Za darmo'}</p>
 						</div>
 						<hr />
 

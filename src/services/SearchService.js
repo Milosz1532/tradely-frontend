@@ -1,12 +1,13 @@
 import axiosClient from './Api'
 
-export const searchAnnouncements = async (location, category, keyword) => {
+export const searchAnnouncements = async (location, category, keyword, page) => {
 	try {
 		const response = await axiosClient.get('/announcements/search', {
 			params: {
 				location: location,
 				category: category,
 				keyword: keyword,
+				page: page,
 			},
 		})
 		return response.data

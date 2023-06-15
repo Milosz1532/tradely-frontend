@@ -73,7 +73,6 @@ const ShowAnnouncement = ({ data }) => {
 		}
 	}
 
-	console.log(data.user.created_at)
 
 	const images_dots = images.map((dot, index) => {
 		return (

@@ -1,65 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { searchAnnouncements } from '../services/SearchService'
 
 import SearchBar from '../components/Searchbar'
-
 import Skeleton from 'react-loading-skeleton'
-import RectangularAnnouncement from '../components/RectangularAnnouncement'
-import SquareAnnouncement from '../components/SquareAnnouncement'
+
+import {
+	RectangularAnnouncement,
+	RectangularAnnouncementLoading,
+} from '../components/RectangularAnnouncement'
+import { SquareAnnouncement } from '../components/SquareAnnouncement'
 
 import NoAnnouncementsImg from '/images/noAnnouncements.svg'
-
-const SkelletonAnnouncement = () => {
-	return (
-		<div className='col-12 rectangular-announcement mt-2'>
-			<div className='row'>
-				<div className='col-2 rectangular-announcement-image'>
-					<div className='ms-3 mt-1'>
-						<Skeleton height={100} />
-					</div>
-				</div>
-				<div className='col-10 rectangular-announcement-content'>
-					<div className='reactangular-announement-top-section'>
-						<h5 className='title'>
-							<Skeleton width={200} />
-						</h5>
-						<h5 className='price'>
-							<Skeleton width={100} />
-						</h5>
-					</div>
-					<ul className='tags'>
-						<li>
-							<Skeleton width={60} />
-						</li>
-						<li>
-							<Skeleton width={80} />
-						</li>
-						<li>
-							<Skeleton width={100} />
-						</li>
-						<li>
-							<Skeleton width={80} />
-						</li>
-					</ul>
-					<div className='location'>
-						<span>
-							<Skeleton width={120} />
-						</span>
-						<span>
-							<Skeleton width={120} />
-						</span>
-					</div>
-					<i className='favorite-icon'>
-						<Skeleton circle={true} height={20} width={20} />
-					</i>
-				</div>
-			</div>
-		</div>
-	)
-}
 
 const LoadingAnnouncementsScreen = () => {
 	return (
@@ -69,19 +23,19 @@ const LoadingAnnouncementsScreen = () => {
 					<Skeleton height={40} />
 				</div>
 				<div className='mt-2'>
-					<SkelletonAnnouncement />
-					<SkelletonAnnouncement />
-					<SkelletonAnnouncement />
-					<SkelletonAnnouncement />
-					<SkelletonAnnouncement />
-					<SkelletonAnnouncement />
+					<RectangularAnnouncementLoading />
+					<RectangularAnnouncementLoading />
+					<RectangularAnnouncementLoading />
+					<RectangularAnnouncementLoading />
+					<RectangularAnnouncementLoading />
+					<RectangularAnnouncementLoading />
 				</div>
 			</div>
 		</>
 	)
 }
 
-const ShowAnnouncements = ({ announcements }) => {
+const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, totalPages }) => {
 	const [sortType, setSortType] = useState(true)
 	const AnnouncementComponent = sortType ? RectangularAnnouncement : SquareAnnouncement
 	const announcementsList = announcements.data.map(a => (
@@ -94,6 +48,36 @@ const ShowAnnouncements = ({ announcements }) => {
 			created_at={a.created_at}
 		/>
 	))
+
+	const generatePageNumbers = () => {
+		const pageNumbers = []
+		const maxPageButtonsToShow = 5 // Maksymalna liczba wyświetlanych przycisków strony
+
+		if (currentPage <= 4) {
+			// Jeśli jesteś na początkowych stronach
+			for (let i = 1; i <= Math.min(totalPages, maxPageButtonsToShow); i++) {
+				pageNumbers.push(i)
+			}
+		} else if (currentPage >= totalPages - 3) {
+			// Jeśli jesteś na ostatnich stronach
+			for (
+				let i = totalPages - Math.min(totalPages, maxPageButtonsToShow) + 1;
+				i <= totalPages;
+				i++
+			) {
+				pageNumbers.push(i)
+			}
+		} else {
+			// Jeśli jesteś gdzieś po środku
+			for (let i = currentPage - 3; i <= currentPage + 3; i++) {
+				pageNumbers.push(i)
+			}
+		}
+
+		return pageNumbers
+	}
+
+	const pageNumbers = generatePageNumbers()
 
 	return (
 		<>
@@ -109,6 +93,37 @@ const ShowAnnouncements = ({ announcements }) => {
 				</div>
 			</div>
 			<div className='row'>{announcementsList}</div>
+
+			<div className='row'>
+				<div className='pagination mt-3'>
+					<div className='pagination-content'>
+						<ul>
+							<li className={currentPage <= 1 ? 'disable' : ''}>
+								<Link className='pagination-btn' to={`?page=${prevPage}`}>
+									<FontAwesomeIcon icon='fa-solid fa-angles-left' />
+								</Link>
+							</li>
+							{pageNumbers.map(pageNumber => (
+								<li className='pagination-page-number'>
+									<Link
+										className={`pagination-number-btn ${
+											pageNumber === currentPage ? 'active' : ''
+										}`}
+										to={`?page=${pageNumber}`}
+										key={pageNumber}>
+										{pageNumber}
+									</Link>
+								</li>
+							))}
+							<li className={currentPage >= totalPages ? 'disable' : ''}>
+								<Link className='pagination-btn' to={`?page=${nextPage}`}>
+									<FontAwesomeIcon icon='fa-solid fa-angles-right' />
+								</Link>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 		</>
 	)
 }
@@ -119,7 +134,7 @@ const NoAnnouncements = () => {
 			<h3>Nie znaleziono żadnych ogłoszeń</h3>
 			<img
 				className='mt-3'
-				style={{ maxWidth: '400px', maxHeigh: '400px' }}
+				style={{ maxWidth: '400px', maxHeight: '400px' }}
 				src={NoAnnouncementsImg}
 				alt='Brak ogłoszeń zdjęcie'
 			/>
@@ -131,20 +146,42 @@ function SearchAnnouncements() {
 	const { location, category, keyword } = useParams()
 	const [announcements, setAnnouncements] = useState(false)
 	const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
+
+	const page_location = useLocation()
+
+	const searchParams = new URLSearchParams(page_location.search)
+	const currentPage = parseInt(searchParams.get('page')) || 1
+	const nextPage = currentPage + 1
+	const prevPage = currentPage - 1
+
+	const maxPages = 10 // Maksymalna liczba stron
+
+	console.log(currentPage)
+
 	useEffect(() => {
 		const fetchAnnouncements = async () => {
 			try {
-				const announcementsData = await searchAnnouncements(location, category, keyword)
-				setAnnouncements(announcementsData)
-				setLoadingAnnouncements(false)
+				const announcementsData = await searchAnnouncements(
+					location,
+					category,
+					keyword,
+					currentPage
+				)
+				setTimeout(() => {
+					setAnnouncements(announcementsData)
+					setLoadingAnnouncements(false)
+				}, 500)
 			} catch (error) {
 				console.error('Wystąpił błąd podczas pobierania ogłoszeń:', error)
 				setLoadingAnnouncements(false)
 			}
 		}
 
+		setLoadingAnnouncements(true)
 		fetchAnnouncements()
-	}, [location, category, keyword])
+	}, [location, category, keyword, currentPage])
+
+	const totalPages = announcements ? announcements.meta.last_page : maxPages
 
 	return (
 		<>
@@ -158,7 +195,13 @@ function SearchAnnouncements() {
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />
 				) : announcements && announcements.data.length > 0 ? (
-					<ShowAnnouncements announcements={announcements} />
+					<ShowAnnouncements
+						announcements={announcements}
+						nextPage={nextPage}
+						prevPage={prevPage}
+						currentPage={currentPage}
+						totalPages={totalPages}
+					/>
 				) : (
 					<NoAnnouncements />
 				)}

@@ -41,10 +41,9 @@ const Map = ({ city = null }) => {
 				if (data.length > 0) {
 					const { lat, lon } = data[0]
 					setCityPosition([parseFloat(lat), parseFloat(lon)])
-					console.log(`LAT: ${lat} LON: ${lon}`)
 				}
 			} catch (error) {
-				console.log('Błąd geokodowania:', error)
+				// console.log('Błąd geokodowania:', error)
 			} finally {
 				setIsLoading(false)
 			}
@@ -53,7 +52,6 @@ const Map = ({ city = null }) => {
 		geocodeCity()
 	}, [cityName])
 
-	console.log(cityPosition)
 
 	return (
 		<>
