@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton'
 
 import noImage from '/images/no-image.png'
 
-export function SquareAnnouncement({ id, title, price, created_at, image }) {
+export function SquareAnnouncement({ id, title, price, created_at, image, location, category }) {
 	return (
 		<div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4'>
 			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
@@ -15,7 +15,7 @@ export function SquareAnnouncement({ id, title, price, created_at, image }) {
 					</div>
 					<div className='announcement-content'>
 						<div className='announcement-top-section'>
-							<span className='announcement-category'>Motoryzacja Samochody uzywane</span>
+							<span className='announcement-category'>{category ?? 'Brak danych'}</span>
 							<span className='announcement-likes'>
 								<i className='me-1'>
 									<FontAwesomeIcon icon='fa-solid fa-heart' />
@@ -33,7 +33,7 @@ export function SquareAnnouncement({ id, title, price, created_at, image }) {
 						<div className='announcement-bottom'>
 							<div className='announcement-date'>
 								<span>{created_at}</span>
-								<span>87-800 Włocławek</span>
+								<span>{location ?? 'Brak danych'}</span>
 							</div>
 							<div className='announcement-buttons'>
 								<i className='me-2'>

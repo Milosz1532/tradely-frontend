@@ -50,6 +50,8 @@ const AnnouncementList = ({ data }) => {
 			price={a.price}
 			created_at={a.created_at}
 			image={a.first_image}
+			location={a.location}
+			category={a.category}
 		/>
 	))
 
@@ -61,6 +63,8 @@ const AnnouncementList = ({ data }) => {
 			price={a.price}
 			created_at={a.created_at}
 			image={a.first_image}
+			location={a.location}
+			category={a.category}
 		/>
 	))
 

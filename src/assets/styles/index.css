@@ -300,3 +300,16 @@ img.loading-image {
   opacity: 1;
   color: #67ade0;
 }
+
+.leaflet-container {
+  height: 200px !important;
+  width: 100%;
+}
+
+.position-marker {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  position: relative;
+  background-color: red;
+}

@@ -14,6 +14,8 @@ import noImage from '/images/no-image.png'
 import userIcon from '/images/user.png'
 import Skeleton from 'react-loading-skeleton'
 
+import Map from '../components/Map'
+
 const LoadingScreen = () => {
 	return (
 		<div className='container annoucement-section'>
@@ -75,7 +77,10 @@ const ShowAnnouncement = ({ data }) => {
 
 	const images_dots = images.map((dot, index) => {
 		return (
-			<i onClick={e => setSelectedImages(index)} key={index} className={`${selectedImage === index ? 'active' : ''}`}>
+			<i
+				onClick={e => setSelectedImages(index)}
+				key={index}
+				className={`${selectedImage === index ? 'active' : ''}`}>
 				{selectedImage === index ? (
 					<FontAwesomeIcon icon='fa-regular fa-circle-dot' />
 				) : (
@@ -110,7 +115,9 @@ const ShowAnnouncement = ({ data }) => {
 					</section>
 					<section className='announcement-section announcement-description-section mt-3'>
 						<div className='announcement-description-top'>
-							<p className='date'>Dodane {moment(data.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY HH:mm')}</p>
+							<p className='date'>
+								Dodane {moment(data.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY HH:mm')}
+							</p>
 							<i>
 								<FontAwesomeIcon icon='fa-regular fa-heart' />
 							</i>
@@ -138,7 +145,8 @@ const ShowAnnouncement = ({ data }) => {
 										: 'Anonimowy uzytkownik'}
 								</p>
 								<p className='user-date'>
-									Sprzedawca od: {moment(data.user.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY')}
+									Sprzedawca od:{' '}
+									{moment(data.user.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY')}
 								</p>
 
 								<p className='user-items'>Wystawione przedmioty: {data.user.total_announcements}</p>
@@ -171,9 +179,9 @@ const ShowAnnouncement = ({ data }) => {
 						<div className='announcement-user-note mt-4'>
 							<h5>Notatka</h5>
 							<p>
-								Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-								industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-								scrambled it to make a type specimen book.
+								Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+								Ipsum has been the industry's standard dummy text ever since the 1500s, when an
+								unknown printer took a galley of type and scrambled it to make a type specimen book.
 							</p>
 						</div>
 						<div className='announcement-user-buttons'>
@@ -183,6 +191,15 @@ const ShowAnnouncement = ({ data }) => {
 							<button>
 								<FontAwesomeIcon icon='fa-regular fa-comments' /> Wyślij wiadomość
 							</button>
+						</div>
+					</div>
+					<div className='announcement-section announcement-location mt-2'>
+						<h5>Lokalizacja</h5>
+						<Map city={data.location.location_name} />
+						<div className='location-content mt-2'>
+							<span>
+								{data.location.location_name}, {data.location.postal_code}{' '}
+							</span>
 						</div>
 					</div>
 				</div>
