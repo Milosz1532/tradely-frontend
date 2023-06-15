@@ -205,6 +205,11 @@ $app-background-color: #f8f8f8;
 	&.btn-md {
 		padding: 10px 13px;
 	}
+
+	&.btn-sm {
+		height: 40px;
+		padding: 0px 20px;
+	}
 }
 
 .LoadingPageContainer {
@@ -377,3 +382,5 @@ img.loading-image {
 		}
 	}
 }
+
+// SEARCH FILTERS

@@ -81,8 +81,30 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	return (
 		<>
+			<div className='search-announcements-filters'>
+				<div className='row mb-4'>
+					<h4 className='home-title mt-0'>Filtry</h4>
+					<div className='col-2'>
+						<div className='standard-input-design'>
+							<p>Cena od:</p>
+							<input type='number' min={0} style={{ height: '40px' }} />
+						</div>
+					</div>
+					<div className='col-2 '>
+						<div className='standard-input-design'>
+							<p>Cena do:</p>
+							<input type='number' min={0} style={{ height: '40px' }} />
+						</div>
+					</div>
+					<div className='col-2 align-self-end'>
+						<button className='btn-design btn-sm'>Zastosuj filtry</button>
+					</div>
+				</div>
+			</div>
 			<div className='sort-announcements d-flex justify-content-between'>
-				<h4>Znalezione ogłoszenia: {announcements.meta.total}</h4>
+				<h4 className='home-title'>
+					Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
+				</h4>
 				<div className='buttons'>
 					<i className={`me-3 sort-icon ${sortType && 'active'}`}>
 						<FontAwesomeIcon onClick={e => setSortType(true)} icon='fa-solid fa-list' />
@@ -92,6 +114,8 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 					</i>
 				</div>
 			</div>
+			<hr />
+
 			<div className='row'>{announcementsList}</div>
 
 			<div className='row'>
