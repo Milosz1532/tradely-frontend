@@ -18,7 +18,6 @@ export default function Navbar() {
 	const user = useSelector(state => state.auth.user)
 	const userProfileRef = useRef(null)
 
-
 	const handleProfileMenu = () => {
 		setShowUserProfile(prevState => !prevState)
 	}
@@ -43,9 +42,15 @@ export default function Navbar() {
 		toast.success('Pomyślnie wylogowano!')
 	}
 
+	const [showMenu, setShowMenu] = useState(false)
+
+	const handleShowMenu = () => {
+		setShowMenu(prevState => !prevState)
+	}
+
 	return (
 		<header>
-			<article className='container mt-0 pt-2'>
+			<article className='container mt-0 pt-2 '>
 				<div className='logo'>
 					<Link to='/'>
 						<h2>Tradely</h2>
@@ -158,7 +163,40 @@ export default function Navbar() {
 						</div>
 					</div>
 				</div>
+				{/* Hamburger Menu */}
+				<div className={`hamburger-menu`} onClick={handleShowMenu}>
+					<FontAwesomeIcon icon='fa-solid fa-bars' />
+				</div>
 			</article>
+			{/* Mobile Menu */}
+			<div className={`mobile-menu ${showMenu ? 'active' : ''}`}>
+				<ul>
+					<li>
+						<i>
+							<FontAwesomeIcon icon='fa-regular fa-heart' />
+						</i>
+						<span className='ms-2'>Obserwowane</span>
+					</li>
+					<li>
+						<i>
+							<FontAwesomeIcon icon='fa-regular fa-comments' />
+						</i>
+						<span className='ms-2'>Wiadomości</span>
+					</li>
+					<li>
+						<i>
+							<FontAwesomeIcon icon='fa-regular fa-user' />
+						</i>
+						<span className='ms-2'>Moje konto</span>
+					</li>
+					<li>
+						<i>
+							<FontAwesomeIcon icon='fa-solid fa-door-open' />
+						</i>
+						<span className='ms-2'>Wyloguj</span>
+					</li>
+				</ul>
+			</div>
 		</header>
 	)
 }
