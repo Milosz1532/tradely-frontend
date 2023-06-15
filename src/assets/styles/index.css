@@ -31,6 +31,10 @@
   flex-grow: 2;
 }
 
+.search-input-box .search-input .search-input-filters {
+  display: flex;
+}
+
 .search-input-box .search-input i {
   color: #67ade0;
 }
@@ -97,6 +101,29 @@
 
 .search-input-box .search-input .submit-search-input:hover {
   opacity: 1;
+}
+
+@media only screen and (max-width: 991px) {
+  .search-input-box .search-input {
+    flex-direction: column;
+  }
+  .search-input-box .search-input .submit-search-input {
+    border-radius: 2px;
+    height: 50px;
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 508px) {
+  .search-input .search-input-filters {
+    margin-top: 5px;
+    flex-direction: column;
+    width: 100%;
+  }
+  .search-input .search-input-filters i {
+    margin-right: 10px;
+    width: 23px;
+  }
 }
 
 .preview-announcement-search-section {
@@ -306,56 +333,45 @@ img.loading-image {
   width: 100%;
 }
 
-.position-marker {
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  position: relative;
-  background-color: red;
-}
-
 .pagination {
   display: flex;
   justify-content: end;
   padding: 0 !important;
 }
 
-.pagination .pagination-content {
-  padding-right: 0;
-  background-color: #fff;
-  border-radius: 5px;
-  padding: 5px;
-  -webkit-box-shadow: 0px 18px 24px 0px #dadada;
-  -moz-box-shadow: 0px 18px 24px 0px #dadada;
-  box-shadow: 0px 18px 24px 0px #dadada;
-}
-
-.pagination .pagination-content ul {
+.pagination ul {
   list-style-type: none;
   display: inline;
   margin: 0;
   padding: 0;
 }
 
-.pagination .pagination-content ul li {
+.pagination ul li {
   display: inline-block;
   padding: 10px 10px;
 }
 
-.pagination .pagination-content ul li a {
+.pagination ul li a {
   text-decoration: none;
   padding: 5px 10px;
   color: #67ade0;
+  transition: all 0.4s;
 }
 
-.pagination .pagination-content ul li a.active {
-  background-color: #67ade0;
-  color: #fff;
+.pagination ul li a.pagination-number-btn {
+  border: 1px solid #67ade0;
   border-radius: 50%;
 }
 
-.pagination .pagination-content ul li.disable a {
+.pagination ul li a.active {
+  background-color: #67ade0;
+  color: #fff;
+  border-radius: 50%;
+  cursor: auto;
+}
+
+.pagination ul li.disable a {
   color: rgba(129, 129, 129, 0.24);
   cursor: auto;
-  pointer-events: none;
+  pointer-events: auto;
 }

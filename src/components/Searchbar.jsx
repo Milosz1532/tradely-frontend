@@ -45,31 +45,36 @@ export default function Searchbar() {
 	return (
 		<div className='search-input-box pt-3'>
 			<div className='search-input'>
-				<div className='location-input'>
-					<i>
-						<FontAwesomeIcon icon='fa-solid fa-location-dot' />
-					</i>
+				<div className='search-input-filters'>
+					<div className='location-input'>
+						<i>
+							<FontAwesomeIcon icon='fa-solid fa-location-dot' />
+						</i>
 
-					<input
-						onChange={e => setLocation(e.target.value)}
-						value={location}
-						className='location'
-						type='text'
-						placeholder='Wszystkie miasta'
-					/>
-				</div>
-				<div className='category-input'>
-					<i>
-						<FontAwesomeIcon icon='fa-solid fa-shapes' />
-					</i>
-					<select onChange={e => setCategory(e.target.value)} name='category' className='category'>
-						<option value='all_categories'>Wszystkie kategorie</option>
-						{categories.map(option => (
-							<option key={option.id} value={option.name}>
-								{option.name}
-							</option>
-						))}
-					</select>
+						<input
+							onChange={e => setLocation(e.target.value)}
+							value={location}
+							className='location'
+							type='text'
+							placeholder='Wszystkie miasta'
+						/>
+					</div>
+					<div className='category-input'>
+						<i>
+							<FontAwesomeIcon icon='fa-solid fa-shapes' />
+						</i>
+						<select
+							onChange={e => setCategory(e.target.value)}
+							name='category'
+							className='category'>
+							<option value='all_categories'>Wszystkie kategorie</option>
+							{categories.map(option => (
+								<option key={option.id} value={option.name}>
+									{option.name}
+								</option>
+							))}
+						</select>
+					</div>
 				</div>
 
 				<input

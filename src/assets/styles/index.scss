@@ -35,6 +35,10 @@ $app-background-color: #f8f8f8;
 		border-radius: 10px;
 		flex-grow: 2;
 
+		.search-input-filters {
+			display: flex;
+		}
+
 		i {
 			color: $main-color;
 		}
@@ -96,6 +100,34 @@ $app-background-color: #f8f8f8;
 			}
 			&:hover {
 				opacity: 1;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.search-input-box {
+		.search-input {
+			flex-direction: column;
+			.submit-search-input {
+				border-radius: 2px;
+				height: 50px;
+				width: 100%;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 508px) {
+	.search-input {
+		.search-input-filters {
+			margin-top: 5px;
+			flex-direction: column;
+			width: 100%;
+
+			i {
+				margin-right: 10px;
+				width: 23px;
 			}
 		}
 	}
@@ -301,53 +333,45 @@ img.loading-image {
 	width: 100%;
 }
 
-.position-marker {
-	border-radius: 50%;
-	width: 100px;
-	height: 100px;
-	position: relative;
-	background-color: red;
-}
-
 .pagination {
 	display: flex;
 	justify-content: end;
 	padding: 0 !important;
-	.pagination-content {
-		padding-right: 0;
-		background-color: #fff;
-		border-radius: 5px;
-		padding: 5px;
-		-webkit-box-shadow: 0px 18px 24px 0px rgba(218, 218, 218, 1);
-		-moz-box-shadow: 0px 18px 24px 0px rgba(218, 218, 218, 1);
-		box-shadow: 0px 18px 24px 0px rgba(218, 218, 218, 1);
-		ul {
-			list-style-type: none;
-			display: inline;
-			margin: 0;
-			padding: 0;
-			li {
-				a {
-					text-decoration: none;
-					padding: 5px 10px;
-					color: $main-color;
 
-					&.active {
-						background-color: $main-color;
-						color: $light-text-color;
-						border-radius: 50%;
-					}
+	ul {
+		list-style-type: none;
+		display: inline;
+		margin: 0;
+		padding: 0;
+
+		li {
+			a {
+				text-decoration: none;
+				padding: 5px 10px;
+				color: $main-color;
+				transition: all 0.4s;
+
+				&.pagination-number-btn {
+					border: 1px solid $main-color;
+					border-radius: 50%;
 				}
 
-				display: inline-block;
-				padding: 10px 10px;
+				&.active {
+					background-color: $main-color;
+					color: $light-text-color;
+					border-radius: 50%;
+					cursor: auto;
+				}
+			}
 
-				&.disable {
-					a {
-						color: rgba(129, 129, 129, 0.24);
-						cursor: auto;
-						pointer-events: none;
-					}
+			display: inline-block;
+			padding: 10px 10px;
+
+			&.disable {
+				a {
+					color: rgba(129, 129, 129, 0.24);
+					cursor: auto;
+					pointer-events: auto;
 				}
 			}
 		}
