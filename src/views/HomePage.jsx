@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import SquareAnnouncement from '../components/SquareAnnouncement'
+import { SquareAnnouncement, SquareAnnouncementLoading } from '../components/SquareAnnouncement'
 import Searchbar from '../components/Searchbar'
 import { indexAnnouncements } from '../services/SearchService'
 
@@ -17,61 +17,25 @@ const LoadingAnnouncement = () => {
 		<div className='container mt-5'>
 			<h2 className='home-title'>Najnowsze ogłoszenia</h2>
 			<div className='row'>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-			</div>
-			<div className='row mt-2'>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
 			</div>
 			<div className='row'>
 				<h2 className='home-title'>W twojej okolicy</h2>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-			</div>
-			<div className='row mt-2'>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
-				<div className='col-md-3'>
-					<Skeleton height={350} />
-				</div>
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
 			</div>
 		</div>
 	)
@@ -145,20 +109,6 @@ const AnnouncementList = ({ data }) => {
 export default function HomePage() {
 	const [_loadingAnnouncements, _setLoadingAnnouncements] = useState(true)
 	const [announcementsData, setAnnouncementsData] = useState([null])
-
-	// useEffect(() => {
-	// 	_setLoadingAnnouncements(true)
-	// 	const API_URL = `/announcements`
-	// 	axiosClient
-	// 		.get(API_URL)
-	// 		.then(({ data }) => {
-	// 			setNewAnnouncementsData(data.data)
-	// 			_setLoadingAnnouncements(false)
-	// 		})
-	// 		.catch(error => {
-	// 			_setLoadingAnnouncements(true)
-	// 		})
-	// }, [])
 
 	useEffect(() => {
 		const loadAnnouncements = async () => {
