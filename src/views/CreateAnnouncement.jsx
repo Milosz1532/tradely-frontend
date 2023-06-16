@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import axiosClient from '../services/Api'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
 
 import '../assets/styles/CreateAnnouncement.css'
 
@@ -40,7 +42,14 @@ const EmptyImageUploader = ({ addImage }) => {
 						<FontAwesomeIcon icon='plus' />
 					</i>
 					<p>Dodaj zdjęcie</p>
-					<input ref={fileInput} type='file' accept='image/*' multiple hidden onChange={handleChange} />
+					<input
+						ref={fileInput}
+						type='file'
+						accept='image/*'
+						multiple
+						hidden
+						onChange={handleChange}
+					/>
 				</div>
 			</div>
 		</div>
@@ -94,6 +103,19 @@ const ImageUploader = ({ image, onDelete }) => {
 	)
 }
 
+const validationSchema = Yup.object().shape({
+	// W.I.P
+	title: Yup.string().required('To pole jest wymagane'),
+	category: Yup.string().required('To pole jest wymagane'),
+	price: Yup.number().required('To pole jest wymagane'),
+	tags: Yup.string().required('To pole jest wymagane'),
+	description: Yup.string().required('To pole jest wymagane'),
+	city: Yup.string().required('To pole jest wymagane'),
+	zipCode: Yup.string().required('To pole jest wymagane'),
+	email: Yup.string().email('Nieprawidłowy adres email').required('To pole jest wymagane'),
+	phoneNumber: Yup.string().required('To pole jest wymagane'),
+})
+
 const CreateAnnouncement = () => {
 	const [images, setImages] = useState([])
 	const [loadingScreen, setLoadingScreen] = useState(false)
@@ -127,14 +149,13 @@ const CreateAnnouncement = () => {
 	const handleSubmitAnnouncement = async () => {
 		const fields = [
 			titleInput,
-			// categoryInput,
+			categoryInput,
 			priceInput,
-			// tagsInput,
 			descriptionInput,
-			// cityInput,
-			// zipCodeInput,
-			// emailInput,
-			// phoneNumberInput,
+			cityInput,
+			zipCodeInput,
+			emailInput,
+			phoneNumberInput,
 		]
 
 		let hasEmptyFields = false
@@ -165,6 +186,7 @@ const CreateAnnouncement = () => {
 				return blob
 			})
 		)
+		const tagsData = tagsArray.map(tag => tag.name)
 
 		const formData = new FormData()
 		formData.append('title', titleInput.current.value)
@@ -172,66 +194,68 @@ const CreateAnnouncement = () => {
 		formData.append('price', priceInput.current.value)
 		formData.append('user_id', 1)
 		formData.append('category_id', 1)
-		formData.append('location', 'Włocławek')
-		formData.append('postal_code', '87-800')
-		formData.append('phone_number', '123456789')
+		formData.append('location', cityInput.current.value)
+		formData.append('postal_code', zipCodeInput.current.value)
+		formData.append('phone_number', phoneNumberInput.current.value)
+		tagsData.forEach((tag, index) => {
+			formData.append(`tags[${index}]`, tag)
+		})
+
 		convertedImages.forEach((image, index) => {
 			formData.append(`images[${index}]`, image)
 		})
 
 		setLoadingScreen(true)
 
-		setTimeout(() => {
-			axiosClient
-				.post('/announcements', formData)
-				.then(({ data }) => {
-					Swal.fire({
-						icon: 'success',
-						title: 'Ogłoszenie dodane',
-						text: 'Twoje ogłoszenie zostało pomyślnie dodane',
-						showCloseButton: true,
-						showCancelButton: true,
-						focusConfirm: false,
-						confirmButtonColor: '#3085d6',
-						cancelButtonColor: '#D9D9D9',
-						confirmButtonText: 'Przejdź do ogłoszenia',
-						cancelButtonText: 'Powrót do strony',
-					}).then(result => {
-						if (result.isConfirmed) {
-							navigate(`/announcement/${data.id}`)
-						} else if (result.isDismissed) {
-							navigate('/')
-						}
-						setLoadingScreen(false)
-					})
-				})
-				.catch(err => {
-					const response = err.response
-					if (response && response.status === 422) {
-						Swal.fire({
-							icon: 'error',
-							title: 'Wystąpił błąd',
-							text: 'Przekazane dane nie są prawidłowe',
-							confirmButtonColor: '#3085d6',
-						})
-					} else if (response && response.status === 413) {
-						Swal.fire({
-							icon: 'error',
-							title: 'Wystąpił błąd',
-							text: 'Zdjęcia posiadają zbyt wysoką rozdzielczość. Przed dodaniem ogłoszenia, zalecamy skompresowanie zdjęć, aby zmniejszyć ich rozmiar',
-							confirmButtonColor: '#3085d6',
-						})
-					} else {
-						Swal.fire({
-							icon: 'error',
-							title: 'Wystąpił błąd',
-							text: 'Nie udało się dodać ogłoszenia. Spróbuj ponownie później',
-							confirmButtonColor: '#3085d6',
-						})
+		axiosClient
+			.post('/announcements', formData)
+			.then(({ data }) => {
+				Swal.fire({
+					icon: 'success',
+					title: 'Ogłoszenie dodane',
+					text: 'Twoje ogłoszenie zostało pomyślnie dodane',
+					showCloseButton: true,
+					showCancelButton: true,
+					focusConfirm: false,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#D9D9D9',
+					confirmButtonText: 'Przejdź do ogłoszenia',
+					cancelButtonText: 'Powrót do strony',
+				}).then(result => {
+					if (result.isConfirmed) {
+						navigate(`/announcement/${data.id}`)
+					} else if (result.isDismissed) {
+						navigate('/')
 					}
 					setLoadingScreen(false)
 				})
-		}, 1000)
+			})
+			.catch(err => {
+				const response = err.response
+				if (response && response.status === 422) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Wystąpił błąd',
+						text: 'Przekazane dane nie są prawidłowe',
+						confirmButtonColor: '#3085d6',
+					})
+				} else if (response && response.status === 413) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Wystąpił błąd',
+						text: 'Zdjęcia posiadają zbyt wysoką rozdzielczość. Przed dodaniem ogłoszenia, zalecamy skompresowanie zdjęć, aby zmniejszyć ich rozmiar',
+						confirmButtonColor: '#3085d6',
+					})
+				} else {
+					Swal.fire({
+						icon: 'error',
+						title: 'Wystąpił błąd',
+						text: 'Nie udało się dodać ogłoszenia. Spróbuj ponownie później',
+						confirmButtonColor: '#3085d6',
+					})
+				}
+				setLoadingScreen(false)
+			})
 	}
 
 	const LoadingComponent = () => (
@@ -247,6 +271,29 @@ const CreateAnnouncement = () => {
 		</>
 	)
 
+	const [tagsArray, setTagsArray] = useState([])
+	const [tagInput, setTagInput] = useState('')
+
+	const handleChangeTagInput = e => {
+		if (tagsArray.length >= 5) return
+		setTagInput(e.target.value)
+	}
+
+	const handleKeyDown = e => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			if (tagInput.trim() !== '') {
+				setTagsArray([...tagsArray, { id: tagsArray.length++, name: tagInput }])
+				setTagInput('')
+			}
+		}
+	}
+
+	const handleTagRemove = tagId => {
+		const updatedTagsArray = tagsArray.filter(tag => tag.id !== tagId)
+		setTagsArray(updatedTagsArray)
+	}
+
 	return (
 		<>
 			<div className='container mt-5'>
@@ -260,15 +307,42 @@ const CreateAnnouncement = () => {
 						</div>
 						<div className='col-md-6 standard-input-design mt-2'>
 							<p>Cena</p>
-							<input ref={priceInput} type='text' placeholder='np. Konsola PS4 Pro' />
+							<input ref={priceInput} type='number' min={0} placeholder='np. 1200' />
 						</div>
 						<div className='col-md-6 standard-input-design mt-2'>
 							<p>Kategoria</p>
 							<input ref={categoryInput} type='text' placeholder='np. Konsola PS4 Pro' />
 						</div>
-						<div className='col-md-6 standard-input-design mt-2'>
-							<p>Tagi</p>
-							<input ref={tagsInput} type='text' placeholder='np. Konsola PS4 Pro' />
+
+						<div className='col-md-6 mt-2'>
+							<div className='tag-input-title'>
+								<p className='title'>Tagi</p>
+
+								<span className='tag-info'>
+									{tagsArray.length >= 5 && 'Możesz dodać maksymalnie 5 tagów'}
+									{tagInput && `Zatwierdź tag klikając Enter`}
+								</span>
+							</div>
+
+							<div className='tag-container'>
+								{tagsArray.map(tag => (
+									<div key={tag.id} className='tag'>
+										<i onClick={() => handleTagRemove(tag.id)}>
+											<FontAwesomeIcon icon='fa-regular fa-circle-xmark' />
+										</i>
+										<span>{tag.name}</span>
+									</div>
+								))}
+
+								<input
+									type='text'
+									ref={tagsInput}
+									value={tagInput}
+									onChange={handleChangeTagInput}
+									onKeyDown={handleKeyDown}
+									placeholder={tagsArray.length > 0 ? '' : 'Np. Gwarancja'}
+								/>
+							</div>
 						</div>
 					</div>
 				</section>
@@ -276,7 +350,11 @@ const CreateAnnouncement = () => {
 					<h3 className='create-announcement-title'>Zdjęcia</h3>
 					<div className='row'>
 						{images.map((image, index) => (
-							<ImageUploader key={index} image={image.file} onDelete={() => deleteImage(image.id)} />
+							<ImageUploader
+								key={index}
+								image={image.file}
+								onDelete={() => deleteImage(image.id)}
+							/>
 						))}
 						<EmptyImageUploader addImage={addImage} />
 					</div>

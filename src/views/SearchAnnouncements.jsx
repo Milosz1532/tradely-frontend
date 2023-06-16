@@ -46,20 +46,19 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			title={a.title}
 			price={a.price}
 			created_at={a.created_at}
+			tags={a.tags}
 		/>
 	))
 
 	const generatePageNumbers = () => {
 		const pageNumbers = []
-		const maxPageButtonsToShow = 5 // Maksymalna liczba wyświetlanych przycisków strony
+		const maxPageButtonsToShow = 5
 
 		if (currentPage <= 4) {
-			// Jeśli jesteś na początkowych stronach
 			for (let i = 1; i <= Math.min(totalPages, maxPageButtonsToShow); i++) {
 				pageNumbers.push(i)
 			}
 		} else if (currentPage >= totalPages - 3) {
-			// Jeśli jesteś na ostatnich stronach
 			for (
 				let i = totalPages - Math.min(totalPages, maxPageButtonsToShow) + 1;
 				i <= totalPages;
@@ -68,7 +67,6 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 				pageNumbers.push(i)
 			}
 		} else {
-			// Jeśli jesteś gdzieś po środku
 			for (let i = currentPage - 3; i <= currentPage + 3; i++) {
 				pageNumbers.push(i)
 			}
@@ -81,27 +79,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	return (
 		<>
-			<div className='search-announcements-filters'>
-				<div className='row mb-4'>
-					<h4 className='home-title mt-0'>Filtry</h4>
-					<div className='col-2'>
-						<div className='standard-input-design'>
-							<p>Cena od:</p>
-							<input type='number' min={0} style={{ height: '40px' }} />
-						</div>
-					</div>
-					<div className='col-2 '>
-						<div className='standard-input-design'>
-							<p>Cena do:</p>
-							<input type='number' min={0} style={{ height: '40px' }} />
-						</div>
-					</div>
-					<div className='col-2 align-self-end'>
-						<button className='btn-design btn-sm'>Zastosuj filtry</button>
-					</div>
-				</div>
-			</div>
-			<div className='sort-announcements d-flex justify-content-between'>
+			<div className='sort-announcements d-flex justify-content-between align-items-center'>
 				<h4 className='home-title'>
 					Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
 				</h4>
@@ -116,7 +94,57 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			</div>
 			<hr />
 
-			<div className='row'>{announcementsList}</div>
+			<div className='row'>
+				<div className='col-lg-3 pt-2'>
+					<section className='search-filters '>
+						<h5>Filtry: </h5>
+						<div className='filter mt-3'>
+							<div className='filter-title'>
+								<h5>
+									<FontAwesomeIcon icon='fa-solid fa-location-dot' className='me-2' />
+									Lokalizacja
+								</h5>
+								<FontAwesomeIcon className='filter-icon' icon='fa-solid fa-angle-up' />
+							</div>
+							<input className='filter-input' type='text' placeholder='Wpisz lokalizacje...' />
+						</div>
+						<div className='filter mt-4'>
+							<div className='filter-title'>
+								<h5>
+									<FontAwesomeIcon className='me-2' icon='fa-solid fa-shapes' />
+									Podkategoria
+								</h5>
+								<FontAwesomeIcon className='filter-icon' icon='fa-solid fa-angle-up' />
+							</div>
+							<select className='filter-input medium'>
+								<option>Wszystkie podkategorie</option>
+							</select>
+						</div>
+						<div className='filter mt-4'>
+							<div className='filter-title'>
+								<h5>
+									<FontAwesomeIcon icon='fa-solid fa-coins' className='me-2' />
+									Cena
+								</h5>
+								<FontAwesomeIcon className='filter-icon' icon='fa-solid fa-angle-up' />
+							</div>
+							<div className='row'>
+								<div className='col-6'>
+									<input className='filter-input' min={0} type='number' placeholder='OD' />
+								</div>
+
+								<div className='col-6'>
+									<input className='filter-input' min={0} type='number' placeholder='DO' />
+								</div>
+							</div>
+						</div>
+						<button className='btn-design white btn-md w-100 mt-4'>Zatwierdź</button>
+					</section>
+				</div>
+				<div className='col-lg-9'>
+					<div className='row'>{announcementsList}</div>
+				</div>
+			</div>
 
 			<div className='row'>
 				<div className='pagination mt-3'>
@@ -215,7 +243,7 @@ function SearchAnnouncements() {
 					<SearchBar />
 				</div>
 			</section>
-			<section className='search-announcements container mt-5' style={{ minHeight: '400px' }}>
+			<section className='search-announcements container ' style={{ minHeight: '400px' }}>
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />
 				) : announcements && announcements.data.length > 0 ? (
@@ -235,3 +263,27 @@ function SearchAnnouncements() {
 }
 
 export default SearchAnnouncements
+
+// Filters
+{
+	/* <div className='search-announcements-filters'>
+				<div className='row mb-4'>
+					<h4 className='home-title mt-0'>Filtry</h4>
+					<div className='col-2'>
+						<div className='standard-input-design'>
+							<p>Cena od:</p>
+							<input type='number' min={0} style={{ height: '40px' }} />
+						</div>
+					</div>
+					<div className='col-2 '>
+						<div className='standard-input-design'>
+							<p>Cena do:</p>
+							<input type='number' min={0} style={{ height: '40px' }} />
+						</div>
+					</div>
+					<div className='col-2 align-self-end'>
+						<button className='btn-design btn-sm'>Zastosuj filtry</button>
+					</div>
+				</div>
+			</div> */
+}

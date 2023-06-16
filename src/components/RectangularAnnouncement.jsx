@@ -4,7 +4,7 @@ import Skeleton from 'react-loading-skeleton'
 
 import noImage from '/images/no-image.png'
 
-export const RectangularAnnouncement = ({ id, image, title, price, created_at }) => {
+export const RectangularAnnouncement = ({ id, image, title, price, created_at, tags }) => {
 	return (
 		<div className='col-12 rectangular-announcement mt-2'>
 			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
@@ -17,11 +17,14 @@ export const RectangularAnnouncement = ({ id, image, title, price, created_at })
 							<h5 className='title'>{title}</h5>
 							<h5 className='price'>{price ? `${price} zł` : 'Za darmo'}</h5>
 						</div>
-						<ul className='tags'>
-							<li>NOWY</li>
+						<ul className='announcement-tags-list'>
+							{tags.map(t => (
+								<li>{t.name}</li>
+							))}
+							{/* <li>NOWY</li>
 							<li>GWARANCJA</li>
 							<li>IPHONE</li>
-							<li>TELEFON</li>
+							<li>TELEFON</li> */}
 						</ul>
 						<div className='location'>
 							<span>13.06.2023 12:00</span>
@@ -55,7 +58,7 @@ export const RectangularAnnouncementLoading = () => {
 							<Skeleton width={100} />
 						</h5>
 					</div>
-					<ul className='tags'>
+					<ul style={{ listStyle: 'none' }}>
 						<li>
 							<Skeleton width={60} />
 						</li>
