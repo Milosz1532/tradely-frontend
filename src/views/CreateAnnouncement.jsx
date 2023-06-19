@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ReactLoading from 'react-loading'
 import ScrollLock from '../ScrollLock'
 
+const IMAGES_LIMIT = 5
+
 const LoadingImage = () => (
 	<div className='d-flex flex-column justify-content-center align-items-center '>
 		<ReactLoading type={'bubbles'} color={'#00A2FF'} width={'100px'} />
@@ -121,7 +123,10 @@ const CreateAnnouncement = () => {
 	const [loadingScreen, setLoadingScreen] = useState(false)
 
 	const addImage = file => {
+		console.log(images.length)
 		setImages(prevImages => {
+			console.log(prevImages)
+			// Dodaj sprawdzanie limitu zdjęć, aby maksymalnie mogłobyć 5 zdjęć
 			const newImage = {
 				id: prevImages.length + 1,
 				file: URL.createObjectURL(file),
@@ -348,6 +353,7 @@ const CreateAnnouncement = () => {
 				</section>
 				<section className='create-announcement-section'>
 					<h3 className='create-announcement-title'>Zdjęcia</h3>
+
 					<div className='row'>
 						{images.map((image, index) => (
 							<ImageUploader
@@ -358,6 +364,12 @@ const CreateAnnouncement = () => {
 						))}
 						<EmptyImageUploader addImage={addImage} />
 					</div>
+					<span className='create-announcement-images-count d-flex justify-content-end me-2'>
+						<i className='me-2'>
+							<FontAwesomeIcon icon='camera-retro' />
+						</i>
+						{images.length} / {IMAGES_LIMIT}
+					</span>
 				</section>
 
 				<section className='create-announcement-section'>

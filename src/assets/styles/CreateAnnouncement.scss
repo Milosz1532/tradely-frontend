@@ -17,6 +17,11 @@ $section-background: #fff;
 		font-weight: bold;
 		font-size: 24px;
 	}
+
+	.create-announcement-images-count {
+		color: $text-color;
+		font-size: 14px;
+	}
 }
 
 .create-announcement-image-box {
@@ -115,7 +120,7 @@ textarea.empty-field {
 	.tag {
 		padding: 5px 10px;
 		border: 1px solid #ccc;
-		border-radius: 10px;
+		border-radius: 4px;
 		margin: 5px;
 		display: flex;
 		align-items: center;
