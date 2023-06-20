@@ -1,7 +1,14 @@
 import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom'
 
-import NotFound from '../views/NotFound'
 import DefaultLayout from '../Layouts/DefaultLayout'
+import ProfileLayout from '../Layouts/ProfileLayout'
+
+// Profile
+import Profile from '../views/profile/Profile'
+import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
+//End Profile
+
+import NotFound from '../views/NotFound'
 import HomePage from '../views/HomePage'
 import LoginPage from '../views/LoginPage'
 import PreviewAnnouncement from '../views/PreviewAnnouncement'
@@ -35,6 +42,20 @@ const router = createBrowserRouter([
 			{
 				path: '/announcements/:location/:category/:keyword?',
 				element: <SearchAnnouncements />,
+			},
+		],
+	},
+	{
+		path: '/account',
+		element: <ProfileLayout />,
+		children: [
+			{
+				path: '/account/profile',
+				element: <Profile />,
+			},
+			{
+				path: '/account/announcements',
+				element: <ProfileAnnouncements />,
 			},
 		],
 	},

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ScrollToTop from '../ScrollToTop'
 
 import { searchAnnouncements } from '../services/SearchService'
 
@@ -208,8 +209,6 @@ function SearchAnnouncements() {
 
 	const maxPages = 10 // Maksymalna liczba stron
 
-	console.log(currentPage)
-
 	useEffect(() => {
 		const fetchAnnouncements = async () => {
 			try {
@@ -231,6 +230,7 @@ function SearchAnnouncements() {
 
 		setLoadingAnnouncements(true)
 		fetchAnnouncements()
+		window.scrollTo(0, 0)
 	}, [location, category, keyword, currentPage])
 
 	const totalPages = announcements ? announcements.meta.last_page : maxPages

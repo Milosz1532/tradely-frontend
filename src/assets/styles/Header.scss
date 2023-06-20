@@ -6,6 +6,9 @@ header {
 	position: relative;
 	background-color: #fff;
 	padding: 5px;
+	-webkit-box-shadow: 0px 25px 20px -11px rgba(241, 241, 241, 1);
+	-moz-box-shadow: 0px 25px 20px -11px rgba(241, 241, 241, 1);
+	box-shadow: 0px 25px 20px -11px rgba(241, 241, 241, 1);
 	article {
 		margin: 0;
 		padding: 0;
@@ -34,7 +37,7 @@ header {
 			> i {
 				// margin-top: -6px;
 				margin-left: 20px;
-				font-size: 24px;
+				font-size: 18px;
 				opacity: 0.8;
 				transition: all 0.4s;
 				cursor: pointer;
@@ -51,7 +54,8 @@ header {
 					position: relative;
 					span {
 						padding: 10px;
-						font-size: 18px;
+						font-size: 16px;
+						color: $text-color;
 						transition: all 0.4s;
 						cursor: pointer;
 					}
