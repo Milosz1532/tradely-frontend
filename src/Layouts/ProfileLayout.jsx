@@ -14,7 +14,7 @@ export default function ProfileLayout() {
 
 	return (
 		<>
-			<Navbar />
+			<Navbar fluid={true} />
 			<div className='layout-content '>
 				<div className='left-menu'>
 					<div className='left-menu-profile-info'>
