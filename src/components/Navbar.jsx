@@ -72,7 +72,9 @@ export default function Navbar() {
 							<span onClick={handleProfileMenu}>
 								Moje konto{' '}
 								<i>
-									<FontAwesomeIcon icon={`fa-solid fa-chevron-${showUserProfile ? 'up' : 'down'}`} />
+									<FontAwesomeIcon
+										icon={`fa-solid fa-chevron-${showUserProfile ? 'up' : 'down'}`}
+									/>
 								</i>
 							</span>
 
@@ -104,9 +106,12 @@ export default function Navbar() {
 												<li>
 													<span>Otrzymane oceny</span>
 												</li>
-												<li>
-													<span>Profil</span>
-												</li>
+												<NavLink to={'/account/profile'}>
+													<li>
+														<span>Profil</span>
+													</li>
+												</NavLink>
+
 												<li>
 													<span>Ustawienia</span>
 												</li>
@@ -142,8 +147,8 @@ export default function Navbar() {
 												<div className='content mt-2'>
 													<h6>Witaj na Tradely!</h6>
 													<p>
-														Zaloguj się i zobacz swoje zakupy, obserwowane oferty i powiadomienia. W Tradely jesteś u
-														siebie!
+														Zaloguj się i zobacz swoje zakupy, obserwowane oferty i powiadomienia. W
+														Tradely jesteś u siebie!
 													</p>
 													<NavLink to={'/login'}>
 														<button className='btn-design w-100'>Zaloguj się</button>
