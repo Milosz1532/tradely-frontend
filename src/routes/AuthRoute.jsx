@@ -1,8 +1,5 @@
 import { Navigate } from 'react-router-dom'
-
 import { useSelector, useDispatch } from 'react-redux'
-
-import LoadingPage from '../components/LoadingPage'
 import { startLoading, stopLoading } from '../redux/actions/loadingActions'
 
 const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
@@ -20,12 +17,14 @@ const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
 	if (mustByLogin && isAuthenticated) {
 		return children
 	} else if (mustByLogin && !isAuthenticated) {
-		return <Navigate to={'/login'} />
+		return <Navigate to='/login' />
 	} else if (!mustByLogin && isAuthenticated) {
-		return <Navigate to={navigateTo ? navigateTo : '/'} />
+		return <Navigate to={navigateTo || '/'} />
 	} else if (!mustByLogin && !isAuthenticated) {
 		return children
 	}
+
+	return null
 }
 
 export default AuthRoute

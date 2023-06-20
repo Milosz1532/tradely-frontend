@@ -48,7 +48,12 @@ const router = createBrowserRouter([
 	},
 	{
 		path: '/signup',
-		element: <SignupPage />,
+		// element: <SignupPage />,
+		element: (
+			<AuthRoute mustByLogin={false} navigateTo={'/'}>
+				<SignupPage />
+			</AuthRoute>
+		),
 	},
 
 	{

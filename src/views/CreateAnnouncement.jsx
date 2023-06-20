@@ -123,15 +123,16 @@ const CreateAnnouncement = () => {
 	const [loadingScreen, setLoadingScreen] = useState(false)
 
 	const addImage = file => {
-		console.log(images.length)
 		setImages(prevImages => {
-			console.log(prevImages)
-			// Dodaj sprawdzanie limitu zdjęć, aby maksymalnie mogłobyć 5 zdjęć
-			const newImage = {
-				id: prevImages.length + 1,
-				file: URL.createObjectURL(file),
+			if (prevImages.length < IMAGES_LIMIT) {
+				const newImage = {
+					id: prevImages.length + 1,
+					file: URL.createObjectURL(file),
+				}
+				return [...prevImages, newImage]
+			} else {
+				return prevImages
 			}
-			return [...prevImages, newImage]
 		})
 	}
 
