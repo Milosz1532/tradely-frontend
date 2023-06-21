@@ -4,7 +4,15 @@ import Skeleton from 'react-loading-skeleton'
 
 import noImage from '/images/no-image.png'
 
-export const RectangularAnnouncement = ({ id, image, title, price, created_at, tags }) => {
+export const RectangularAnnouncement = ({
+	id,
+	image,
+	title,
+	price,
+	created_at,
+	tags,
+	edit = false,
+}) => {
 	return (
 		<div className='col-12 rectangular-announcement mt-2'>
 			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
@@ -30,9 +38,15 @@ export const RectangularAnnouncement = ({ id, image, title, price, created_at, t
 							<span>13.06.2023 12:00</span>
 							<span>Włocławek, 87-800</span>
 						</div>
-						<i className='favorite-icon'>
-							<FontAwesomeIcon icon='fa-regular fa-heart' />
-						</i>
+						{edit ? (
+							<div className='favorite-icon'>
+								<button className='btn-design btn-sm'>Zarządzaj</button>
+							</div>
+						) : (
+							<i className='favorite-icon'>
+								<FontAwesomeIcon icon='fa-regular fa-heart' />
+							</i>
+						)}
 					</div>
 				</div>
 			</NavLink>
@@ -42,7 +56,7 @@ export const RectangularAnnouncement = ({ id, image, title, price, created_at, t
 
 export const RectangularAnnouncementLoading = () => {
 	return (
-		<div className='col-12 rectangular-announcement mt-2'>
+		<div className='col-12 rectangular-announcement mt-2 bg-danger'>
 			<div className='row'>
 				<div className='col-2 rectangular-announcement-image'>
 					<div className='ms-3 mt-1'>
