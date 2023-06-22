@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
-import { SquareAnnouncement, SquareAnnouncementLoading } from '../components/SquareAnnouncement'
-import Searchbar from '../components/Searchbar'
+import {
+	SquareAnnouncement,
+	SquareAnnouncementLoading,
+} from '../components/Announcements/SquareAnnouncement'
+import Searchbar from '../components/Layout/Searchbar'
 import { indexAnnouncements } from '../services/SearchService'
 
 import '../assets/styles/Home.css'
@@ -149,7 +152,11 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img draggable='false' src='/images/categories_icons/cars.png' alt='Elektronika' />
+										<img
+											draggable='false'
+											src='/images/categories_icons/cars.png'
+											alt='Elektronika'
+										/>
 									</div>
 									<div className='title'>Motoryzacja</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -158,7 +165,11 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img draggable='false' src='/images/categories_icons/bikes.png' alt='Elektronika' />
+										<img
+											draggable='false'
+											src='/images/categories_icons/bikes.png'
+											alt='Elektronika'
+										/>
 									</div>
 									<div className='title'>Rowery</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -167,7 +178,11 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img draggable='false' src='/images/categories_icons/clothes.png' alt='Elektronika' />
+										<img
+											draggable='false'
+											src='/images/categories_icons/clothes.png'
+											alt='Elektronika'
+										/>
 									</div>
 									<div className='title'>Ubrania</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -185,7 +200,11 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img draggable='false' src='/images/categories_icons/bikes.png' alt='Elektronika' />
+										<img
+											draggable='false'
+											src='/images/categories_icons/bikes.png'
+											alt='Elektronika'
+										/>
 									</div>
 									<div className='title'>Motoryzacja</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -194,7 +213,11 @@ export default function HomePage() {
 							<div className='col-md-2'>
 								<div className='category-box'>
 									<div className='image-box color-3'>
-										<img draggable='false' src='/images/categories_icons/bikes.png' alt='Elektronika' />
+										<img
+											draggable='false'
+											src='/images/categories_icons/bikes.png'
+											alt='Elektronika'
+										/>
 									</div>
 									<div className='title'>Motoryzacja</div>
 									<p className='count'>13 543 ogłoszeń</p>
@@ -210,7 +233,11 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			{_loadingAnnouncements ? <LoadingAnnouncement /> : <AnnouncementList data={announcementsData} />}
+			{_loadingAnnouncements ? (
+				<LoadingAnnouncement />
+			) : (
+				<AnnouncementList data={announcementsData} />
+			)}
 		</>
 	)
 }

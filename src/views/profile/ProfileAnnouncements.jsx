@@ -1,19 +1,52 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { userAnnouncements } from '../../services/ProfileService'
+
+import NoAnnouncementsIcon from '/images/no-announcements-list.svg'
 
 import {
 	RectangularAnnouncement,
 	RectangularAnnouncementLoading,
-} from '../../components/RectangularAnnouncement'
+} from '../../components/Announcements/RectangularAnnouncement'
 
-import TabControl from '../../components/TabControl'
+import TabControl from '../../components/Layout/TabControl'
+
+const LoadingAnnouncements = () => (
+	<>
+		<RectangularAnnouncementLoading />
+		<RectangularAnnouncementLoading />
+		<RectangularAnnouncementLoading />
+		<RectangularAnnouncementLoading />
+		<RectangularAnnouncementLoading />
+	</>
+)
+
+const NoAnnouncements = () => (
+	<div className='no-announcements'>
+		<h4>Brak ogłoszeń</h4>
+		<img src={NoAnnouncementsIcon} alt='brak ogłoszeń' />
+	</div>
+)
 
 export default function ProfileAnnouncements() {
-	const [toggleState, setToggleState] = useState(1)
+	const [userAnnouncementsList, setUserAnnouncementsList] = useState([])
+	const [isLoading, setIsLoading] = useState(true)
 
-	const toggleTab = index => {
-		setToggleState(index)
-	}
+	useEffect(() => {
+		const getUserAnnouncements = async () => {
+			try {
+				const announcementsData = await userAnnouncements()
+				setUserAnnouncementsList(announcementsData)
+			} catch {
+				setUserAnnouncementsList([])
+			} finally {
+				setIsLoading(false)
+			}
+		}
+		getUserAnnouncements()
+	}, [])
+
 	return (
 		<div className='container-fluid'>
 			<div className='row'>
@@ -24,38 +57,76 @@ export default function ProfileAnnouncements() {
 							<h3>Twoje aktywne ogłoszenia</h3>
 							<hr />
 							<div className='container-fluid'>
-								<RectangularAnnouncement
-									id={1}
-									image={null}
-									title={'test'}
-									price={123}
-									created_at={'null'}
-									tags={[]}
-									edit={true}
-								/>
-								<hr />
-								<RectangularAnnouncement
-									id={1}
-									image={null}
-									title={'test'}
-									price={123}
-									created_at={'null'}
-									tags={[]}
-									edit={true}
-								/>
+								{isLoading ? (
+									<LoadingAnnouncements />
+								) : userAnnouncementsList.active_announcements &&
+								  userAnnouncementsList.active_announcements.length > 0 ? (
+									userAnnouncementsList.active_announcements.map(a => (
+										<RectangularAnnouncement
+											key={a.id}
+											id={a.id}
+											image={a.first_image}
+											title={a.title}
+											price={a.price}
+											created_at={a.created_at}
+											tags={a.tags}
+											edit={true}
+										/>
+									))
+								) : (
+									<NoAnnouncements />
+								)}
 							</div>
 						</div>
 						<div title='Oczekujące ogłoszenia'>
 							<h3>Twoje oczekujące ogłoszenia</h3>
-
 							<hr />
-							<p>Oczekujące ogłoszenia - Lorem ipsum dolor sit amet.</p>
+							<div className='container-fluid'>
+								{isLoading ? (
+									<LoadingAnnouncements />
+								) : userAnnouncementsList.pending_announcements &&
+								  userAnnouncementsList.pending_announcements.length > 0 ? (
+									userAnnouncementsList.pending_announcements.map(a => (
+										<RectangularAnnouncement
+											key={a.id}
+											id={a.id}
+											image={a.first_image}
+											title={a.title}
+											price={a.price}
+											created_at={a.created_at}
+											tags={a.tags}
+											edit={true}
+										/>
+									))
+								) : (
+									<NoAnnouncements />
+								)}
+							</div>
 						</div>
 						<div title='Zakończone ogłoszenia'>
 							<h3>Twoje zakończone ogłoszenia</h3>
-
 							<hr />
-							<p>Zakończone ogłoszenia - Lorem ipsum dolor sit amet.</p>
+							<div className='container-fluid'>
+								{isLoading ? (
+									<LoadingAnnouncements />
+								) : userAnnouncementsList.completed_announcements &&
+								  userAnnouncementsList.completed_announcements.length > 0 ? (
+									userAnnouncementsList.completed_announcements.map(a => (
+										<RectangularAnnouncement
+											key={a.id}
+											id={a.id}
+											image={a.first_image}
+											title={a.title}
+											price={a.price}
+											created_at={a.created_at}
+											tags={a.tags}
+											disabled={true}
+										/>
+									))
+								) : (
+									<NoAnnouncements />
+								)}
+							</div>
 						</div>
 					</TabControl>
 				</article>

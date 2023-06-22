@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import ScrollToTop from '../ScrollToTop'
+import ScrollToTop from '../../ScrollToTop'
 
-import { searchAnnouncements } from '../services/SearchService'
+import { searchAnnouncements } from '../../services/SearchService'
 
-import SearchBar from '../components/Searchbar'
+import SearchBar from '../../components/Layout/Searchbar'
 import Skeleton from 'react-loading-skeleton'
 
 import {
 	RectangularAnnouncement,
 	RectangularAnnouncementLoading,
-} from '../components/RectangularAnnouncement'
-import { SquareAnnouncement } from '../components/SquareAnnouncement'
+} from '../../components/Announcements/RectangularAnnouncement'
+import { SquareAnnouncement } from '../../components/Announcements/SquareAnnouncement'
 
 import NoAnnouncementsImg from '/images/noAnnouncements.svg'
 
@@ -23,7 +23,59 @@ const LoadingAnnouncementsScreen = () => {
 				<div className='col-5'>
 					<Skeleton height={40} />
 				</div>
-				<div className='mt-2'>
+			</div>
+			<div className='row'>
+				<div className='col-lg-3 mt-3'>
+					<section className='search-filters '>
+						<Skeleton width={120} />
+						<div className='filter mt-3'>
+							<div className='filter-title'>
+								<div className='d-flex'>
+									<Skeleton width={15} height={15} borderRadius={'50%'} />
+									<Skeleton className='ms-2' width={130} />
+								</div>
+
+								<Skeleton width={20} />
+							</div>
+							<Skeleton className='mt-3' height={30} />
+						</div>
+						<div className='filter mt-3'>
+							<div className='filter-title'>
+								<div className='d-flex'>
+									<Skeleton width={15} height={15} borderRadius={'50%'} />
+									<Skeleton className='ms-2' width={130} />
+								</div>
+
+								<Skeleton width={20} />
+							</div>
+							<Skeleton className='mt-3' height={30} />
+						</div>
+						<div className='filter mt-3'>
+							<div className='filter-title'>
+								<div className='d-flex'>
+									<Skeleton width={15} height={15} borderRadius={'50%'} />
+									<Skeleton className='ms-2' width={130} />
+								</div>
+
+								<Skeleton width={20} />
+							</div>
+							<Skeleton className='mt-3' height={30} />
+						</div>
+						<div className='filter mt-3'>
+							<div className='filter-title'>
+								<div className='d-flex'>
+									<Skeleton width={15} height={15} borderRadius={'50%'} />
+									<Skeleton className='ms-2' width={130} />
+								</div>
+
+								<Skeleton width={20} />
+							</div>
+							<Skeleton className='mt-3' height={30} />
+						</div>
+						<Skeleton height={30} className='mt-3' />
+					</section>
+				</div>
+				<div className='col-lg-9 mt-2'>
 					<RectangularAnnouncementLoading />
 					<RectangularAnnouncementLoading />
 					<RectangularAnnouncementLoading />

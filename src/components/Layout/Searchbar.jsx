@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { searchCategories } from '../services/SearchService'
+import { searchCategories } from '../../services/SearchService'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 

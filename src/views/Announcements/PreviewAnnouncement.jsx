@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import moment from 'moment'
 
-import '../assets/styles/previewAnnouncement.css'
-import axiosClient from '../services/Api'
+import '../../assets/styles/previewAnnouncement.css'
+import axiosClient from '../../services/Api'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import SearchBar from '../components/Searchbar'
+import SearchBar from '../../components/Layout/Searchbar'
 
 import adBackground from '/images/advertisement.jpg'
 import noImage from '/images/no-image.png'
@@ -14,7 +14,7 @@ import noImage from '/images/no-image.png'
 import userIcon from '/images/user.png'
 import Skeleton from 'react-loading-skeleton'
 
-import Map from '../components/Map'
+import Map from '../../components/Announcements/Map'
 
 const LoadingScreen = () => {
 	return (
@@ -72,7 +72,6 @@ const ShowAnnouncement = ({ data }) => {
 			}
 		}
 	}
-
 
 	const images_dots = images.map((dot, index) => {
 		return (

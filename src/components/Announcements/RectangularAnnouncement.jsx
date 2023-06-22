@@ -12,10 +12,17 @@ export const RectangularAnnouncement = ({
 	created_at,
 	tags,
 	edit = false,
+	disabled = false,
 }) => {
+	const linkTo = disabled ? null : `/announcement/${id}`
+
 	return (
 		<div className='col-12 rectangular-announcement mt-2'>
-			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+			<NavLink
+				to={linkTo}
+				style={
+					disabled ? { all: 'unset', cursor: 'default' } : { all: 'unset', cursor: 'pointer' }
+				}>
 				<div className='row'>
 					<div className='col-2 rectangular-announcement-image'>
 						<img src={image ? image : noImage} alt='Announcement photo' />
@@ -56,7 +63,7 @@ export const RectangularAnnouncement = ({
 
 export const RectangularAnnouncementLoading = () => {
 	return (
-		<div className='col-12 rectangular-announcement mt-2 bg-danger'>
+		<div className='col-12 rectangular-announcement mt-2 '>
 			<div className='row'>
 				<div className='col-2 rectangular-announcement-image'>
 					<div className='ms-3 mt-1'>
@@ -72,7 +79,7 @@ export const RectangularAnnouncementLoading = () => {
 							<Skeleton width={100} />
 						</h5>
 					</div>
-					<ul style={{ listStyle: 'none' }}>
+					<ul className='announcement-tags-list'>
 						<li>
 							<Skeleton width={60} />
 						</li>

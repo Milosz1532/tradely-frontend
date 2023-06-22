@@ -1,5 +1,5 @@
 import React from 'react'
-import ScrollLock from '../ScrollLock'
+import ScrollLock from '../../ScrollLock'
 import ReactLoading from 'react-loading'
 
 export default function LoadingPage({ fullSize, text }) {

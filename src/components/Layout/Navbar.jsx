@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import '../assets/styles/Header.css'
+import '../../assets/styles/Header.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import NotLoginIcon from '../assets/images/nav-profile-notLoign-icon.svg'
+import NotLoginIcon from '/images/nav-profile-notLoign-icon.svg'
 import userIcon from '/images/user.png'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { logout } from '../redux/actions/authActions'
+import { logout } from '../../redux/actions/authActions'
 
 export default function Navbar({ fluid = false }) {
 	const dispatch = useDispatch()
@@ -72,7 +72,9 @@ export default function Navbar({ fluid = false }) {
 							<span onClick={handleProfileMenu}>
 								Moje konto{' '}
 								<i>
-									<FontAwesomeIcon icon={`fa-solid fa-chevron-${showUserProfile ? 'up' : 'down'}`} />
+									<FontAwesomeIcon
+										icon={`fa-solid fa-chevron-${showUserProfile ? 'up' : 'down'}`}
+									/>
 								</i>
 							</span>
 
@@ -95,9 +97,11 @@ export default function Navbar({ fluid = false }) {
 												Twoje konto:
 											</h6>
 											<ul>
-												<li>
-													<span>Ogłoszenia</span>
-												</li>
+												<NavLink to={'/account/announcements'}>
+													<li>
+														<span>Ogłoszenia</span>
+													</li>
+												</NavLink>
 												<li>
 													<span>Wiadomości</span>
 												</li>
@@ -145,8 +149,8 @@ export default function Navbar({ fluid = false }) {
 												<div className='content mt-2'>
 													<h6>Witaj na Tradely!</h6>
 													<p>
-														Zaloguj się i zobacz swoje zakupy, obserwowane oferty i powiadomienia. W Tradely jesteś u
-														siebie!
+														Zaloguj się i zobacz swoje zakupy, obserwowane oferty i powiadomienia. W
+														Tradely jesteś u siebie!
 													</p>
 													<NavLink to={'/login'}>
 														<button className='btn-design w-100'>Zaloguj się</button>

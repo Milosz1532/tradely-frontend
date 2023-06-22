@@ -2,9 +2,7 @@ import React from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import AnnouncementDetailsSquare from '../../components/AnnouncementDetailsSquare'
-
-
+import AnnouncementDetailsSquare from '../../components/Announcements/AnnouncementDetailsSquare'
 
 export default function Profile() {
 	return (

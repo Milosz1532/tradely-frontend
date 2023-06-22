@@ -1,16 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import axiosClient from '../services/Api'
+import axiosClient from '../../services/Api'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 
-import '../assets/styles/CreateAnnouncement.css'
+import '../../assets/styles/CreateAnnouncement.css'
 
 import withReactContent from 'sweetalert2-react-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ReactLoading from 'react-loading'
-import ScrollLock from '../ScrollLock'
+import ScrollLock from '../../ScrollLock'
 
 const IMAGES_LIMIT = 5
 

@@ -8,7 +8,7 @@ import { initAuth } from './redux/actions/authActions.js'
 
 import { useSelector } from 'react-redux'
 
-import LoadingPage from './components/LoadingPage'
+import LoadingPage from './components/Layout/LoadingPage'
 
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'

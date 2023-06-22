@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import Navbar from '../components/Layout/Navbar'
+import Footer from '../components/Layout/Footer'
 import ScrollToTop from '../ScrollToTop'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 

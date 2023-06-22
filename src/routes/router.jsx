@@ -11,10 +11,10 @@ import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
 import NotFound from '../views/NotFound'
 import HomePage from '../views/HomePage'
 import LoginPage from '../views/LoginPage'
-import PreviewAnnouncement from '../views/PreviewAnnouncement'
-import CreateAnnouncement from '../views/CreateAnnouncement'
+import PreviewAnnouncement from '../views/Announcements/PreviewAnnouncement'
+import CreateAnnouncement from '../views/Announcements/CreateAnnouncement'
 import SignupPage from '../views/SignupPage'
-import SearchAnnouncements from '../views/SearchAnnouncements'
+import SearchAnnouncements from '../views/Announcements/SearchAnnouncements'
 
 import AuthRoute from './AuthRoute'
 
@@ -47,7 +47,11 @@ const router = createBrowserRouter([
 	},
 	{
 		path: '/account',
-		element: <ProfileLayout />,
+		element: (
+			<AuthRoute mustByLogin={true}>
+				<ProfileLayout />
+			</AuthRoute>
+		),
 		children: [
 			{
 				path: '/account/profile',
