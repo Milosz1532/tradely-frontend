@@ -6,14 +6,15 @@ import ProfileLayout from '../Layouts/ProfileLayout'
 // Profile
 import Profile from '../views/profile/Profile'
 import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
+import Favorites from '../views/profile/Favorites'
 //End Profile
 
 import NotFound from '../views/NotFound'
 import HomePage from '../views/HomePage'
-import LoginPage from '../views/LoginPage'
+import LoginPage from '../views/Auth/LoginPage'
 import PreviewAnnouncement from '../views/Announcements/PreviewAnnouncement'
 import CreateAnnouncement from '../views/Announcements/CreateAnnouncement'
-import SignupPage from '../views/SignupPage'
+import SignupPage from '../views/Auth/SignupPage'
 import SearchAnnouncements from '../views/Announcements/SearchAnnouncements'
 
 import AuthRoute from './AuthRoute'
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
 			{
 				path: '/account/announcements',
 				element: <ProfileAnnouncements />,
+			},
+			{
+				path: '/account/favorites',
+				element: <Favorites />,
 			},
 		],
 	},

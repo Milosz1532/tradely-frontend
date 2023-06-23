@@ -58,8 +58,11 @@ export default function Navbar({ fluid = false }) {
 				</div>
 				<div className='header-right-section'>
 					<i>
-						<FontAwesomeIcon icon='fa-regular fa-heart' />
+						<NavLink to={'/account/favorites'}>
+							<FontAwesomeIcon icon='fa-regular fa-heart' />
+						</NavLink>
 					</i>
+
 					<i>
 						<FontAwesomeIcon icon='fa-regular fa-comments' />
 					</i>
@@ -127,7 +130,9 @@ export default function Navbar({ fluid = false }) {
 											</h6>
 											<ul>
 												<li>
-													<span>Obserwowane</span>
+													<NavLink to={'/account/favorites'}>
+														<span>Obserwowane</span>
+													</NavLink>
 												</li>
 												<li>
 													<span>Wyszukiwania</span>
@@ -182,6 +187,7 @@ export default function Navbar({ fluid = false }) {
 						<i>
 							<FontAwesomeIcon icon='fa-regular fa-heart' />
 						</i>
+
 						<span className='ms-2'>Obserwowane</span>
 					</li>
 					<li>

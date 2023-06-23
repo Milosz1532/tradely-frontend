@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ReactLoading from 'react-loading'
 import ScrollLock from '../../ScrollLock'
 
+import { getAnnouncementCategories } from '../../services/AnnouncementService'
+
 const IMAGES_LIMIT = 5
 
 const LoadingImage = () => (
@@ -105,22 +107,23 @@ const ImageUploader = ({ image, onDelete }) => {
 	)
 }
 
-const validationSchema = Yup.object().shape({
-	// W.I.P
-	title: Yup.string().required('To pole jest wymagane'),
-	category: Yup.string().required('To pole jest wymagane'),
-	price: Yup.number().required('To pole jest wymagane'),
-	tags: Yup.string().required('To pole jest wymagane'),
-	description: Yup.string().required('To pole jest wymagane'),
-	city: Yup.string().required('To pole jest wymagane'),
-	zipCode: Yup.string().required('To pole jest wymagane'),
-	email: Yup.string().email('Nieprawidłowy adres email').required('To pole jest wymagane'),
-	phoneNumber: Yup.string().required('To pole jest wymagane'),
-})
-
 const CreateAnnouncement = () => {
 	const [images, setImages] = useState([])
 	const [loadingScreen, setLoadingScreen] = useState(false)
+	const [categories, setCategories] = useState([])
+	const [selectedCategory, setSelectedCategory] = useState(0)
+
+	useEffect(() => {
+		const getCategoriesList = async () => {
+			try {
+				const categoriesData = await getAnnouncementCategories()
+				setCategories(categoriesData)
+			} catch {
+				setCategories([])
+			}
+		}
+		getCategoriesList()
+	}, [])
 
 	const addImage = file => {
 		setImages(prevImages => {
@@ -155,7 +158,6 @@ const CreateAnnouncement = () => {
 	const handleSubmitAnnouncement = async () => {
 		const fields = [
 			titleInput,
-			categoryInput,
 			priceInput,
 			descriptionInput,
 			cityInput,
@@ -185,6 +187,16 @@ const CreateAnnouncement = () => {
 			return
 		}
 
+		if (selectedCategory == 0) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Wypełnij wszystkie pola',
+				text: 'Wybierz kategorię ogloszenia',
+				confirmButtonColor: '#3085d6',
+			})
+			return
+		}
+
 		const convertedImages = await Promise.all(
 			images.map(async blobURL => {
 				const response = await fetch(blobURL.file)
@@ -192,6 +204,7 @@ const CreateAnnouncement = () => {
 				return blob
 			})
 		)
+
 		const tagsData = tagsArray.map(tag => tag.name)
 
 		const formData = new FormData()
@@ -199,7 +212,7 @@ const CreateAnnouncement = () => {
 		formData.append('description', descriptionInput.current.value)
 		formData.append('price', priceInput.current.value)
 		formData.append('user_id', 1)
-		formData.append('category_id', 1)
+		formData.append('category_id', selectedCategory)
 		formData.append('location', cityInput.current.value)
 		formData.append('postal_code', zipCodeInput.current.value)
 		formData.append('phone_number', phoneNumberInput.current.value)
@@ -317,7 +330,17 @@ const CreateAnnouncement = () => {
 						</div>
 						<div className='col-md-6 standard-input-design mt-2'>
 							<p>Kategoria</p>
-							<input ref={categoryInput} type='text' placeholder='np. Konsola PS4 Pro' />
+							<select
+								onChange={e => setSelectedCategory(e.target.value)}
+								name='category'
+								className='category'>
+								<option value={0}>Wybierz kategorie</option>
+								{categories.map(option => (
+									<option key={option.id} value={option.id}>
+										{option.name}
+									</option>
+								))}
+							</select>
 						</div>
 
 						<div className='col-md-6 mt-2'>

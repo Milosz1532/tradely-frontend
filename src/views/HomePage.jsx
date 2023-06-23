@@ -49,12 +49,15 @@ const AnnouncementList = ({ data }) => {
 		<SquareAnnouncement
 			key={a.id}
 			id={a.id}
+			user_id={a.user_id}
 			title={a.title}
 			price={a.price}
 			created_at={a.created_at}
 			image={a.first_image}
 			location={a.location}
 			category={a.category}
+			favorite_count={a.favorite_count}
+			is_favorited={a.is_favorited}
 		/>
 	))
 
@@ -62,12 +65,15 @@ const AnnouncementList = ({ data }) => {
 		<SquareAnnouncement
 			key={a.id}
 			id={a.id}
+			user_id={a.user_id}
 			title={a.title}
 			price={a.price}
 			created_at={a.created_at}
 			image={a.first_image}
 			location={a.location}
 			category={a.category}
+			favorite_count={a.favorite_count}
+			is_favorited={a.is_favorited}
 		/>
 	))
 
@@ -75,11 +81,14 @@ const AnnouncementList = ({ data }) => {
 		const locationAnnouncementsList = data.location_announcements.map(a => (
 			<SquareAnnouncement
 				key={a.id}
+				user_id={a.user_id}
 				id={a.id}
 				title={a.title}
 				price={a.price}
 				created_at={a.created_at}
 				image={a.first_image}
+				favorite_count={a.favorite_count}
+				is_favorited={a.is_favorited}
 			/>
 		))
 	}

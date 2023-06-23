@@ -1,52 +1,115 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import numeral from 'numeral'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
+import { toast } from 'react-toastify'
 
 import noImage from '/images/no-image.png'
 
-export function SquareAnnouncement({ id, title, price, created_at, image, location, category }) {
+import { likeAnnouncement } from '../../services/AnnouncementService'
+
+export function SquareAnnouncement({
+	id,
+	user_id,
+	title,
+	price,
+	created_at,
+	image,
+	location,
+	category,
+	favorite_count = 0,
+	is_favorited = false,
+}) {
+	const [likes, setLikes] = useState(0)
+	const [isFavorited, setIsFarvorited] = useState(false)
+	const user = useSelector(state => state.auth.user)
+
+	useEffect(() => {
+		setLikes(favorite_count)
+		setIsFarvorited(is_favorited)
+	}, [])
+
+	const handleLikeAnnouncement = async e => {
+		e.preventDefault()
+		try {
+			const result = await likeAnnouncement(id)
+			if (result.success === true) {
+				setLikes(prevLikes => {
+					if (result.status === 1) {
+						return prevLikes + 1
+					} else {
+						return prevLikes - 1
+					}
+				})
+				setIsFarvorited(prevState => !prevState)
+
+				toast.success(
+					`${
+						result.status === 1
+							? 'Ogłoszenie zostało dodane do polubionych'
+							: 'Ogłoszenie zostało usunięte z polubionych'
+					}`,
+					{ autoClose: 1500 }
+				)
+			}
+		} catch (error) {
+			console.log('Nie udało się dodać do ulubionych')
+		}
+	}
+
+	const formattedAmount = new Intl.NumberFormat('pl-PL', {
+		style: 'currency',
+		currency: 'PLN',
+		useGrouping: true,
+	}).format(price)
+
 	return (
 		<div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4 p-3'>
-			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
-				<div className='announcement-box'>
-					<div className='announcement-image'>
-						<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
-					</div>
-					<div className='announcement-content'>
+			<div className='announcement-box'>
+				<div className='announcement-image'>
+					<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
+				</div>
+				<div className='announcement-content'>
+					<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
 						<div className='announcement-top-section'>
 							<span className='announcement-category'>{category ?? 'Brak danych'}</span>
 							<span className='announcement-likes'>
 								<i className='me-1'>
 									<FontAwesomeIcon icon='fa-solid fa-heart' />
 								</i>
-								300
+								{likes}
 							</span>
 						</div>
 
 						<div className='announcement-title-section'>
 							<p className='announcement-title'>{title}</p>
-							<p className='announcement-price'>{price ? `${price} zł` : 'Za darmo'}</p>
+							<p className='announcement-price'>{formattedAmount ?? 'Brak danych'}</p>
 						</div>
-						<hr />
+					</NavLink>
+					<hr />
 
-						<div className='announcement-bottom'>
-							<div className='announcement-date'>
-								<span>{created_at}</span>
-								<span>{location ?? 'Brak danych'}</span>
-							</div>
+					<div className='announcement-bottom'>
+						<div className='announcement-date'>
+							<span>{created_at}</span>
+							<span>{location ?? 'Brak danych'}</span>
+						</div>
+						{user && user.id && user.id == user_id ? (
+							false
+						) : (
 							<div className='announcement-buttons'>
-								<i className='me-2'>
-									<FontAwesomeIcon icon='fa-regular fa-heart' />
+								<i className='me-2 announcement-button' onClick={handleLikeAnnouncement}>
+									<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
 								</i>
 								<i>
 									<FontAwesomeIcon icon='fa-regular fa-comments' />
 								</i>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
-			</NavLink>
+			</div>
 		</div>
 	)
 }

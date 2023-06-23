@@ -1,9 +1,8 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import '../assets/styles/index.css'
-import '../assets/styles/Auth.css'
+import '../../assets/styles/Auth.css'
 import { useDispatch } from 'react-redux'
-import { login } from '../redux/actions/authActions'
+import { login } from '../../redux/actions/authActions'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
@@ -37,7 +36,10 @@ export default function LoginPage() {
 	return (
 		<div className='auth-form animated fadeInDown'>
 			<div className='form'>
-				<Formik initialValues={{ email: '', password: '' }} validationSchema={validationSchema} onSubmit={handleSubmit}>
+				<Formik
+					initialValues={{ email: '', password: '' }}
+					validationSchema={validationSchema}
+					onSubmit={handleSubmit}>
 					{({ isSubmitting }) => (
 						<Form>
 							<br />

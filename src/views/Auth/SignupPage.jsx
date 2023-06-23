@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { signup } from '../redux/actions/authActions'
+import { signup } from '../../redux/actions/authActions'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
-import { startLoading, stopLoading } from '../redux/actions/loadingActions'
+import { startLoading, stopLoading } from '../../redux/actions/loadingActions'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 

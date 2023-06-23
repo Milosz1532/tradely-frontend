@@ -63,8 +63,8 @@ export default function ProfileLayout() {
 						</ul>
 						<p className='menu-title'>OGŁOSZENIA</p>
 						<ul>
-							<NavLink to={''}>
-								<li>
+							<NavLink to={'/account/favorites'}>
+								<li className={location.pathname === '/account/favorites' ? 'active' : ''}>
 									<i className='me-2'>
 										<FontAwesomeIcon icon='fa-regular fa-heart' />
 									</i>

@@ -42,6 +42,11 @@ header article .header-right-section > i {
   cursor: pointer;
 }
 
+header article .header-right-section > i a {
+  text-decoration: none;
+  color: #676767;
+}
+
 header article .header-right-section > i:hover {
   opacity: 1;
 }

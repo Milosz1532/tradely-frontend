@@ -162,7 +162,7 @@ $image-background: rgb(235, 235, 235);
 		font-size: 18px;
 	}
 
-	input {
+	input, select {
 		margin-top: 2px;
 		background-color: $light-text-color;
 		border: 1px solid #cccccc;
@@ -459,6 +459,11 @@ img.loading-image {
 			}
 			.announcement-buttons {
 				color: $main-color;
+				font-size: 18px;
+
+				.announcement-button {
+					cursor: pointer;
+				}
 			}
 		}
 	}

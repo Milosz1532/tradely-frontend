@@ -1,6 +1,9 @@
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
+import { likeAnnouncement } from '../../services/AnnouncementService'
+import { toast } from 'react-toastify'
 
 import noImage from '/images/no-image.png'
 
@@ -13,8 +16,29 @@ export const RectangularAnnouncement = ({
 	tags,
 	edit = false,
 	disabled = false,
+	refreshList = false,
 }) => {
 	const linkTo = disabled ? null : `/announcement/${id}`
+
+	const handleLikeAnnouncement = async e => {
+		e.preventDefault()
+		try {
+			const result = await likeAnnouncement(id)
+			if (result.success === true) {
+				toast.success(
+					`${
+						result.status === 1
+							? 'Ogłoszenie zostało dodane do polubionych'
+							: 'Ogłoszenie zostało usunięte z polubionych'
+					}`,
+					{ autoClose: 1500 }
+				)
+				refreshList()
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
 	return (
 		<div className='col-12 rectangular-announcement mt-2'>
@@ -34,12 +58,8 @@ export const RectangularAnnouncement = ({
 						</div>
 						<ul className='announcement-tags-list'>
 							{tags.map(t => (
-								<li>{t.name}</li>
+								<li key={`announcement-${id}-tag-id-${t.id}`}>{t.name}</li>
 							))}
-							{/* <li>NOWY</li>
-							<li>GWARANCJA</li>
-							<li>IPHONE</li>
-							<li>TELEFON</li> */}
 						</ul>
 						<div className='location'>
 							<span>13.06.2023 12:00</span>
@@ -50,7 +70,7 @@ export const RectangularAnnouncement = ({
 								<button className='btn-design btn-sm'>Zarządzaj</button>
 							</div>
 						) : (
-							<i className='favorite-icon'>
+							<i className='favorite-icon announcement-button' onClick={handleLikeAnnouncement}>
 								<FontAwesomeIcon icon='fa-regular fa-heart' />
 							</i>
 						)}

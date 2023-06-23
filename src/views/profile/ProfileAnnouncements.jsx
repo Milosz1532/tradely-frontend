@@ -5,6 +5,8 @@ import { userAnnouncements } from '../../services/ProfileService'
 
 import NoAnnouncementsIcon from '/images/no-announcements-list.svg'
 
+import NoAnnouncements from '../../components/Announcements/NoAnnouncements'
+
 import {
 	RectangularAnnouncement,
 	RectangularAnnouncementLoading,
@@ -20,13 +22,6 @@ const LoadingAnnouncements = () => (
 		<RectangularAnnouncementLoading />
 		<RectangularAnnouncementLoading />
 	</>
-)
-
-const NoAnnouncements = () => (
-	<div className='no-announcements'>
-		<h4>Brak ogłoszeń</h4>
-		<img src={NoAnnouncementsIcon} alt='brak ogłoszeń' />
-	</div>
 )
 
 export default function ProfileAnnouncements() {
