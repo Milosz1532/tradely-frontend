@@ -17,7 +17,6 @@ export default function LoginPage() {
 				toast.success('Pomyślnie zalogowano')
 			})
 			.catch(error => {
-				console.log(error.message)
 				Swal.fire({
 					icon: 'error',
 					text: error.message,

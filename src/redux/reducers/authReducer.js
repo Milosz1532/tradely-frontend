@@ -3,6 +3,7 @@ const initialState = {
 	isAuthenticated: false,
 	verifying: true,
 	error: null,
+	favoriteAds: [],
 }
 
 const authReducer = (state = initialState, action) => {
@@ -65,6 +66,29 @@ const authReducer = (state = initialState, action) => {
 				isAuthenticated: false,
 				error: null,
 			}
+
+		case 'SET_FAVORITE_ADS':
+			return {
+				...state,
+				favoriteAds: action.payload.favoriteAds,
+			}
+
+		case 'FETCH_FAVORITE_ADS_FAILURE':
+			return {
+				...state,
+				error: action.payload.error,
+			}
+		case 'ADD_TO_FAVORITES':
+			return {
+				...state,
+				favoriteAds: [...state.favoriteAds, action.payload.announcement],
+			}
+		case 'REMOVE_FROM_FAVORITES':
+			return {
+				...state,
+				favoriteAds: state.favoriteAds.filter(ad => ad.id !== action.payload.announcement.id),
+			}
+
 		default:
 			return state
 	}

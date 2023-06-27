@@ -1,64 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import { userFavoritesAnnouncements } from '../../services/ProfileService'
-
+import { useSelector } from 'react-redux'
 import {
 	RectangularAnnouncement,
 	RectangularAnnouncementLoading,
 } from '../../components/Announcements/RectangularAnnouncement'
-
 import NoAnnouncements from '../../components/Announcements/NoAnnouncements'
 
 const FavoritesAnnouncementsListLoading = () => {
 	return (
 		<>
 			<RectangularAnnouncementLoading />
+			<RectangularAnnouncementLoading />
+			<RectangularAnnouncementLoading />
+			<RectangularAnnouncementLoading />
 		</>
 	)
 }
 
-let inn = 0
-
-const Testt = () => {
-	console.log(`ID: ${inn}`)
-	inn++
-}
-
 export default function Favorites() {
-	const [userFavoritesAnnouncementsList, setUserFavoritesAnnouncementsList] = useState([])
-	const [isLoading, setIsLoading] = useState(true)
-	const [refreshList, setRefreshList] = useState(false)
-
-	useEffect(() => {
-		const getUserFavoritesAnnouncements = async () => {
-			try {
-				const announcementsData = await userFavoritesAnnouncements()
-				setUserFavoritesAnnouncementsList(announcementsData.data)
-				console.log(announcementsData.data)
-			} catch {
-				setUserFavoritesAnnouncementsList([])
-			} finally {
-				setIsLoading(false)
-			}
-		}
-		setIsLoading(true)
-		setUserFavoritesAnnouncementsList([])
-		getUserFavoritesAnnouncements()
-	}, [refreshList])
+	const favoritesState = useSelector(state => state.auth.favoriteAds)
+	const isVerifying = useSelector(state => state.auth.verifying)
 
 	return (
 		<div className='container-fluid'>
 			<div className='row'>
 				<h5 className='tab-title'>
-					Obserwowane ogłoszenia (
-					{userFavoritesAnnouncementsList && userFavoritesAnnouncementsList.length})
+					Obserwowane ogłoszenia ({favoritesState && favoritesState.length})
 				</h5>
 				<article className='account-box'>
-					{isLoading ? (
+					{/* Jeśli isLoading jest true, wyświetl ekran ładowania */}
+					{isVerifying ? (
 						<FavoritesAnnouncementsListLoading />
-					) : userFavoritesAnnouncementsList && userFavoritesAnnouncementsList.length > 0 ? (
-						userFavoritesAnnouncementsList.map(a => (
+					) : favoritesState && favoritesState.length > 0 ? (
+						favoritesState.map(a => (
 							<React.Fragment key={`favorite-announcement-${a.id}`}>
 								<RectangularAnnouncement
 									id={a.id}
@@ -67,7 +43,7 @@ export default function Favorites() {
 									price={a.price}
 									created_at={a.created_at}
 									tags={a.tags}
-									refreshList={e => setRefreshList(prevState => !prevState)}
+									item={a}
 								/>
 								<hr key={`hr-${a.id}`} />
 							</React.Fragment>

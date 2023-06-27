@@ -66,6 +66,7 @@ export default function ProfileAnnouncements() {
 											created_at={a.created_at}
 											tags={a.tags}
 											edit={true}
+											item={a}
 										/>
 									))
 								) : (
@@ -91,6 +92,7 @@ export default function ProfileAnnouncements() {
 											created_at={a.created_at}
 											tags={a.tags}
 											edit={true}
+											item={a}
 										/>
 									))
 								) : (
@@ -116,6 +118,7 @@ export default function ProfileAnnouncements() {
 											created_at={a.created_at}
 											tags={a.tags}
 											disabled={true}
+											item={a}
 										/>
 									))
 								) : (

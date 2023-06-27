@@ -31,7 +31,6 @@ export default function SignupPage() {
 				navigate('/')
 			})
 			.catch(error => {
-				console.log(error.message)
 				Swal.fire({
 					icon: 'error',
 					text: error.message,
@@ -81,9 +80,17 @@ export default function SignupPage() {
 								</div>
 								<div className='standard-input-design mt-2'>
 									<p className='text-start'>Powtórz hasło</p>
-									<Field type='password' name='confirmPassword' placeholder='Wprowadź ponownie hasło...' />
+									<Field
+										type='password'
+										name='confirmPassword'
+										placeholder='Wprowadź ponownie hasło...'
+									/>
 									<div className='text-start error-box'>
-										<ErrorMessage name='confirmPassword' component='span' className='error-message' />
+										<ErrorMessage
+											name='confirmPassword'
+											component='span'
+											className='error-message'
+										/>
 									</div>
 								</div>
 							</div>

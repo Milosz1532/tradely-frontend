@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import numeral from 'numeral'
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 
 import noImage from '/images/no-image.png'
 
-import { likeAnnouncement } from '../../services/AnnouncementService'
+import { manageFavoritesAnnouncements } from '../../redux/actions/authActions'
 
 export function SquareAnnouncement({
 	id,
@@ -21,41 +21,32 @@ export function SquareAnnouncement({
 	category,
 	favorite_count = 0,
 	is_favorited = false,
+	item,
 }) {
 	const [likes, setLikes] = useState(0)
-	const [isFavorited, setIsFarvorited] = useState(false)
+	const [isFavorited, setIsFavorited] = useState(false)
 	const user = useSelector(state => state.auth.user)
+	const favoriteAds = useSelector(state => state.auth.favoriteAds)
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		setLikes(favorite_count)
-		setIsFarvorited(is_favorited)
+		setIsFavorited(is_favorited)
 	}, [])
 
 	const handleLikeAnnouncement = async e => {
 		e.preventDefault()
 		try {
-			const result = await likeAnnouncement(id)
-			if (result.success === true) {
-				setLikes(prevLikes => {
-					if (result.status === 1) {
-						return prevLikes + 1
-					} else {
-						return prevLikes - 1
-					}
-				})
-				setIsFarvorited(prevState => !prevState)
+			dispatch(manageFavoritesAnnouncements(item))
 
-				toast.success(
-					`${
-						result.status === 1
-							? 'Ogłoszenie zostało dodane do polubionych'
-							: 'Ogłoszenie zostało usunięte z polubionych'
-					}`,
-					{ autoClose: 1500 }
-				)
+			if (isFavorited) {
+				setLikes(prevLikes => prevLikes - 1)
+			} else {
+				setLikes(prevLikes => prevLikes + 1)
 			}
+			setIsFavorited(prevState => !prevState)
 		} catch (error) {
-			console.log('Nie udało się dodać do ulubionych')
+			console.log('Nie udało się dodać/usunąć ogłoszenia z ulubionych', error)
 		}
 	}
 

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
-import { likeAnnouncement } from '../../services/AnnouncementService'
-import { toast } from 'react-toastify'
+// import { likeAnnouncement } from '../../services/AnnouncementService'
+import { useSelector, useDispatch } from 'react-redux'
+import { manageFavoritesAnnouncements } from '../../redux/actions/authActions'
 
 import noImage from '/images/no-image.png'
 
@@ -17,26 +18,24 @@ export const RectangularAnnouncement = ({
 	edit = false,
 	disabled = false,
 	refreshList = false,
+	item,
 }) => {
 	const linkTo = disabled ? null : `/announcement/${id}`
+	const dispatch = useDispatch()
 
 	const handleLikeAnnouncement = async e => {
 		e.preventDefault()
 		try {
-			const result = await likeAnnouncement(id)
-			if (result.success === true) {
-				toast.success(
-					`${
-						result.status === 1
-							? 'Ogłoszenie zostało dodane do polubionych'
-							: 'Ogłoszenie zostało usunięte z polubionych'
-					}`,
-					{ autoClose: 1500 }
-				)
-				refreshList()
+			dispatch(manageFavoritesAnnouncements(item))
+
+			if (isFavorited) {
+				setLikes(prevLikes => prevLikes - 1)
+			} else {
+				setLikes(prevLikes => prevLikes + 1)
 			}
+			setIsFavorited(prevState => !prevState)
 		} catch (error) {
-			console.log(error)
+			console.log('Nie udało się dodać/usunąć ogłoszenia z ulubionych', error)
 		}
 	}
 

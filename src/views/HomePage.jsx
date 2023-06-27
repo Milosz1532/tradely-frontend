@@ -58,6 +58,7 @@ const AnnouncementList = ({ data }) => {
 			category={a.category}
 			favorite_count={a.favorite_count}
 			is_favorited={a.is_favorited}
+			item={a}
 		/>
 	))
 
@@ -74,6 +75,7 @@ const AnnouncementList = ({ data }) => {
 			category={a.category}
 			favorite_count={a.favorite_count}
 			is_favorited={a.is_favorited}
+			item={a}
 		/>
 	))
 
@@ -89,6 +91,7 @@ const AnnouncementList = ({ data }) => {
 				image={a.first_image}
 				favorite_count={a.favorite_count}
 				is_favorited={a.is_favorited}
+				item={a}
 			/>
 		))
 	}
