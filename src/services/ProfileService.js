@@ -30,8 +30,18 @@ export const likeAnnouncement = async id => {
 	}
 }
 
+export const fetchProfileData = async () => {
+	try {
+		const response = await axiosClient.get('/profile/data')
+		return response.data
+	} catch (error) {
+		throw error.response.data
+	}
+}
+
 export default {
 	userAnnouncements,
 	userFavoritesAnnouncements,
 	likeAnnouncement,
+	fetchProfileData,
 }

@@ -39,6 +39,12 @@ export const RectangularAnnouncement = ({
 		}
 	}
 
+	const formattedAmount = new Intl.NumberFormat('pl-PL', {
+		style: 'currency',
+		currency: 'PLN',
+		useGrouping: true,
+	}).format(price)
+
 	return (
 		<div className='col-12 rectangular-announcement mt-2'>
 			<NavLink
@@ -53,7 +59,7 @@ export const RectangularAnnouncement = ({
 					<div className='col-10 rectangular-announcement-content'>
 						<div className='reactangular-announement-top-section'>
 							<h5 className='title'>{title}</h5>
-							<h5 className='price'>{price ? `${price} zł` : 'Za darmo'}</h5>
+							<h5 className='price'>{formattedAmount ? `${formattedAmount}` : 'Za darmo'}</h5>
 						</div>
 						<ul className='announcement-tags-list'>
 							{tags.map(t => (

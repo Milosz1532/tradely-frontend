@@ -1,10 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { fetchProfileData } from '../../services/ProfileService'
 
 import AnnouncementDetailsSquare from '../../components/Announcements/AnnouncementDetailsSquare'
 
 export default function Profile() {
+	const [profileData, setProfileData] = useState(null)
+
+	useEffect(() => {
+		const getProfileData = async () => {
+			try {
+				const getData = await fetchProfileData()
+				setProfileData(getData)
+				console.log(getData)
+				// setUserAnnouncementsList(announcementsData)
+			} catch {
+				// setUserAnnouncementsList([])
+			} finally {
+				// setIsLoading(false)
+			}
+		}
+		getProfileData()
+	}, [])
 	return (
 		<div className='container-fluid'>
 			<div className='row'>
@@ -20,7 +39,9 @@ export default function Profile() {
 									</i>
 								</div>
 								<p className='stats-box-title'>Wszystkie ogłoszenia</p>
-								<p className='stats-box-count'>214</p>
+								<p className='stats-box-count'>
+									{profileData && profileData.all_announcements_count}
+								</p>
 							</div>
 						</div>
 						<div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4 p-3'>
@@ -31,7 +52,9 @@ export default function Profile() {
 									</i>
 								</div>
 								<p className='stats-box-title'>Aktywne ogłoszenia</p>
-								<p className='stats-box-count'>214</p>
+								<p className='stats-box-count'>
+									{profileData && profileData.active_announcements_count}
+								</p>
 							</div>
 						</div>
 
@@ -43,7 +66,9 @@ export default function Profile() {
 									</i>
 								</div>
 								<p className='stats-box-title'>Polubione ogłoszenia</p>
-								<p className='stats-box-count'>214</p>
+								<p className='stats-box-count'>
+									{profileData && profileData.favorite_announcements_count}
+								</p>
 							</div>
 						</div>
 
@@ -79,10 +104,16 @@ export default function Profile() {
 				<article className='account-box'>
 					<h5 className='box-title'>Najnowsze ogłoszenia</h5>
 					<div className='row'>
-						<AnnouncementDetailsSquare />
-						<AnnouncementDetailsSquare />
-						<AnnouncementDetailsSquare />
-						<AnnouncementDetailsSquare />
+						{profileData &&
+							profileData.latest_announcements.map(a => (
+								<AnnouncementDetailsSquare
+									id={a.id}
+									title={a.title}
+									price={a.price}
+									image={null}
+									category={a.category_id}
+								/>
+							))}
 					</div>
 				</article>
 			</div>

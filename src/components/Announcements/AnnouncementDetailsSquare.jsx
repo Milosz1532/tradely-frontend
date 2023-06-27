@@ -2,7 +2,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import noImage from '/images/no-image.png'
 
-export default function AnnouncementDetailsSquare() {
+export default function AnnouncementDetailsSquare(
+	id,
+	title,
+	price,
+	image,
+	category,
+	favorite_count = 0
+) {
 	return (
 		<div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4'>
 			<div className='announcement-details-square mx-3'>
