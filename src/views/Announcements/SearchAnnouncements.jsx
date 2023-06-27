@@ -209,15 +209,18 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 								</Link>
 							</li>
 							{pageNumbers.map(pageNumber => (
-								<li className='pagination-page-number'>
-									<Link
-										className={`pagination-number-btn ${
+								<li key={pageNumber}>
+									<div
+										className={`pagination-page-number ${
 											pageNumber === currentPage ? 'active' : ''
-										}`}
-										to={`?page=${pageNumber}`}
-										key={pageNumber}>
-										{pageNumber}
-									</Link>
+										}`}>
+										<Link
+											className={`pagination-number-btn`}
+											to={`?page=${pageNumber}`}
+											key={pageNumber}>
+											{pageNumber}
+										</Link>
+									</div>
 								</li>
 							))}
 							<li className={currentPage >= totalPages ? 'disable' : ''}>

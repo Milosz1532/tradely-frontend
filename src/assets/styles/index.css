@@ -150,7 +150,8 @@
   font-size: 18px;
 }
 
-.standard-input-design input, .standard-input-design select {
+.standard-input-design input,
+.standard-input-design select {
   margin-top: 2px;
   background-color: #fff;
   border: 1px solid #cccccc;
@@ -160,7 +161,8 @@
   color: #676767;
 }
 
-.standard-input-design input::placeholder, .standard-input-design select::placeholder {
+.standard-input-design input::placeholder,
+.standard-input-design select::placeholder {
   font-weight: 100;
   opacity: 0.7;
 }
@@ -359,23 +361,31 @@ img.loading-image {
   padding: 10px 10px;
 }
 
+.pagination ul li .pagination-page-number {
+  border: 1px solid #67ade0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.pagination ul li .pagination-page-number.active {
+  background-color: #67ade0;
+  border-radius: 50%;
+  cursor: auto;
+}
+
+.pagination ul li .pagination-page-number.active a {
+  color: #fff;
+}
+
 .pagination ul li a {
   text-decoration: none;
   padding: 5px 10px;
   color: #67ade0;
   transition: all 0.4s;
-}
-
-.pagination ul li a.pagination-number-btn {
-  border: 1px solid #67ade0;
-  border-radius: 50%;
-}
-
-.pagination ul li a.active {
-  background-color: #67ade0;
-  color: #fff;
-  border-radius: 50%;
-  cursor: auto;
 }
 
 .pagination ul li.disable a {
