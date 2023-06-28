@@ -11,8 +11,8 @@ axiosClient.interceptors.response.use(
 	},
 	error => {
 		if (error.response.status === 401 || error.response.status === 403) {
-			console.log('Token uwierzytelniający jest nieprawidłowy lub wygasł')
 			setAuthHeader(false)
+			window.location.reload(false)
 		}
 		throw error
 	}

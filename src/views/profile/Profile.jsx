@@ -107,11 +107,13 @@ export default function Profile() {
 						{profileData &&
 							profileData.latest_announcements.map(a => (
 								<AnnouncementDetailsSquare
+									key={a.id}
 									id={a.id}
 									title={a.title}
 									price={a.price}
-									image={null}
-									category={a.category_id}
+									image={a.first_image}
+									category={a.category}
+									favorite_count={a.favorite_count}
 								/>
 							))}
 					</div>

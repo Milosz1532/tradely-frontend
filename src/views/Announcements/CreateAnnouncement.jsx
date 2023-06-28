@@ -11,8 +11,10 @@ import withReactContent from 'sweetalert2-react-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ReactLoading from 'react-loading'
 import ScrollLock from '../../ScrollLock'
-
 import { getAnnouncementCategories } from '../../services/AnnouncementService'
+
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
 const IMAGES_LIMIT = 5
 
@@ -147,7 +149,6 @@ const CreateAnnouncement = () => {
 	const categoryInput = useRef()
 	const priceInput = useRef()
 	const tagsInput = useRef()
-	const descriptionInput = useRef()
 	const cityInput = useRef()
 	const zipCodeInput = useRef()
 	const emailInput = useRef()
@@ -156,16 +157,9 @@ const CreateAnnouncement = () => {
 	let navigate = useNavigate()
 
 	const handleSubmitAnnouncement = async () => {
-		const fields = [
-			titleInput,
-			priceInput,
-			descriptionInput,
-			cityInput,
-			zipCodeInput,
-			emailInput,
-			phoneNumberInput,
-		]
+		console.log(description)
 
+		const fields = [titleInput, priceInput, cityInput, zipCodeInput, emailInput, phoneNumberInput]
 		let hasEmptyFields = false
 
 		fields.forEach(field => {
@@ -187,11 +181,11 @@ const CreateAnnouncement = () => {
 			return
 		}
 
-		if (selectedCategory == 0) {
+		if (selectedCategory === 0) {
 			Swal.fire({
 				icon: 'error',
 				title: 'Wypełnij wszystkie pola',
-				text: 'Wybierz kategorię ogloszenia',
+				text: 'Wybierz kategorię ogłoszenia',
 				confirmButtonColor: '#3085d6',
 			})
 			return
@@ -209,7 +203,7 @@ const CreateAnnouncement = () => {
 
 		const formData = new FormData()
 		formData.append('title', titleInput.current.value)
-		formData.append('description', descriptionInput.current.value)
+		formData.append('description', description)
 		formData.append('price', priceInput.current.value)
 		formData.append('user_id', 1)
 		formData.append('category_id', selectedCategory)
@@ -313,6 +307,27 @@ const CreateAnnouncement = () => {
 		setTagsArray(updatedTagsArray)
 	}
 
+	// DESCRIPTION:
+
+	const [description, setDescription] = useState('')
+	const toolbarOptions = [
+		['bold', 'italic', 'underline', 'strike'], // toggled buttons
+
+		[{ header: 1 }, { header: 2 }], // custom button values
+		[{ list: 'ordered' }, { list: 'bullet' }],
+		[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+
+		[{ size: ['small', false, 'large'] }], // custom dropdown
+
+		[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+		[{ align: [] }],
+
+		['clean'], // remove formatting button
+	]
+	const module = {
+		toolbar: toolbarOptions,
+	}
+
 	return (
 		<>
 			<div className='container mt-5'>
@@ -396,19 +411,18 @@ const CreateAnnouncement = () => {
 					</span>
 				</section>
 
-				<section className='create-announcement-section'>
+				<section className='create-announcement-section description-section'>
 					<h3 className='create-announcement-title'>Opis</h3>
 
 					<div className='row'>
 						<div className='col-md-12 '>
-							<textarea
-								placeholder='Opisz dokładnie produkt, który chcesz sprzedać...'
-								className='text-area-design'
-								ref={descriptionInput}
-								name=''
-								id=''
-								cols='30'
-								rows='10'></textarea>
+							<ReactQuill
+								// style={{ maxHeight: '500px', overflow: 'scroll' }}
+								theme='snow'
+								modules={module}
+								value={description}
+								onChange={setDescription}
+							/>
 						</div>
 					</div>
 				</section>

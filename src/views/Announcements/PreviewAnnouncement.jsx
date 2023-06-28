@@ -15,6 +15,9 @@ import userIcon from '/images/user.png'
 import Skeleton from 'react-loading-skeleton'
 
 import Map from '../../components/Announcements/Map'
+import ReactQuill from 'react-quill'
+
+import 'react-quill/dist/quill.snow.css'
 
 const LoadingScreen = () => {
 	return (
@@ -126,8 +129,12 @@ const ShowAnnouncement = ({ data }) => {
 							<hr />
 						</div>
 						<div className='announcement-description-content'>
-							<h5>Opis</h5>
-							<p>{data.description}</p>
+							<h5>Opis: </h5>
+							{/* <div
+								className='post__description mt-3'
+								dangerouslySetInnerHTML={{ __html: data.description }}
+							/> */}
+							<ReactQuill value={data.description} readOnly={true} theme={'bubble'} />
 						</div>
 					</section>
 				</div>

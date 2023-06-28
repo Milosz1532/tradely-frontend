@@ -229,6 +229,10 @@
   padding: 5px;
 }
 
+.announcement-details-square .announcement-stats .announcement-stat {
+  text-align: center;
+}
+
 .announcement-details-square .announcement-stats .announcement-stat i {
   color: #67ade0;
 }
