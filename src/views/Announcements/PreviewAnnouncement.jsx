@@ -227,7 +227,6 @@ export default function PreviewAnnouncement() {
 			.get(API_URL)
 			.then(({ data }) => {
 				setAnnouncementData(data)
-				console.log(data)
 				setLoadingAnnouncement(false)
 			})
 			.catch(error => {
