@@ -8,7 +8,6 @@ import axiosClient from '../../services/Api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import SearchBar from '../../components/Layout/Searchbar'
 
-import adBackground from '/images/advertisement.jpg'
 import noImage from '/images/no-image.png'
 
 import userIcon from '/images/user.png'
@@ -16,8 +15,9 @@ import Skeleton from 'react-loading-skeleton'
 
 import Map from '../../components/Announcements/Map'
 import ReactQuill from 'react-quill'
-
 import 'react-quill/dist/quill.snow.css'
+
+import NoAnnouncement from '../../components/Announcements/AnnouuncementNotFound'
 
 const LoadingScreen = () => {
 	return (
@@ -218,6 +218,7 @@ export default function PreviewAnnouncement() {
 	const { id } = useParams()
 	const [loadingAnnouncement, setLoadingAnnouncement] = useState(true)
 	const [announcementData, setAnnouncementData] = useState(null)
+	const [notFound, setNotFund] = useState(false)
 
 	useEffect(() => {
 		setLoadingAnnouncement(true)
@@ -226,10 +227,12 @@ export default function PreviewAnnouncement() {
 			.get(API_URL)
 			.then(({ data }) => {
 				setAnnouncementData(data)
+				console.log(data)
 				setLoadingAnnouncement(false)
 			})
 			.catch(error => {
-				setLoadingAnnouncement(true)
+				setLoadingAnnouncement(false)
+				setNotFund(true)
 			})
 	}, [])
 
@@ -241,8 +244,13 @@ export default function PreviewAnnouncement() {
 					<SearchBar />
 				</div>
 			</div>
-
-			{loadingAnnouncement ? <LoadingScreen /> : <ShowAnnouncement data={announcementData} />}
+			{loadingAnnouncement ? (
+				<LoadingScreen />
+			) : announcementData && announcementData.status.id === 2 && !notFound ? (
+				<ShowAnnouncement data={announcementData} />
+			) : (
+				<NoAnnouncement />
+			)}
 		</>
 	)
 }

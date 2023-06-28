@@ -13,8 +13,7 @@ import {
 	RectangularAnnouncementLoading,
 } from '../../components/Announcements/RectangularAnnouncement'
 import { SquareAnnouncement } from '../../components/Announcements/SquareAnnouncement'
-
-import NoAnnouncementsImg from '/images/noAnnouncements.svg'
+import AnnouncementNotFound from '../../components/Announcements/AnnouuncementNotFound'
 
 const LoadingAnnouncementsScreen = () => {
 	return (
@@ -100,6 +99,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			price={a.price}
 			created_at={a.created_at}
 			tags={a.tags}
+			item={a}
 		/>
 	))
 
@@ -236,20 +236,6 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	)
 }
 
-const NoAnnouncements = () => {
-	return (
-		<div className='no-announcements d-flex align-items-center flex-column'>
-			<h3>Nie znaleziono żadnych ogłoszeń</h3>
-			<img
-				className='mt-3'
-				style={{ maxWidth: '400px', maxHeight: '400px' }}
-				src={NoAnnouncementsImg}
-				alt='Brak ogłoszeń zdjęcie'
-			/>
-		</div>
-	)
-}
-
 function SearchAnnouncements() {
 	const { location, category, keyword } = useParams()
 	const [announcements, setAnnouncements] = useState(false)
@@ -310,7 +296,7 @@ function SearchAnnouncements() {
 						totalPages={totalPages}
 					/>
 				) : (
-					<NoAnnouncements />
+					<AnnouncementNotFound />
 				)}
 			</section>
 		</>
