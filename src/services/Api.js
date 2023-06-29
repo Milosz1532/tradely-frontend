@@ -10,7 +10,9 @@ axiosClient.interceptors.response.use(
 		return response
 	},
 	error => {
-		if (error.response.status === 401 || error.response.status === 403) {
+		if (error.response.status === 401) {
+			// 401 - GDY KTOŚ NIE JEST ZALOGOWANY
+			// 403 - GDY KTOŚ NIE MA UPRAWNIEŃ
 			setAuthHeader(false)
 			window.location.reload(false)
 		}
@@ -48,7 +50,8 @@ export const login = async (email, password) => {
 		const response = await axiosClient.post('/login', data)
 		const { token, user } = response.data
 		setAuthHeader(token)
-		return user
+		console.log(response.data)
+		return response.data
 	} catch (error) {
 		throw error.response.data
 	}

@@ -4,6 +4,7 @@ const initialState = {
 	verifying: true,
 	error: null,
 	favoriteAds: [],
+	permissions: false,
 }
 
 const authReducer = (state = initialState, action) => {
@@ -16,10 +17,11 @@ const authReducer = (state = initialState, action) => {
 		case 'AUTH_SUCCESS':
 			return {
 				...state,
-				user: action.payload.user,
+				user: action.payload.user.user,
 				isAuthenticated: true,
 				verifying: false,
 				error: null,
+				permissions: action.payload.user.permissions,
 			}
 		case 'AUTH_FAILURE':
 			return {
@@ -30,10 +32,11 @@ const authReducer = (state = initialState, action) => {
 		case 'LOGIN_SUCCESS':
 			return {
 				...state,
-				user: action.payload.user,
+				user: action.payload.user.user,
 				isAuthenticated: true,
 				verifying: false,
 				error: null,
+				permissions: action.payload.user.permissions,
 			}
 
 		case 'LOGIN_FAILURE':
@@ -42,6 +45,7 @@ const authReducer = (state = initialState, action) => {
 				user: null,
 				isAuthenticated: false,
 				error: action.payload.error,
+				permissions: null,
 			}
 		case 'SIGNUP_SUCCESS':
 			return {

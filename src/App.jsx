@@ -16,7 +16,6 @@ import 'react-toastify/dist/ReactToastify.css'
 export default function App() {
 	const dispatch = useDispatch()
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
-	const favorites = useSelector(state => state.auth.favoriteAds)
 
 	const isLoading = useSelector(state => state.loading.isLoading)
 	const loadingFullSize = useSelector(state => state.loading.fullSize)

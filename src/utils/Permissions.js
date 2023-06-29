@@ -1,0 +1,10 @@
+export const permissions = {
+	ANNOUNCEMENT: {
+		EDIT: 'ANNOUNCEMENT.EDIT',
+		DELETE: 'ANNOUNCEMENT.DELETE',
+	},
+	USER: {
+		EDIT: 'USER.EDIT',
+		REMOVE: 'USER.REMOVE',
+	},
+}
