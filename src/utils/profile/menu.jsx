@@ -2,7 +2,7 @@ import { permissions } from '../Permissions'
 
 const menuItems = [
 	{
-		category: 'Piwa',
+		category: 'Profil',
 		items: [
 			{
 				id: 1,
@@ -59,7 +59,7 @@ const menuItems = [
 			{
 				id: 8,
 				name: 'Oczekujące ogłoszenia',
-				link: '',
+				link: '/account/InactiveAds',
 				icon: 'fa-regular fa-heart',
 				permissions: permissions.ANNOUNCEMENT.EDIT,
 			},

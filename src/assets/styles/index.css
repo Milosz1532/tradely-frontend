@@ -519,3 +519,8 @@ img.loading-image {
   opacity: 0.6;
   font-weight: 300;
 }
+
+.slick-prev:before,
+.slick-next:before {
+  color: #676767 !important;
+}

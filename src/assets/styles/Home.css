@@ -125,7 +125,7 @@
   margin-top: 20px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .pupular-categories {
     background: #fff;
     margin-top: 10px;

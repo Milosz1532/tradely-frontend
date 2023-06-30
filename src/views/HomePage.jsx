@@ -4,7 +4,14 @@ import {
 	SquareAnnouncement,
 	SquareAnnouncementLoading,
 } from '../components/Announcements/SquareAnnouncement'
+
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+
 import Searchbar from '../components/Layout/Searchbar'
+import Category from '../components/Home/Category'
+
 import { indexAnnouncements } from '../services/SearchService'
 
 import '../assets/styles/Home.css'
@@ -13,7 +20,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // Images //
 import searchBackground from '/images/search-background.jpg'
 import adBackground from '/images/advertisement.jpg'
-import Skeleton from 'react-loading-skeleton'
 
 const LoadingAnnouncement = () => {
 	return (
@@ -141,6 +147,40 @@ export default function HomePage() {
 		loadAnnouncements()
 	}, [])
 
+	var settings = {
+		dots: false,
+		infinite: false,
+		speed: 500,
+		slidesToShow: 4,
+		slidesToScroll: 1,
+		initialSlide: 0,
+		responsive: [
+			{
+				breakpoint: 1024,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 3,
+					infinite: true,
+				},
+			},
+			{
+				breakpoint: 768,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2,
+					initialSlide: 2,
+				},
+			},
+			{
+				breakpoint: 480,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+				},
+			},
+		],
+	}
+
 	return (
 		<>
 			<section className='search-section' style={{ backgroundImage: `url(${searchBackground}` }}>
@@ -161,80 +201,20 @@ export default function HomePage() {
 						<h2>Popularne kategorie</h2>
 
 						<div className='row mx-auto'>
-							<div className='col-md-2'>
-								<div className='category-box'>
-									<div className='image-box color-3'>
-										<img
-											draggable='false'
-											src='/images/categories_icons/cars.png'
-											alt='Elektronika'
-										/>
-									</div>
-									<div className='title'>Motoryzacja</div>
-									<p className='count'>13 543 ogłoszeń</p>
-								</div>
-							</div>
-							<div className='col-md-2'>
-								<div className='category-box'>
-									<div className='image-box color-3'>
-										<img
-											draggable='false'
-											src='/images/categories_icons/bikes.png'
-											alt='Elektronika'
-										/>
-									</div>
-									<div className='title'>Rowery</div>
-									<p className='count'>13 543 ogłoszeń</p>
-								</div>
-							</div>
-							<div className='col-md-2'>
-								<div className='category-box'>
-									<div className='image-box color-3'>
-										<img
-											draggable='false'
-											src='/images/categories_icons/clothes.png'
-											alt='Elektronika'
-										/>
-									</div>
-									<div className='title'>Ubrania</div>
-									<p className='count'>13 543 ogłoszeń</p>
-								</div>
-							</div>
-							<div className='col-md-2'>
-								<div className='category-box'>
-									<div className='image-box color-3'>
-										<img src='/images/categories_icons/electronicts.png' alt='Elektronika' />
-									</div>
-									<div className='title'>Elektronika</div>
-									<p className='count'>13 543 ogłoszeń</p>
-								</div>
-							</div>
-							<div className='col-md-2'>
-								<div className='category-box'>
-									<div className='image-box color-3'>
-										<img
-											draggable='false'
-											src='/images/categories_icons/bikes.png'
-											alt='Elektronika'
-										/>
-									</div>
-									<div className='title'>Motoryzacja</div>
-									<p className='count'>13 543 ogłoszeń</p>
-								</div>
-							</div>
-							<div className='col-md-2'>
-								<div className='category-box'>
-									<div className='image-box color-3'>
-										<img
-											draggable='false'
-											src='/images/categories_icons/bikes.png'
-											alt='Elektronika'
-										/>
-									</div>
-									<div className='title'>Motoryzacja</div>
-									<p className='count'>13 543 ogłoszeń</p>
-								</div>
-							</div>
+							<Slider {...settings}>
+								<Category />
+								<Category bg={`red`} />
+								<Category bg={`green`} />
+								<Category bg={`yellow`} />
+								<Category bg={`blue`} />
+								<Category bg={`purple`} />
+								<Category bg={`orange`} />
+								<Category bg={`green`} />
+								<Category bg={`green`} />
+								<Category bg={`green`} />
+								<Category bg={`green`} />
+								<Category bg={`green`} />
+							</Slider>
 						</div>
 					</div>
 				</section>

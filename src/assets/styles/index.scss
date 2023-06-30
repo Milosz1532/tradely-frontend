@@ -526,3 +526,8 @@ img.loading-image {
 		}
 	}
 }
+
+.slick-prev:before,
+.slick-next:before {
+	color: $text-color !important;
+}

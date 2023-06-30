@@ -18,13 +18,22 @@ export const RectangularAnnouncement = ({
 	edit = false,
 	disabled = false,
 	refreshList = false,
+	is_favorited = false,
 	item,
 }) => {
-	const linkTo = disabled ? null : `/announcement/${id}`
 	const dispatch = useDispatch()
+
+	const [isFavorited, setIsFavorited] = useState(false)
+	const [likes, setLikes] = useState(0)
+	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+
+	useEffect(() => {
+		setIsFavorited(is_favorited)
+	}, [])
 
 	const handleLikeAnnouncement = async e => {
 		e.preventDefault()
+		if (!isAuthenticated) return
 		try {
 			dispatch(manageFavoritesAnnouncements(item))
 
@@ -38,6 +47,8 @@ export const RectangularAnnouncement = ({
 			console.log('Nie udało się dodać/usunąć ogłoszenia z ulubionych', error)
 		}
 	}
+
+	const linkTo = disabled ? null : `/announcement/${id}`
 
 	const formattedAmount = new Intl.NumberFormat('pl-PL', {
 		style: 'currency',
@@ -76,7 +87,7 @@ export const RectangularAnnouncement = ({
 							</div>
 						) : (
 							<i className='favorite-icon announcement-button' onClick={handleLikeAnnouncement}>
-								<FontAwesomeIcon icon='fa-regular fa-heart' />
+								<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
 							</i>
 						)}
 					</div>

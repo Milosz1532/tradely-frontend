@@ -18,6 +18,7 @@ import SignupPage from '../views/Auth/SignupPage'
 import SearchAnnouncements from '../views/Announcements/SearchAnnouncements'
 
 import AuthRoute from './AuthRoute'
+import InactiveAds from '../views/profile/PermissionsPages/InactiveAds'
 
 const router = createBrowserRouter([
 	{
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
 			{
 				path: '/account/favorites',
 				element: <Favorites />,
+			},
+			{
+				path: '/account/InactiveAds',
+				element: <InactiveAds />,
 			},
 		],
 	},

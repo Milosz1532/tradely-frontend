@@ -100,6 +100,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			created_at={a.created_at}
 			tags={a.tags}
 			item={a}
+			is_favorited={a.is_favorited}
 		/>
 	))
 

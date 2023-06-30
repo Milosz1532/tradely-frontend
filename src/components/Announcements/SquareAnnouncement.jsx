@@ -24,6 +24,7 @@ export function SquareAnnouncement({
 	item,
 }) {
 	const [likes, setLikes] = useState(0)
+
 	const [isFavorited, setIsFavorited] = useState(false)
 	const user = useSelector(state => state.auth.user)
 	const favoriteAds = useSelector(state => state.auth.favoriteAds)
@@ -36,6 +37,7 @@ export function SquareAnnouncement({
 
 	const handleLikeAnnouncement = async e => {
 		e.preventDefault()
+		if (!user) return
 		try {
 			dispatch(manageFavoritesAnnouncements(item))
 
