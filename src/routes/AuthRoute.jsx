@@ -5,13 +5,17 @@ import { startLoading, stopLoading } from '../redux/actions/loadingActions'
 const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
 	const isVerifying = useSelector(state => state.auth.verifying)
+	const isLoading = useSelector(state => state.loading.isLoading)
+
 	const dispatch = useDispatch()
 
 	if (isVerifying) {
 		dispatch(startLoading(true))
 		return
 	} else {
-		dispatch(stopLoading())
+		setTimeout(() => {
+			dispatch(stopLoading())
+		}, 200)
 	}
 
 	if (mustByLogin && isAuthenticated) {
@@ -24,7 +28,7 @@ const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
 		return children
 	}
 
-	return null
+	return false
 }
 
 export default AuthRoute

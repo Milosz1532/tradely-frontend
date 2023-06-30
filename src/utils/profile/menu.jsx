@@ -48,7 +48,7 @@ const menuItems = [
 			{
 				id: 7,
 				name: 'Wiadomości',
-				link: '/account/messages',
+				link: '',
 				icon: 'fa-regular fa-comments',
 			},
 		],

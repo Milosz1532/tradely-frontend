@@ -9,6 +9,11 @@ import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
 import Favorites from '../views/profile/Favorites'
 //End Profile
 
+// PERMISSION ROUTES //
+import InactiveAds from '../views/profile/PermissionsPages/InactiveAds'
+
+// END PERMISSION ROUTES //
+
 import NotFound from '../views/NotFound'
 import HomePage from '../views/HomePage'
 import LoginPage from '../views/Auth/LoginPage'
@@ -18,7 +23,7 @@ import SignupPage from '../views/Auth/SignupPage'
 import SearchAnnouncements from '../views/Announcements/SearchAnnouncements'
 
 import AuthRoute from './AuthRoute'
-import InactiveAds from '../views/profile/PermissionsPages/InactiveAds'
+import PermissionRoute from './PermissionRoute'
 
 const router = createBrowserRouter([
 	{
@@ -69,7 +74,11 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/account/InactiveAds',
-				element: <InactiveAds />,
+				element: (
+					<PermissionRoute permission='ANNOUNCEMENT.EDIT'>
+						<InactiveAds />
+					</PermissionRoute>
+				),
 			},
 		],
 	},

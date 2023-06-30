@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux'
 export default function ProfileLayout() {
 	const location = useLocation()
 	const permissions = useSelector(state => state.auth.permissions)
-	console.log(permissions)
 
 	const hasPermission = permission => {
 		return permissions.some(item => item.name === permission)

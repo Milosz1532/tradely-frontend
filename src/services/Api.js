@@ -93,4 +93,13 @@ export const logout = async () => {
 	}
 }
 
+export const checkPermission = async permission => {
+	try {
+		const response = await axiosClient.post('/checkPermission', { permission })
+		return response.status === 200 ? true : false
+	} catch (error) {
+		throw error.response.data
+	}
+}
+
 export default axiosClient
