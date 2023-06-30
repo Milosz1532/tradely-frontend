@@ -524,3 +524,14 @@ img.loading-image {
 .slick-next:before {
   color: #676767 !important;
 }
+
+.form-title {
+  color: #67ade0;
+  font-weight: bold;
+}
+
+.profile-form-box {
+  border: 1px solid #dfdfdf;
+  border-radius: 5px;
+  padding: 10px;
+}

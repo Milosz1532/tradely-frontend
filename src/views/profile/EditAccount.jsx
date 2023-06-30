@@ -36,9 +36,7 @@ export default function EditAccount() {
 
 	const passwordValidationSchema = Yup.object({
 		currentPassword: Yup.string().required('Pole jest wymagane'),
-		newPassword: Yup.string()
-			.required('Pole jest wymagane')
-			.min(8, 'Hasło musi mieć co najmniej 8 znaków'),
+		newPassword: Yup.string().required('Pole jest wymagane').min(8, 'Hasło musi mieć co najmniej 8 znaków'),
 		confirmPassword: Yup.string()
 			.oneOf([Yup.ref('newPassword'), null], 'Hasła muszą się zgadzać')
 			.required('Pole jest wymagane'),
@@ -51,7 +49,7 @@ export default function EditAccount() {
 				<article className='account-box'>
 					<TabControl>
 						<div title='Dane osobowe'>
-							<h3>Twoje dane osobowe</h3>
+							<h3 className='tab-control-h3'>Twoje dane osobowe</h3>
 							<hr />
 							<Formik
 								initialValues={{
@@ -66,13 +64,7 @@ export default function EditAccount() {
 								<Form>
 									<div className='form-group'>
 										<label htmlFor='username'>Nazwa użytkownika:</label>
-										<Field
-											disabled
-											type='text'
-											id='username'
-											name='username'
-											className='form-control'
-										/>
+										<Field disabled type='text' id='username' name='username' className='form-control' />
 									</div>
 									<div className='form-group'>
 										<label htmlFor='firstName'>Imię:</label>
@@ -134,89 +126,70 @@ export default function EditAccount() {
 							<h3>Adres e-mail i hasło</h3>
 							<hr />
 
-							<h5>Zmiana adresu e-mail: </h5>
-							<Formik
-								initialValues={{
-									email: user?.email || '',
-									password: '',
-								}}
-								validationSchema={emailValidationSchema}
-								onSubmit={handleEmailSubmit}>
-								<Form className='mt-2'>
-									<div className='form-group'>
-										<label htmlFor='email'>Nowy adres e-mail:</label>
-										<Field type='email' id='email' name='email' className='form-control' />
-										<ErrorMessage name='email' component='div' className='error-message' />
-									</div>
-									<div className='form-group'>
-										<label htmlFor='email'>Hasło: </label>
-										<Field type='password' id='password' name='password' className='form-control' />
-										<ErrorMessage name='password' component='div' className='error-message' />
-									</div>
-									<div className='d-flex mt-3 justify-content-end'>
-										<button type='submit' className='btn-design'>
-											Zmień adres e-mail
-										</button>
-									</div>
-								</Form>
-							</Formik>
+							<div className='profile-form-box'>
+								<h5 className='form-title'>Zmiana adresu e-mail: </h5>
+								<Formik
+									initialValues={{
+										email: user?.email || '',
+										password: '',
+									}}
+									validationSchema={emailValidationSchema}
+									onSubmit={handleEmailSubmit}>
+									<Form className='mt-2'>
+										<div className='form-group'>
+											<label htmlFor='email'>Nowy adres e-mail:</label>
+											<Field type='email' id='email' name='email' className='form-control' />
+											<ErrorMessage name='email' component='div' className='error-message' />
+										</div>
+										<div className='form-group'>
+											<label htmlFor='email'>Hasło: </label>
+											<Field type='password' id='password' name='password' className='form-control' />
+											<ErrorMessage name='password' component='div' className='error-message' />
+										</div>
+										<div className='d-flex mt-3 justify-content-end'>
+											<button type='submit' className='btn-design'>
+												Zmień adres e-mail
+											</button>
+										</div>
+									</Form>
+								</Formik>
+							</div>
 
-							<h5>Zmiana hasła: </h5>
+							<div className='profile-form-box mt-3'>
+								<h5 className='form-title'>Zmiana hasła: </h5>
 
-							<Formik
-								initialValues={{
-									currentPassword: '',
-									newPassword: '',
-									confirmPassword: '',
-								}}
-								validationSchema={passwordValidationSchema}
-								onSubmit={handlePasswordSubmit}>
-								<Form>
-									<div className='form-group'>
-										<label htmlFor='currentPassword'>Obecne hasło:</label>
-										<Field
-											type='password'
-											id='currentPassword'
-											name='currentPassword'
-											className='form-control'
-										/>
-										<ErrorMessage
-											name='currentPassword'
-											component='div'
-											className='error-message'
-										/>
-									</div>
-									<div className='form-group'>
-										<label htmlFor='newPassword'>Nowe hasło:</label>
-										<Field
-											type='password'
-											id='newPassword'
-											name='newPassword'
-											className='form-control'
-										/>
-										<ErrorMessage name='newPassword' component='div' className='error-message' />
-									</div>
-									<div className='form-group'>
-										<label htmlFor='confirmPassword'>Potwierdź nowe hasło:</label>
-										<Field
-											type='password'
-											id='confirmPassword'
-											name='confirmPassword'
-											className='form-control'
-										/>
-										<ErrorMessage
-											name='confirmPassword'
-											component='div'
-											className='error-message'
-										/>
-									</div>
-									<div className='d-flex mt-3 justify-content-end'>
-										<button type='submit' className='btn-design'>
-											Zmień hasło
-										</button>
-									</div>
-								</Form>
-							</Formik>
+								<Formik
+									initialValues={{
+										currentPassword: '',
+										newPassword: '',
+										confirmPassword: '',
+									}}
+									validationSchema={passwordValidationSchema}
+									onSubmit={handlePasswordSubmit}>
+									<Form>
+										<div className='form-group'>
+											<label htmlFor='currentPassword'>Obecne hasło:</label>
+											<Field type='password' id='currentPassword' name='currentPassword' className='form-control' />
+											<ErrorMessage name='currentPassword' component='div' className='error-message' />
+										</div>
+										<div className='form-group'>
+											<label htmlFor='newPassword'>Nowe hasło:</label>
+											<Field type='password' id='newPassword' name='newPassword' className='form-control' />
+											<ErrorMessage name='newPassword' component='div' className='error-message' />
+										</div>
+										<div className='form-group'>
+											<label htmlFor='confirmPassword'>Potwierdź nowe hasło:</label>
+											<Field type='password' id='confirmPassword' name='confirmPassword' className='form-control' />
+											<ErrorMessage name='confirmPassword' component='div' className='error-message' />
+										</div>
+										<div className='d-flex mt-3 justify-content-end'>
+											<button type='submit' className='btn-design'>
+												Zmień hasło
+											</button>
+										</div>
+									</Form>
+								</Formik>
+							</div>
 						</div>
 					</TabControl>
 				</article>

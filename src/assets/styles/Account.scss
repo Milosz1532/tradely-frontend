@@ -253,6 +253,7 @@ $box-color: #fff;
 		color: $text-color;
 	}
 }
+
 .tabs {
 	padding: 15px;
 	text-align: center;
@@ -294,7 +295,8 @@ $box-color: #fff;
 	width: 100%;
 	height: 100%;
 	display: none;
-}
+	color: $text-grey-color;
+ }
 .tab-controll h2 {
 	padding: 0px 0 5px 0px;
 }

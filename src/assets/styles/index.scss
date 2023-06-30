@@ -531,3 +531,15 @@ img.loading-image {
 .slick-next:before {
 	color: $text-color !important;
 }
+
+.form-title {
+	color: $main-color;
+	font-weight: bold;
+	// font-size: 18px;
+}
+
+.profile-form-box {
+	border: 1px solid #dfdfdf;
+	border-radius: 5px;
+	padding: 10px;
+}
