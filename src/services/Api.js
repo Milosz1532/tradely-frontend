@@ -50,7 +50,6 @@ export const login = async (email, password) => {
 		const response = await axiosClient.post('/login', data)
 		const { token, user } = response.data
 		setAuthHeader(token)
-		console.log(response.data)
 		return response.data
 	} catch (error) {
 		throw error.response.data

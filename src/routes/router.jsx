@@ -7,6 +7,7 @@ import ProfileLayout from '../Layouts/ProfileLayout'
 import Profile from '../views/profile/Profile'
 import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
 import Favorites from '../views/profile/Favorites'
+import EditAccount from '../views/profile/EditAccount'
 //End Profile
 
 // PERMISSION ROUTES //
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
 			{
 				path: '/account/profile',
 				element: <Profile />,
+			},
+			{
+				path: '/account/edit',
+				element: <EditAccount />,
 			},
 			{
 				path: '/account/announcements',

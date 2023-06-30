@@ -13,7 +13,7 @@ const menuItems = [
 			{
 				id: 2,
 				name: 'Edycja konta',
-				link: '',
+				link: '/account/edit',
 				icon: 'fa-regular fa-pen-to-square',
 			},
 			{

@@ -42,7 +42,7 @@ const PermissionRoute = ({ children, permission }) => {
 		return children
 	}
 
-	return <Navigate to='/account' />
+	return <Navigate to='/' />
 }
 
 export default PermissionRoute
