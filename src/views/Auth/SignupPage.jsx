@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux'
 import { signup } from '../../redux/actions/authActions'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
-import { startLoading, stopLoading } from '../../redux/actions/loadingActions'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import ReactLoading from 'react-loading'
 
 export default function SignupPage() {
 	const dispatch = useDispatch()
@@ -24,7 +24,6 @@ export default function SignupPage() {
 	const handleSubmit = (values, { setSubmitting }) => {
 		const { login, email, password } = values
 
-		dispatch(startLoading())
 		dispatch(signup(login, email, password))
 			.then(() => {
 				toast.success('Konto zarejestrowane pomyślnie!')
@@ -33,11 +32,10 @@ export default function SignupPage() {
 			.catch(error => {
 				Swal.fire({
 					icon: 'error',
-					text: error.message,
+					text: error.error,
 				})
 			})
 			.finally(() => {
-				dispatch(stopLoading())
 				setSubmitting(false)
 			})
 	}
@@ -95,10 +93,18 @@ export default function SignupPage() {
 								</div>
 							</div>
 							<button className='form-btn mt-3' type='submit' disabled={isSubmitting}>
-								{isSubmitting ? 'Trwa rejestracja...' : 'Dołącz do nas'}
+								{isSubmitting ? (
+									<div className='d-flex justify-content-center' style={{ marginTop: '-8px' }}>
+										<ReactLoading type={'bubbles'} color={'#fff'} className='text-center' />
+									</div>
+								) : (
+									'Dołącz do nas'
+								)}
 							</button>
 							<NavLink to='/login'>
-								<button className='form-btn empty mt-2'>Mam już konto</button>
+								<button className='form-btn empty mt-2' disabled={isSubmitting}>
+									Mam już konto
+								</button>
 							</NavLink>
 						</Form>
 					)}

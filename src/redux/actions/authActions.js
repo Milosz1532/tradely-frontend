@@ -60,12 +60,12 @@ export const signup = (login, email, password) => dispatch => {
 		response => {
 			dispatch({
 				type: SIGNUP_SUCCESS,
-				payload: { user: response },
 			})
 
 			return Promise.resolve()
 		},
 		error => {
+			console.log(error)
 			dispatch({
 				type: SIGNUP_FAILURE,
 				payload: { error: error },

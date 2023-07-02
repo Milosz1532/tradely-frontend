@@ -112,7 +112,7 @@ export function SquareAnnouncementLoading() {
 		<div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4'>
 			<div className='announcement-box loading'>
 				<div className='announcement-image loading'>
-					<Skeleton height={200} />
+					<Skeleton height={155} />
 				</div>
 				<div className='announcement-content loading'>
 					<div className='announcement-top-section loading'>

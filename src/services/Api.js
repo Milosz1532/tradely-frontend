@@ -101,4 +101,13 @@ export const checkPermission = async permission => {
 	}
 }
 
+export const activateAccount = async token => {
+	try {
+		const response = await axiosClient.post('/activate-account', { token })
+		return response.data
+	} catch (error) {
+		throw error.response.data
+	}
+}
+
 export default axiosClient

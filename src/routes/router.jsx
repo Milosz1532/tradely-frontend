@@ -25,6 +25,7 @@ import SearchAnnouncements from '../views/Announcements/SearchAnnouncements'
 
 import AuthRoute from './AuthRoute'
 import PermissionRoute from './PermissionRoute'
+import ActivateAccount from '../views/Auth/ActivateAccount'
 
 const router = createBrowserRouter([
 	{
@@ -97,10 +98,17 @@ const router = createBrowserRouter([
 	},
 	{
 		path: '/signup',
-		// element: <SignupPage />,
 		element: (
 			<AuthRoute mustByLogin={false} navigateTo={'/'}>
 				<SignupPage />
+			</AuthRoute>
+		),
+	},
+	{
+		path: '/activateAccount',
+		element: (
+			<AuthRoute mustByLogin={false} navigateTo={'/'}>
+				<ActivateAccount />
 			</AuthRoute>
 		),
 	},
