@@ -19,7 +19,7 @@ export default function LoginPage() {
 			.catch(error => {
 				Swal.fire({
 					icon: 'error',
-					text: error.message,
+					text: error.error,
 				})
 			})
 			.finally(() => {

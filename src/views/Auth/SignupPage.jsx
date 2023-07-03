@@ -25,9 +25,15 @@ export default function SignupPage() {
 		const { login, email, password } = values
 
 		dispatch(signup(login, email, password))
-			.then(() => {
-				toast.success('Konto zarejestrowane pomyślnie!')
-				navigate('/')
+			.then(result => {
+				toast.success('Konto zarejestrowane pomyślnie! Potwierdź swój adres e-mail')
+
+				console.log(result)
+				const { user_email, user_id, verification_code } = result
+
+				navigate(`/confirmEmail/${verification_code}`)
+
+				// navigate(`/confirmEmail?email=${user_email}&id=${user_id}`);
 			})
 			.catch(error => {
 				Swal.fire({

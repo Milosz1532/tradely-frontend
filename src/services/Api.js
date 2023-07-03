@@ -64,9 +64,7 @@ export const signup = async (login, email, password) => {
 			password,
 		}
 		const response = await axiosClient.post('/signup', data)
-		const { token, user } = response.data
-		setAuthHeader(token)
-		return user
+		return response.data
 	} catch (error) {
 		throw error.response.data
 	}
@@ -101,11 +99,35 @@ export const checkPermission = async permission => {
 	}
 }
 
-export const activateAccount = async token => {
+export const activateAccount = async activation_code => {
 	try {
-		const response = await axiosClient.post('/activate-account', { token })
+		const response = await axiosClient.post('/activate-account', { activation_code })
 		return response.data
 	} catch (error) {
+		throw error.response.data
+	}
+}
+
+export const resendVerificationEmail = async validation_code => {
+	try {
+		const response = await axiosClient.post('/resend-verification-email', {
+			validation_code,
+		})
+		return response.data
+	} catch (error) {
+		console.log(error)
+		throw error.response.data
+	}
+}
+
+export const checkVerificationCode = async validation_code => {
+	try {
+		const response = await axiosClient.post('/check-verification-code', {
+			validation_code,
+		})
+		return response.data
+	} catch (error) {
+		console.log(error)
 		throw error.response.data
 	}
 }

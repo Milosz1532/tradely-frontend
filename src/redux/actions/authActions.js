@@ -45,6 +45,7 @@ export const login = (email, password) => dispatch => {
 			return Promise.resolve()
 		},
 		error => {
+			console.log(error)
 			dispatch({
 				type: LOGIN_FAILURE,
 				payload: { error: error },
@@ -61,8 +62,7 @@ export const signup = (login, email, password) => dispatch => {
 			dispatch({
 				type: SIGNUP_SUCCESS,
 			})
-
-			return Promise.resolve()
+			return Promise.resolve(response)
 		},
 		error => {
 			console.log(error)

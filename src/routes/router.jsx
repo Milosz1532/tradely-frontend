@@ -26,6 +26,7 @@ import SearchAnnouncements from '../views/Announcements/SearchAnnouncements'
 import AuthRoute from './AuthRoute'
 import PermissionRoute from './PermissionRoute'
 import ActivateAccount from '../views/Auth/ActivateAccount'
+import ConfirmEmailPage from '../views/Auth/ConfirmEmailPage'
 
 const router = createBrowserRouter([
 	{
@@ -109,6 +110,14 @@ const router = createBrowserRouter([
 		element: (
 			<AuthRoute mustByLogin={false} navigateTo={'/'}>
 				<ActivateAccount />
+			</AuthRoute>
+		),
+	},
+	{
+		path: '/confirmEmail/:verificationCode',
+		element: (
+			<AuthRoute mustByLogin={false} navigateTo={'/'}>
+				<ConfirmEmailPage />
 			</AuthRoute>
 		),
 	},

@@ -12,13 +12,13 @@ export default function ActivateAccount() {
 		const activate = async () => {
 			try {
 				const urlParams = new URLSearchParams(window.location.search)
-				const token = urlParams.get('token')
-				if (!token) {
+				const activation_code = urlParams.get('activation_code')
+				if (!activation_code) {
 					setResult('invalidToken')
 					setLoading(false)
 					return
 				}
-				const response = await activateAccount(token)
+				const response = await activateAccount(activation_code)
 				console.log(response.status)
 				if (response.status == 200) {
 					setResult('success')
