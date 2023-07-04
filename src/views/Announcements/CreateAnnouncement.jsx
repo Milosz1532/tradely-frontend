@@ -5,7 +5,7 @@ import axiosClient from '../../services/Api'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 
-import '../../assets/styles/CreateAnnouncement.css'
+import '../../assets/styles/CreateAnnouncement.scss'
 
 import withReactContent from 'sweetalert2-react-content'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

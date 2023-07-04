@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import moment from 'moment'
 
-import '../../assets/styles/previewAnnouncement.css'
+import '../../assets/styles/previewAnnouncement.scss'
 import axiosClient from '../../services/Api'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

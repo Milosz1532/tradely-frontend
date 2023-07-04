@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import '../../assets/styles/Auth.css'
+import '../../assets/styles/Auth.scss'
 import { useDispatch } from 'react-redux'
 import { login } from '../../redux/actions/authActions'
 import { toast } from 'react-toastify'

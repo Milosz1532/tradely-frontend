@@ -14,7 +14,7 @@ import Category from '../components/Home/Category'
 
 import { indexAnnouncements } from '../services/SearchService'
 
-import '../assets/styles/Home.css'
+import '../assets/styles/Home.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Images //

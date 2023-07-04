@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import '../../assets/styles/Header.css'
+import '../../assets/styles/Header.scss'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
