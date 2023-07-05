@@ -10,6 +10,13 @@ axiosClient.interceptors.response.use(
 		return response
 	},
 	error => {
+		if (!error.response || !error.response.status) {
+			const customError = {
+				error: 'Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie później',
+				isConnectionError: true,
+			}
+			throw customError
+		}
 		if (error.response.status === 401) {
 			// 401 - GDY KTOŚ NIE JEST ZALOGOWANY
 			// 403 - GDY KTOŚ NIE MA UPRAWNIEŃ
@@ -52,7 +59,8 @@ export const login = async (email, password) => {
 		setAuthHeader(token)
 		return response.data
 	} catch (error) {
-		throw error.response.data
+		console.log(error)
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -66,7 +74,7 @@ export const signup = async (login, email, password) => {
 		const response = await axiosClient.post('/signup', data)
 		return response.data
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -77,7 +85,7 @@ export const getUserData = async () => {
 			return response.data
 		}
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -86,7 +94,7 @@ export const logout = async () => {
 		await axiosClient.post('/logout')
 		setAuthHeader(null)
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -95,7 +103,7 @@ export const checkPermission = async permission => {
 		const response = await axiosClient.post('/checkPermission', { permission })
 		return response.status === 200 ? true : false
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -104,7 +112,7 @@ export const activateAccount = async activation_code => {
 		const response = await axiosClient.post('/activate-account', { activation_code })
 		return response.data
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -116,7 +124,7 @@ export const resendVerificationEmail = async validation_code => {
 		return response.data
 	} catch (error) {
 		console.log(error)
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -128,7 +136,7 @@ export const checkVerificationCode = async validation_code => {
 		return response.data
 	} catch (error) {
 		console.log(error)
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 

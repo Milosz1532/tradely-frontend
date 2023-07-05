@@ -5,7 +5,7 @@ export const getAnnouncementCategories = async id => {
 		const response = await axiosClient.get('/categories')
 		return response.data
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 

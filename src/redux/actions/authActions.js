@@ -45,6 +45,7 @@ export const login = (email, password) => dispatch => {
 			return Promise.resolve()
 		},
 		error => {
+			console.log(`Tutaj`)
 			console.log(error)
 			dispatch({
 				type: LOGIN_FAILURE,

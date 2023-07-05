@@ -12,7 +12,7 @@ export const searchAnnouncements = async (location, category, keyword, page) => 
 		})
 		return response.data
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -21,7 +21,7 @@ export const searchCategories = async () => {
 		const response = await axiosClient.get('/categories')
 		return response.data
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
@@ -30,7 +30,7 @@ export const indexAnnouncements = async () => {
 		const response = await axiosClient.get('/announcements')
 		return response
 	} catch (error) {
-		throw error.response.data
+		throw error.response ? error.response.data : error
 	}
 }
 
