@@ -8,11 +8,11 @@ import Profile from '../views/profile/Profile'
 import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
 import Favorites from '../views/profile/Favorites'
 import EditAccount from '../views/profile/EditAccount'
+import ChatPage from '../views/profile/ChatPage'
 //End Profile
 
 // PERMISSION ROUTES //
 import InactiveAds from '../views/profile/PermissionsPages/InactiveAds'
-
 // END PERMISSION ROUTES //
 
 import NotFound from '../views/NotFound'
@@ -78,6 +78,10 @@ const router = createBrowserRouter([
 			{
 				path: '/account/favorites',
 				element: <Favorites />,
+			},
+			{
+				path: '/account/chat',
+				element: <ChatPage />,
 			},
 			{
 				path: '/account/InactiveAds',

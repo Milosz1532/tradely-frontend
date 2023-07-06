@@ -140,4 +140,34 @@ export const checkVerificationCode = async validation_code => {
 	}
 }
 
+// CHAT:
+
+export const getConversations = async () => {
+	try {
+		const response = await axiosClient.get('/chat/conversations')
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const getMessages = async conversationId => {
+	try {
+		const response = await axiosClient.get(`/chat/conversations/${conversationId}/messages`)
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const sendMessage = async data => {
+	console.log(`Send`)
+	try {
+		const response = await axiosClient.post('/chat/messages', data)
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
 export default axiosClient
