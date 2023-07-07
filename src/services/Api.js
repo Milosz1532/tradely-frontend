@@ -166,6 +166,7 @@ export const sendMessage = async data => {
 		const response = await axiosClient.post('/chat/messages', data)
 		return response.data
 	} catch (error) {
+		console.log(error)
 		throw error.response ? error.response.data : error
 	}
 }

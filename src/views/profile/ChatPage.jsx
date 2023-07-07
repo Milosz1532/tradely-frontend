@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import noImages from '/images/no-image.png'
 import { getConversations, getMessages, sendMessage } from '../../services/Api'
+import { useSelector, useDispatch } from 'react-redux'
+
+import '../../services/Chat'
 
 export default function ChatPage() {
 	const [conversations, setConversations] = useState([])
 	const [selectedConversation, setSelectedConversation] = useState(null)
 	const [messages, setMessages] = useState([])
 	const [newMessage, setNewMessage] = useState('')
+	const user = useSelector(state => state.auth.user)
+	useEffect(() => {
+		// const channel = window.Echo.join(`messanger_user.${user.id}`)
+
+		// channel.listen('MessageSent', e => {
+		// 	console.log(e)
+		// 	console.log(`Nowa Wiadomość`)
+		// })
+
+		Echo.private(`messanger_user.${user.id}`).listen('MessageSent', e => {
+			console.log(`Nowa wiadomość`)
+		})
+	}, [])
 
 	useEffect(() => {
 		fetchConversations()
@@ -38,7 +54,6 @@ export default function ChatPage() {
 				conversation_id: selectedConversation.id,
 				content: newMessage,
 			}
-			console.log(2)
 			const response = await sendMessage(data)
 			console.log(response)
 		} catch (error) {
@@ -91,3 +106,26 @@ export default function ChatPage() {
 		</div>
 	)
 }
+
+// Echo.channel(`messanger`).listen('MessageSent', e => {
+// 	console.log(e.message)
+// })
+// Echo.join(`messanger_chat`)
+// 	.here(users => {
+// 		//
+// 		console.log(users)
+// 	})
+// 	.joining(user => {
+// 		console.log(`Połączono`)
+// 	})
+// 	.leaving(user => {
+// 		console.log(`Rozłączono`)
+// 	})
+// 	.listen('GroupChatMessage', e => {
+// 		// console.log(e.message)
+// 		console.log(e)
+// 		// console.log(`Wiadomość`)
+// 	})
+// 	.error(error => {
+// 		console.log(error)
+// 	})
