@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'
 import axiosClient from '../../services/Api'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
+import { useSelector } from 'react-redux'
 
 import '../../assets/styles/CreateAnnouncement.scss'
 
@@ -114,6 +115,7 @@ const CreateAnnouncement = () => {
 	const [loadingScreen, setLoadingScreen] = useState(false)
 	const [categories, setCategories] = useState([])
 	const [selectedCategory, setSelectedCategory] = useState(0)
+	const user = useSelector(state => state.auth.user)
 
 	useEffect(() => {
 		const getCategoriesList = async () => {
@@ -205,7 +207,7 @@ const CreateAnnouncement = () => {
 		formData.append('title', titleInput.current.value)
 		formData.append('description', description)
 		formData.append('price', priceInput.current.value)
-		formData.append('user_id', 1)
+		formData.append('user_id', user.id)
 		formData.append('category_id', selectedCategory)
 		formData.append('location', cityInput.current.value)
 		formData.append('postal_code', zipCodeInput.current.value)
@@ -223,6 +225,7 @@ const CreateAnnouncement = () => {
 		axiosClient
 			.post('/announcements', formData)
 			.then(({ data }) => {
+				console.log(data)
 				Swal.fire({
 					icon: 'success',
 					title: 'Ogłoszenie dodane',
@@ -245,6 +248,8 @@ const CreateAnnouncement = () => {
 			})
 			.catch(err => {
 				const response = err.response
+				console.log(response)
+
 				if (response && response.status === 422) {
 					Swal.fire({
 						icon: 'error',

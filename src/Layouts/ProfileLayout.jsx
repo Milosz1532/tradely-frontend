@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 export default function ProfileLayout() {
 	const location = useLocation()
 	const permissions = useSelector(state => state.auth.permissions)
+	const user = useSelector(state => state.auth.user)
 
 	const hasPermission = permission => {
 		return permissions.some(item => item.name === permission)
@@ -29,11 +30,15 @@ export default function ProfileLayout() {
 			<div className='layout-content'>
 				<div className='left-menu'>
 					<div className='left-menu-profile-info'>
-						<img src={userIcon} alt='user-icon' width={60} height={60} />
+						<img src={userIcon} alt='user-icon' width={60} height={60} draggable={false} />
 						<div className='profile-info-data ms-2'>
-							<p className='user-username'>Miłosz Konopka</p>
-							<p className='user-email'>milosz.konopka@poczta.com</p>
-							<p className='user-id'>ID: 431251</p>
+							<p className='user-username'>{`${
+								user?.first_name && user?.last_name
+									? `${user.first_name} ${user.last_name}`
+									: 'Anonimowy użytkownik'
+							}`}</p>
+							<p className='user-email'>{user.email}</p>
+							<p className='user-id'>ID: {user.id}</p>
 						</div>
 					</div>
 					<div className='left-menu-content-menu mt-4'>
