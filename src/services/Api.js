@@ -171,4 +171,22 @@ export const sendMessage = async data => {
 	}
 }
 
+export const markMessageAsDelivered = async messageId => {
+	try {
+		await axiosClient.put(`/chat/messages/${messageId}/delivered`)
+	} catch (error) {
+		console.error(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const markMessageAsRead = async messageId => {
+	try {
+		await axiosClient.put(`/chat/messages/${messageId}/read`)
+	} catch (error) {
+		console.error(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
 export default axiosClient

@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { getConversations, getMessages, sendMessage } from '../../services/Api'
+import {
+	getConversations,
+	getMessages,
+	sendMessage,
+	markMessageAsRead,
+	markMessageAsDelivered,
+} from '../../services/Api'
 import { useSelector } from 'react-redux'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
@@ -27,7 +33,6 @@ const formatDate = (date, small) => {
 const isHourApart = (date1, date2) => {
 	let diff = (date2.getTime() - date1.getTime()) / 1000
 	diff /= 60 * 60
-	console.log(Math.abs(Math.round(diff)))
 	return Math.abs(Math.round(diff))
 }
 
@@ -78,20 +83,27 @@ export default function ChatPage() {
 						created_at: e.data.created_at,
 						user_id: e.data.user_id,
 					}
-					console.log(`1`)
 					setMessages(prevMessages => [...prevMessages, pushMessage])
-					console.log(messages)
-					updateConversationLatestMessage(selectedConversation.id, pushMessage)
+					updateConversationLatestMessage(selectedConversationRef.current.id, pushMessage)
+					handleSetMessageAsRead(e.data.id)
 				} else {
-					console.log(`2`)
 					updateConversationLatestMessage(e.data.conversation_id, {
 						id: e.data.id,
 						content: e.data.content,
 						created_at: e.data.created_at,
 						user_id: e.data.user_id,
 					})
+					handleSetMessageAsDelivered(e.data.id)
 				}
 			})
+		}
+
+		const handleSetMessageAsDelivered = async id => {
+			await markMessageAsDelivered(id)
+		}
+
+		const handleSetMessageAsRead = async id => {
+			await markMessageAsRead(id)
 		}
 
 		listenForMessages()
@@ -165,9 +177,17 @@ export default function ChatPage() {
 		)
 	}
 
+	const handleMarkMessageAsRead = async messageId => {
+		try {
+			// Oznaczanie wiadomości jako odczytanej na serwerze
+			await markMessageAsRead(messageId)
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
 	const handleConversationClick = conversation => {
 		setSelectedConversation(conversation)
-		console.log(conversation)
 		fetchMessages(conversation.id)
 	}
 
@@ -190,15 +210,18 @@ export default function ChatPage() {
 								className={`chat-menu-item ${
 									selectedConversation?.id === conversation.id ? 'selected' : ''
 								}`}>
-								<img
-									src={
-										conversation.announcement_first_image
-											? conversation.announcement_first_image
-											: noImages
-									}
-									alt='Zdjęcie ogłoszenia'
-									draggable={false}
-								/>
+								<div className='announcement-image'>
+									<img
+										src={
+											conversation.announcement_first_image
+												? conversation.announcement_first_image
+												: noImages
+										}
+										alt='Zdjęcie ogłoszenia'
+										draggable={false}
+									/>
+								</div>
+
 								<div className='chat-menu-item-content'>
 									<p className='title'>{conversation.announcement_title}</p>
 									<p className='content'>{`${
