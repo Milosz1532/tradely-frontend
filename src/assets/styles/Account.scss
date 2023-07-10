@@ -479,6 +479,58 @@ $box-color: #fff;
 					&.received > .message-content {
 						background-color: #ff6e6e;
 					}
+
+					.message-small-date {
+						font-size: 10px;
+						text-align: end;
+						height: 10px;
+						span {
+							display: none;
+						}
+					}
+
+					&:hover {
+						.message-small-date span {
+							display: block;
+						}
+					}
+				}
+			}
+		}
+
+		.chat-content-top {
+			// background-color: red;
+			padding: 10px 15px;
+			border-bottom: 1px solid #dfdfdf;
+			p {
+				margin: 0;
+			}
+			.chat-content-top-content {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-weight: 600;
+
+				.price {
+					color: $main-color;
+				}
+
+				.user-active {
+					position: relative;
+					p {
+						font-weight: normal;
+						font-size: 14px;
+						margin-left: 15px;
+					}
+					.user-active-dot {
+						position: absolute;
+						top: 6px;
+						background-color: rgb(255, 179, 0);
+						content: '';
+						border-radius: 50%;
+						width: 10px;
+						height: 10px;
+					}
 				}
 			}
 		}

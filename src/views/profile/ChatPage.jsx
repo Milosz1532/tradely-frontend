@@ -10,23 +10,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import noImages from '/images/no-image.png'
 import defaultUserIcon from '/images/user.png'
 
-const formatDate = date => {
+const formatDate = (date, small) => {
 	const day = String(date.getDate()).padStart(2, '0')
 	const month = String(date.getMonth() + 1).padStart(2, '0')
 	const year = date.getFullYear()
-	return `${day}.${month}.${year}`
+	const hours = String(date.getHours()).padStart(2, '0')
+	const minutes = String(date.getMinutes()).padStart(2, '0')
+
+	if (small) {
+		const sec = String(date.getSeconds()).padStart(2, '0')
+		return `${hours}:${minutes}:${sec}`
+	}
+	return `${day}.${month}.${year} ${hours}:${minutes}`
 }
 
-const isSameDay = (date1, date2) => {
-	const day1 = date1.getDate()
-	const month1 = date1.getMonth()
-	const year1 = date1.getFullYear()
-
-	const day2 = date2.getDate()
-	const month2 = date2.getMonth()
-	const year2 = date2.getFullYear()
-
-	return day1 === day2 && month1 === month2 && year1 === year2
+const isHourApart = (date1, date2) => {
+	let diff = (date2.getTime() - date1.getTime()) / 1000
+	diff /= 60 * 60
+	console.log(Math.abs(Math.round(diff)))
+	return Math.abs(Math.round(diff))
 }
 
 export default function ChatPage() {
@@ -37,10 +39,13 @@ export default function ChatPage() {
 	const user = useSelector(state => state.auth.user)
 	const messagesContainerRef = useRef(null)
 
-	useEffect(() => {}, [selectedConversation, user.id])
+	const selectedConversationRef = useRef(null)
 
 	useEffect(() => {
-		// Tworzenie instancji Echo tylko przy wejściu na stronę czatu
+		selectedConversationRef.current = selectedConversation
+	}, [selectedConversation])
+
+	useEffect(() => {
 		const echo = new Echo({
 			broadcaster: 'pusher',
 			cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
@@ -61,7 +66,12 @@ export default function ChatPage() {
 		// Nasłuchiwanie wiadomości
 		const listenForMessages = () => {
 			echo.private(`messanger_user.${user.id}`).listen('MessageSent', e => {
-				if (selectedConversation && e.data.conversation_id === selectedConversation.id) {
+				console.log(selectedConversationRef.current)
+				console.log(`e.data.conversation_id = ${e.data.conversation_id}`)
+				if (
+					selectedConversationRef.current &&
+					e.data.conversation_id === selectedConversationRef.current.id
+				) {
 					const pushMessage = {
 						id: e.data.id,
 						content: e.data.content,
@@ -73,6 +83,7 @@ export default function ChatPage() {
 					console.log(messages)
 					updateConversationLatestMessage(selectedConversation.id, pushMessage)
 				} else {
+					console.log(`2`)
 					updateConversationLatestMessage(e.data.conversation_id, {
 						id: e.data.id,
 						content: e.data.content,
@@ -90,7 +101,7 @@ export default function ChatPage() {
 			echo.disconnect() // Odłączanie Echo
 			console.log(`Rozłączono`)
 		}
-	}, [user.id])
+	}, [])
 
 	useEffect(() => {
 		fetchConversations()
@@ -99,7 +110,6 @@ export default function ChatPage() {
 	const fetchConversations = async () => {
 		try {
 			const response = await getConversations()
-			console.log(response.conversations)
 			setConversations(response.conversations)
 		} catch (error) {
 			console.error(error)
@@ -157,7 +167,7 @@ export default function ChatPage() {
 
 	const handleConversationClick = conversation => {
 		setSelectedConversation(conversation)
-		console.log(selectedConversation)
+		console.log(conversation)
 		fetchMessages(conversation.id)
 	}
 
@@ -186,7 +196,7 @@ export default function ChatPage() {
 											? conversation.announcement_first_image
 											: noImages
 									}
-									alt='Zdjęcie użytkownika'
+									alt='Zdjęcie ogłoszenia'
 									draggable={false}
 								/>
 								<div className='chat-menu-item-content'>
@@ -202,19 +212,32 @@ export default function ChatPage() {
 			</div>
 			{selectedConversation && (
 				<div className='chat-content'>
+					<div className='chat-content-top'>
+						<div className='chat-content-top-content'>
+							<div>
+								<p className='title'>{selectedConversation.announcement_title}</p>
+								<div className='user-active'>
+									<span className='user-active-dot'> </span>
+									<p>Ostatnio aktywny: 10 minut temu</p>
+								</div>
+							</div>
+							<p className='price'>3000 zł</p>
+						</div>
+					</div>
 					<div className='chat-content-messages' ref={messagesContainerRef}>
 						{messages.map((message, index) => {
 							const previousMessage = messages[index - 1]
 							const showSenderInfo = !previousMessage || previousMessage.user_id !== message.user_id
 							const showDate =
-								!previousMessage ||
-								!isSameDay(new Date(previousMessage.created_at), new Date(message.created_at))
+								previousMessage &&
+								isHourApart(new Date(previousMessage.created_at), new Date(message.created_at))
 
 							return (
 								<div className='d-block message' key={`messanger-chat-${message.id}`}>
-									{showDate && (
+									{showDate > 0 && (
 										<div className='message-date'>{formatDate(new Date(message.created_at))}</div>
 									)}
+
 									<div
 										className={`message-area ${
 											isMessageSentByUser(message) ? 'sent' : 'received'
@@ -226,6 +249,10 @@ export default function ChatPage() {
 										)}
 										<div className='message-content'>
 											<p>{message.content}</p>
+										</div>
+
+										<div className='message-small-date'>
+											<span>{formatDate(new Date(message.created_at), true)}</span>
 										</div>
 									</div>
 								</div>
