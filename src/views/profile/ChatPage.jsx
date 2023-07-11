@@ -8,7 +8,6 @@ import {
 } from '../../services/Api'
 import { useSelector } from 'react-redux'
 import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
 import Cookies from 'js-cookie'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -96,6 +95,51 @@ export default function ChatPage() {
 					handleSetMessageAsDelivered(e.data.id)
 				}
 			})
+
+			echo.private(`messanger_user.${user.id}`).listen('MessageDelivered', e => {
+				const messageId = e.messageId
+				const conversationId = e.conversationId
+
+				setMessages(prevMessages =>
+					prevMessages.map(message => {
+						if (message.id === messageId) {
+							return {
+								...message,
+								status: 2,
+							}
+						}
+						return message
+					})
+				)
+			})
+
+			echo.private(`messanger_user.${user.id}`).listen('MessageRead', e => {
+				console.log(`Dostałem`)
+
+				const messageId = e.messageId
+				const conversationId = e.conversationId
+
+				if (Number.isInteger(messageId)) {
+					setMessages(prevMessages =>
+						prevMessages.map(message => {
+							if (message.id === messageId) {
+								return {
+									...message,
+									status: 3,
+								}
+							}
+							return message
+						})
+					)
+				} else if (messageId === 'all') {
+					setMessages(prevMessages =>
+						prevMessages.map(message => ({
+							...message,
+							status: 3,
+						}))
+					)
+				}
+			})
 		}
 
 		const handleSetMessageAsDelivered = async id => {
@@ -152,6 +196,7 @@ export default function ChatPage() {
 				content: response.content,
 				created_at: response.created_at,
 				user_id: response.user_id,
+				status: 1,
 			}
 
 			setMessages(prevMessages => [...prevMessages, pushMessage])
@@ -226,7 +271,10 @@ export default function ChatPage() {
 									<p className='title'>{conversation.announcement_title}</p>
 									<p className='content'>{`${
 										conversation?.latest_message?.user_id === user?.id ? 'Ty' : 'Sprzedający'
-									}: ${conversation.latest_message?.content}`}</p>
+									}: ${
+										conversation.latest_message?.content.slice(0, 10) +
+										(conversation.latest_message?.content.length > 10 ? '...' : '')
+									}`}</p>
 								</div>
 							</div>
 						</li>
@@ -250,7 +298,9 @@ export default function ChatPage() {
 					<div className='chat-content-messages' ref={messagesContainerRef}>
 						{messages.map((message, index) => {
 							const previousMessage = messages[index - 1]
+							const nextMessage = messages[index + 1]
 							const showSenderInfo = !previousMessage || previousMessage.user_id !== message.user_id
+							const showStatusInfo = !nextMessage || nextMessage.user_id !== message.user_id
 							const showDate =
 								previousMessage &&
 								isHourApart(new Date(previousMessage.created_at), new Date(message.created_at))
@@ -273,6 +323,28 @@ export default function ChatPage() {
 										<div className='message-content'>
 											<p>{message.content}</p>
 										</div>
+										{showStatusInfo && isMessageSentByUser(message) && (
+											<i className={`message-status status-${message.status}`}>
+												{message.status === 1 && (
+													<>
+														<FontAwesomeIcon icon='fa-regular fa-paper-plane' />
+														<span>Wysłana</span>
+													</>
+												)}
+												{message.status === 2 && (
+													<>
+														<FontAwesomeIcon icon='fa-solid fa-check' />
+														<span>Dostarczona</span>
+													</>
+												)}
+												{message.status === 3 && (
+													<>
+														<FontAwesomeIcon icon='fa-solid fa-check-double' />
+														<span>Wyświetlona</span>
+													</>
+												)}
+											</i>
+										)}
 
 										<div className='message-small-date'>
 											<span>{formatDate(new Date(message.created_at), true)}</span>
