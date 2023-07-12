@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import {
 	getConversations,
 	getMessages,
 	sendMessage,
 	markMessageAsRead,
 	markMessageAsDelivered,
+	getNewConversationData,
+	createNewConversation,
 } from '../../services/Api'
 import { useSelector } from 'react-redux'
+import Pusher from 'pusher-js'
+
 import Echo from 'laravel-echo'
 import Cookies from 'js-cookie'
 
@@ -36,7 +41,11 @@ const isHourApart = (date1, date2) => {
 }
 
 export default function ChatPage() {
+	const { announcement_id } = useParams()
+	const navigate = useNavigate()
+
 	const [conversations, setConversations] = useState([])
+	const [newConversation, setNewConversation] = useState(false)
 	const [selectedConversation, setSelectedConversation] = useState(null)
 	const [messages, setMessages] = useState([])
 	const [newMessage, setNewMessage] = useState('')
@@ -44,6 +53,33 @@ export default function ChatPage() {
 	const messagesContainerRef = useRef(null)
 
 	const selectedConversationRef = useRef(null)
+	useEffect(() => {
+		if (!announcement_id) {
+			navigate('/account/chat')
+			return
+		}
+		const fetchAnnouncement = async () => {
+			if (announcement_id) {
+				try {
+					const response = await getNewConversationData(announcement_id)
+					setNewConversation(response.data)
+					if (response.status === 202) {
+						handleConversationClick(response.data)
+						setNewConversation(false)
+						navigate('/account/chat')
+					}
+					if (response.error) {
+						setNewConversation(false)
+						navigate('/account/chat')
+					}
+				} catch (error) {
+					console.error(error)
+				}
+			}
+		}
+
+		fetchAnnouncement()
+	}, [announcement_id])
 
 	useEffect(() => {
 		selectedConversationRef.current = selectedConversation
@@ -70,8 +106,6 @@ export default function ChatPage() {
 		// Nasłuchiwanie wiadomości
 		const listenForMessages = () => {
 			echo.private(`messanger_user.${user.id}`).listen('MessageSent', e => {
-				console.log(selectedConversationRef.current)
-				console.log(`e.data.conversation_id = ${e.data.conversation_id}`)
 				if (
 					selectedConversationRef.current &&
 					e.data.conversation_id === selectedConversationRef.current.id
@@ -86,6 +120,13 @@ export default function ChatPage() {
 					updateConversationLatestMessage(selectedConversationRef.current.id, pushMessage)
 					handleSetMessageAsRead(e.data.id)
 				} else {
+					const hasConversationInState = conversations.some(
+						conversation => conversation.id === e.data.conversation_id
+					)
+					if (!hasConversationInState) {
+						fetchConversations()
+					}
+
 					updateConversationLatestMessage(e.data.conversation_id, {
 						id: e.data.id,
 						content: e.data.content,
@@ -114,8 +155,6 @@ export default function ChatPage() {
 			})
 
 			echo.private(`messanger_user.${user.id}`).listen('MessageRead', e => {
-				console.log(`Dostałem`)
-
 				const messageId = e.messageId
 				const conversationId = e.conversationId
 
@@ -184,6 +223,37 @@ export default function ChatPage() {
 	const handleSendMessage = async e => {
 		e.preventDefault()
 		if (!newMessage.trim()) return
+
+		if (newConversation) {
+			try {
+				const data = {
+					announcement_id: newConversation.announcement.id,
+					content: newMessage,
+				}
+				const response = await createNewConversation(data)
+				setNewConversation(false)
+				navigate('/account/chat')
+				setSelectedConversation(response.conversation)
+
+				const pushMessage = {
+					id: response.message.id,
+					content: response.message.content,
+					created_at: response.message.created_at,
+					user_id: response.message.user_id,
+					status: 1,
+				}
+
+				setMessages([pushMessage])
+				setConversations(prevConversations => [...prevConversations, response.conversation])
+
+				setNewMessage('')
+
+				return
+			} catch {
+				console.error(error)
+			}
+		}
+
 		try {
 			const data = {
 				conversation_id: selectedConversation.id,
@@ -281,6 +351,42 @@ export default function ChatPage() {
 					))}
 				</ul>
 			</div>
+
+			{newConversation && (
+				<div className='chat-content'>
+					<div className='chat-content-top'>
+						<div className='chat-content-top-content'>
+							<div>
+								<p className='title'>{newConversation.announcement.title}</p>
+								<div className='user-active'>
+									<span className='user-active-dot'> </span>
+									<p>Ostatnio aktywny: 10 minut temu</p>
+								</div>
+							</div>
+							<p className='price'>3000 zł</p>
+						</div>
+					</div>
+					<div className='chat-content-messages' ref={messagesContainerRef}></div>
+					<div className='chat-content-bottom'>
+						<hr className='my-2' />
+						<form onSubmit={handleSendMessage}>
+							<input
+								placeholder='Twoja wiadomość...'
+								type='text'
+								value={newMessage}
+								onChange={e => setNewMessage(e.target.value)}
+							/>
+
+							<button>
+								<i>
+									<FontAwesomeIcon icon='fa-regular fa-paper-plane' />
+								</i>
+							</button>
+						</form>
+					</div>
+				</div>
+			)}
+
 			{selectedConversation && (
 				<div className='chat-content'>
 					<div className='chat-content-top'>

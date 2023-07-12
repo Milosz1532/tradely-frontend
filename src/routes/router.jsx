@@ -84,6 +84,10 @@ const router = createBrowserRouter([
 				element: <ChatPage />,
 			},
 			{
+				path: '/account/chat/new/:announcement_id',
+				element: <ChatPage />,
+			},
+			{
 				path: '/account/InactiveAds',
 				element: (
 					<PermissionRoute permission='ANNOUNCEMENT.EDIT'>

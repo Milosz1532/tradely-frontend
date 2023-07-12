@@ -142,6 +142,16 @@ export const checkVerificationCode = async validation_code => {
 
 // CHAT:
 
+export const createNewConversation = async data => {
+	try {
+		const response = await axiosClient.post('/chat/start', data)
+		return response.data
+	} catch (error) {
+		console.log(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
 export const getConversations = async () => {
 	try {
 		const response = await axiosClient.get('/chat/conversations')
@@ -161,7 +171,6 @@ export const getMessages = async conversationId => {
 }
 
 export const sendMessage = async data => {
-	console.log(`Send`)
 	try {
 		const response = await axiosClient.post('/chat/messages', data)
 		return response.data
@@ -185,6 +194,16 @@ export const markMessageAsRead = async messageId => {
 		await axiosClient.put(`/chat/messages/${messageId}/read`)
 	} catch (error) {
 		console.error(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const getNewConversationData = async id => {
+	try {
+		const response = await axiosClient.get(`/chat/newConversation/data/${id}`)
+		return response
+	} catch (error) {
+		console.log(error)
 		throw error.response ? error.response.data : error
 	}
 }
