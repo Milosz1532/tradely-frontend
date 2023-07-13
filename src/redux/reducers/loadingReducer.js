@@ -1,7 +1,7 @@
 import { START_LOADING_PAGE, STOP_LOADING_PAGE } from '../actions/actionTypes'
 
 const initialState = {
-	isLoading: false,
+	isLoading: null,
 	fullSize: false,
 }
 

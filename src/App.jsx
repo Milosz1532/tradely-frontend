@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { RouterProvider } from 'react-router-dom'
 import router from './routes/router.jsx'
@@ -16,9 +16,9 @@ import 'react-toastify/dist/ReactToastify.css'
 export default function App() {
 	const dispatch = useDispatch()
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
-
 	const isLoading = useSelector(state => state.loading.isLoading)
 	const loadingFullSize = useSelector(state => state.loading.fullSize)
+	const [isShowingLoading, setIsShowingLoading] = useState(false)
 
 	useEffect(() => {
 		if (!isAuthenticated) {
@@ -32,9 +32,21 @@ export default function App() {
 		}
 	}, [dispatch, isAuthenticated])
 
+	useEffect(() => {
+		console.log(isLoading)
+		if (isLoading) {
+			setIsShowingLoading(true)
+		} else if (isLoading === false) {
+			setIsShowingLoading(true)
+			setTimeout(() => {
+				setIsShowingLoading(false)
+			}, 1000)
+		}
+	}, [isLoading])
+
 	return (
 		<>
-			{isLoading && <LoadingPage fullSize={loadingFullSize} />}
+			{isShowingLoading && <LoadingPage fullSize={loadingFullSize} />}
 			<RouterProvider router={router} />
 			<ToastContainer />
 		</>

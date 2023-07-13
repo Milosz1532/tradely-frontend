@@ -173,7 +173,7 @@ $image-background: rgb(235, 235, 235);
 		color: $text-color;
 
 		&::placeholder {
-			font-weight: 100;
+			font-weight: 300;
 			opacity: 0.7;
 		}
 	}
@@ -188,7 +188,7 @@ $image-background: rgb(235, 235, 235);
 	color: $text-color;
 
 	&::placeholder {
-		font-weight: 100;
+		font-weight: 300;
 		opacity: 0.7;
 	}
 }
@@ -538,3 +538,85 @@ img.loading-image {
 	// font-size: 18px;
 }
 
+@keyframes fade-in {
+	from {
+		scale: 0;
+	}
+	to {
+		scale: 1;
+	}
+}
+
+@keyframes fade-out {
+	from {
+		scale: 1;
+	}
+	to {
+		scale: 0;
+	}
+}
+
+.loadingPage {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	z-index: 99;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.loading-logo {
+		position: relative;
+		display: inline-block;
+		font-size: 6em;
+		font-weight: 800;
+		color: $main-color;
+		overflow: hidden;
+		background: linear-gradient(to right, $main-color, royalblue 50%, #b2b2b2 50%);
+		background-clip: text;
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 200% 100%;
+		background-position: 100%;
+		animation: gradient-animation 5s infinite, bounce-animation 3s infinite;
+		text-decoration: none;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+	}
+
+	@keyframes gradient-animation {
+		0% {
+			background-position: 100%;
+		}
+		100% {
+			background-position: 0 100%;
+		}
+	}
+
+	@keyframes bounce-animation {
+		0% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(10px);
+		}
+
+		100% {
+			transform: translateY(0);
+		}
+	}
+}
+
+.loadingPage.fullSize {
+	height: 100vh;
+}
+
+.loadingPage.fade-out {
+	border-radius: 30px;
+	animation: fade-out 400ms forwards;
+}

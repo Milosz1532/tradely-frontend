@@ -591,6 +591,10 @@ $box-color: #fff;
 						border-radius: 50%;
 						width: 10px;
 						height: 10px;
+
+						&  .green {
+							background-color: #239e46;
+						}
 					}
 				}
 			}
@@ -623,6 +627,16 @@ $box-color: #fff;
 			}
 		}
 	}
+}
+
+.skeleton-right {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.skeleton-left {
+	display: flex;
+	justify-content: flex-start;
 }
 
 @media (max-width: 1199px) {

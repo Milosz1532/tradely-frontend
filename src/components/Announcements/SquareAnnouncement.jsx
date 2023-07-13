@@ -95,9 +95,11 @@ export function SquareAnnouncement({
 								<i className='me-2 announcement-button' onClick={handleLikeAnnouncement}>
 									<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
 								</i>
-								<i>
-									<FontAwesomeIcon icon='fa-regular fa-comments' />
-								</i>
+								<NavLink to={`/account/chat/new/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+									<i>
+										<FontAwesomeIcon icon='fa-regular fa-comments' />
+									</i>
+								</NavLink>
 							</div>
 						)}
 					</div>

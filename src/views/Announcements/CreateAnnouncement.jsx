@@ -336,7 +336,7 @@ const CreateAnnouncement = () => {
 	return (
 		<>
 			<div className='container mt-5'>
-				<h3 className='home-title'>Dodaj ogłoszenie</h3>
+				<h3 className='create-announcement-title'>Dodaj ogłoszenie</h3>
 
 				<section className='create-announcement-section'>
 					<div className='row'>
