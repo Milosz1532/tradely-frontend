@@ -108,6 +108,14 @@ export const manageFavoritesAnnouncements = announcement => {
 	}
 }
 
+export const removeUnreadConversation = conversationId => {
+	return { type: 'REMOVE_UNREAD_CONVERSATION', conversationId }
+}
+
+export const addUnreadConversation = conversationId => {
+	return { type: 'ADD_UNREAD_CONVERSATION', conversationId }
+}
+
 export const logout = () => {
 	return dispatch => {
 		Api.logout()

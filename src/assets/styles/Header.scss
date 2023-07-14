@@ -53,6 +53,23 @@ header {
 				&:hover {
 					opacity: 1;
 				}
+
+				&.messages-icon {
+					position: relative;
+					.messages-count {
+						content: '';
+						position: absolute;
+						top: -5px;
+						right: -12px;
+						min-width: 18px;
+						height: 18px;
+						border-radius: 10px;
+						background-color: $logo-color;
+						font-size: 12px;
+						text-align: center;
+						color: #fff;
+					}
+				}
 			}
 
 			.header-right-section-account {

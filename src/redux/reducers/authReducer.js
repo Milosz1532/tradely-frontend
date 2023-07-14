@@ -4,6 +4,7 @@ const initialState = {
 	verifying: true,
 	error: null,
 	favoriteAds: [],
+	unreadMessages: 0,
 	permissions: false,
 }
 
@@ -22,6 +23,7 @@ const authReducer = (state = initialState, action) => {
 				verifying: false,
 				error: null,
 				permissions: action.payload.user.permissions,
+				unreadMessages: action.payload.user.unread_messages,
 			}
 		case 'AUTH_FAILURE':
 			return {
@@ -92,7 +94,22 @@ const authReducer = (state = initialState, action) => {
 				...state,
 				favoriteAds: state.favoriteAds.filter(ad => ad.id !== action.payload.announcement.id),
 			}
-
+		case 'ADD_UNREAD_CONVERSATION':
+			console.log(`Test`)
+			return {
+				...state,
+				unreadMessages: {
+					...state.unreadMessages,
+					[action.conversationId]: (state.unreadMessages[action.conversationId] || 0) + 1,
+				},
+			}
+		case 'REMOVE_UNREAD_CONVERSATION':
+			const updatedUnreadMessages = { ...state.unreadMessages }
+			delete updatedUnreadMessages[action.conversationId]
+			return {
+				...state,
+				unreadMessages: updatedUnreadMessages,
+			}
 		default:
 			return state
 	}

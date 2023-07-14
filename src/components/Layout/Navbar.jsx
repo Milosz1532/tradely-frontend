@@ -8,13 +8,19 @@ import NotLoginIcon from '/images/nav-profile-notLoign-icon.svg'
 import userIcon from '/images/user.png'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { addUnreadConversation } from '../../redux/actions/authActions'
 import { toast } from 'react-toastify'
 import { logout } from '../../redux/actions/authActions'
+
+import Pusher from 'pusher-js'
+import Echo from 'laravel-echo'
+import Cookies from 'js-cookie'
 
 export default function Navbar({ fluid = false }) {
 	const dispatch = useDispatch()
 	const [showUserProfile, setShowUserProfile] = useState(false)
 	const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+	const unreadMessages = useSelector(state => state.auth.unreadMessages)
 	const user = useSelector(state => state.auth.user)
 	const userProfileRef = useRef(null)
 
@@ -23,6 +29,36 @@ export default function Navbar({ fluid = false }) {
 	}
 
 	useEffect(() => {
+		if (isAuthenticated) {
+			const echo = new Echo({
+				broadcaster: 'pusher',
+				cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+				key: import.meta.env.VITE_PUSHER_APP_KEY,
+				wsHost: window.location.hostname,
+				wsPort: 6001,
+				forceTLS: false,
+				disableStats: true,
+				enabledTransports: ['ws', 'wss'],
+				authEndpoint: import.meta.env.VITE_API_BASE_URL + '/broadcasting/auth',
+				auth: {
+					headers: {
+						Authorization: `Bearer ${Cookies.get('ACCESS_TOKEN')}`,
+					},
+				},
+			})
+
+			// Nasłuchiwanie wiadomości
+			const listenForMessages = () => {
+				console.log(`object`)
+				echo.private(`messanger_user.${user.id}`).listen('MessageSent', e => {
+					console.log(`Dostałeś wiadomość`)
+					console.log(e)
+					dispatch(addUnreadConversation(e.data.conversation_id))
+				})
+			}
+			listenForMessages()
+		}
+
 		function handleClickOutside(event) {
 			if (userProfileRef.current && !userProfileRef.current.contains(event.target)) {
 				setShowUserProfile(false)
@@ -34,7 +70,7 @@ export default function Navbar({ fluid = false }) {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside)
 		}
-	}, [])
+	}, [isAuthenticated])
 
 	const handleLogoutUser = () => {
 		setShowUserProfile(false)
@@ -63,8 +99,13 @@ export default function Navbar({ fluid = false }) {
 						</NavLink>
 					</i>
 
-					<i>
-						<FontAwesomeIcon icon='fa-regular fa-comments' />
+					<i className='messages-icon'>
+						<NavLink to={'/account/chat'}>
+							<FontAwesomeIcon icon='fa-regular fa-comments' />
+							{Object.keys(unreadMessages).length > 0 && (
+								<span className='messages-count'>{Object.keys(unreadMessages).length}</span>
+							)}
+						</NavLink>
 					</i>
 					<i>
 						<FontAwesomeIcon icon='fa-regular fa-bell' />

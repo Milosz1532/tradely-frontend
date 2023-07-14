@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { removeUnreadConversation } from '../../redux/actions/authActions'
 import {
 	getConversations,
 	getMessages,
@@ -19,7 +21,6 @@ import Cookies from 'js-cookie'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import noImages from '/images/no-image.png'
-import defaultUserIcon from '/images/user.png'
 
 const formatDate = (date, small) => {
 	const day = String(date.getDate()).padStart(2, '0')
@@ -47,6 +48,7 @@ export default function ChatPage() {
 
 	const [conversations, setConversations] = useState([])
 	const [newConversation, setNewConversation] = useState(false)
+	const [sortedConversations, setSortedConversations] = useState([])
 	const [selectedConversation, setSelectedConversation] = useState(null)
 	const [messages, setMessages] = useState([])
 	const [newMessage, setNewMessage] = useState('')
@@ -55,6 +57,9 @@ export default function ChatPage() {
 	const user = useSelector(state => state.auth.user)
 	const messagesContainerRef = useRef(null)
 	const selectedConversationRef = useRef(null)
+	const conversationIdRef = useRef(null)
+
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		if (!announcement_id) {
@@ -65,6 +70,7 @@ export default function ChatPage() {
 			if (announcement_id) {
 				try {
 					const response = await getNewConversationData(announcement_id)
+					console.log(response)
 					setNewConversation(response.data)
 					if (response.status === 202) {
 						handleConversationClick(response.data)
@@ -80,7 +86,7 @@ export default function ChatPage() {
 				}
 			}
 		}
-
+		// setNewConversation(true)
 		fetchAnnouncement()
 	}, [announcement_id])
 
@@ -89,6 +95,8 @@ export default function ChatPage() {
 	}, [selectedConversation])
 
 	useEffect(() => {
+		fetchConversations()
+
 		const echo = new Echo({
 			broadcaster: 'pusher',
 			cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
@@ -123,19 +131,14 @@ export default function ChatPage() {
 					updateConversationLatestMessage(selectedConversationRef.current.id, pushMessage)
 					handleSetMessageAsRead(e.data.id)
 				} else {
-					const hasConversationInState = conversations.some(
-						conversation => conversation.id === e.data.conversation_id
-					)
-					if (!hasConversationInState) {
-						console.log(`Nowa konwersacja`)
-						fetchConversations()
-					}
+					conversationIdRef.current = e.data.conversation_id
 
 					updateConversationLatestMessage(e.data.conversation_id, {
 						id: e.data.id,
 						content: e.data.content,
 						created_at: e.data.created_at,
 						user_id: e.data.user_id,
+						status: 1,
 					})
 					handleSetMessageAsDelivered(e.data.id)
 				}
@@ -143,7 +146,6 @@ export default function ChatPage() {
 
 			echo.private(`messanger_user.${user.id}`).listen('MessageDelivered', e => {
 				const messageId = e.messageId
-				const conversationId = e.conversationId
 
 				setMessages(prevMessages =>
 					prevMessages.map(message => {
@@ -160,7 +162,6 @@ export default function ChatPage() {
 
 			echo.private(`messanger_user.${user.id}`).listen('MessageRead', e => {
 				const messageId = e.messageId
-				const conversationId = e.conversationId
 
 				if (Number.isInteger(messageId)) {
 					setMessages(prevMessages =>
@@ -194,24 +195,45 @@ export default function ChatPage() {
 		}
 
 		listenForMessages()
-		console.log(`Połączono`)
 
 		return () => {
-			echo.disconnect() // Odłączanie Echo
-			console.log(`Rozłączono`)
+			echo.disconnect()
 		}
 	}, [])
 
 	useEffect(() => {
-		fetchConversations()
-	}, [])
+		if (conversations.length > 0 && conversationIdRef.current) {
+			const hasConversationInState = conversations.find(c => c.id === conversationIdRef.current)
+			if (!hasConversationInState) {
+				// fetchConversations()
+				conversationIdRef.current.remove()
+			}
+		}
+
+		if (conversations.length > 0) {
+			const sortedConversations = conversations.sort((a, b) => {
+				const aLatestMessage = a.latest_message
+				const bLatestMessage = b.latest_message
+
+				if (!aLatestMessage) return -1
+				if (!bLatestMessage) return 1
+
+				const aDate = new Date(aLatestMessage.created_at)
+				const bDate = new Date(bLatestMessage.created_at)
+
+				return bDate - aDate
+			})
+			setSortedConversations(sortedConversations)
+		}
+	}, [conversations])
 
 	const fetchConversations = async () => {
 		try {
 			setLoadingConversations(true)
 			const response = await getConversations()
-			console.log(response)
+
 			setConversations(response.conversations)
+
 			setLoadingConversations(false)
 		} catch (error) {
 			console.error(error)
@@ -223,8 +245,31 @@ export default function ChatPage() {
 		try {
 			setLoadingMessages(true)
 			const response = await getMessages(conversationId)
-			console.log(response)
 			setMessages(response.messages)
+			console.log(response)
+			setConversations(prevConversations =>
+				prevConversations.map(conversation => {
+					if (conversation.id === conversationId) {
+						const latestMessage = conversation.latest_message
+						if (latestMessage) {
+							return {
+								...conversation,
+								latest_message: {
+									...latestMessage,
+									status: 3,
+								},
+							}
+						}
+					}
+					return conversation
+				})
+			)
+			setSelectedConversation(prevState => ({
+				...prevState,
+				user_last_activity: response.user_last_activity,
+			}))
+
+			dispatch(removeUnreadConversation(conversationId))
 		} catch (error) {
 			console.error(error)
 		} finally {
@@ -307,6 +352,9 @@ export default function ChatPage() {
 			setNewConversation(false)
 			navigate('/account/chat')
 		}
+		if (selectedConversation) {
+			if (selectedConversation.id === conversation.id) return
+		}
 		setSelectedConversation(conversation)
 		fetchMessages(conversation.id)
 	}
@@ -327,7 +375,7 @@ export default function ChatPage() {
 					{loadingConversations ? (
 						<Skeleton count={5} height={80} />
 					) : (
-						conversations.map(conversation => (
+						sortedConversations.map(conversation => (
 							<li key={conversation.id} onClick={() => handleConversationClick(conversation)}>
 								<div
 									className={`chat-menu-item ${
@@ -346,15 +394,27 @@ export default function ChatPage() {
 									</div>
 
 									<div className='chat-menu-item-content'>
-										<p className='title'>{conversation.announcement_title}</p>
-										<p className='content'>{`${
-											conversation?.latest_message?.user_id === user?.id
-												? 'Ty'
-												: 'Członek konwersacji'
-										}: ${
-											conversation.latest_message?.content.slice(0, 10) +
-											(conversation.latest_message?.content.length > 10 ? '...' : '')
-										}`}</p>
+										<p className='title'>
+											{conversation.announcement_title.slice(0, 25) +
+												(conversation.announcement_title.length > 25 ? '...' : '')}
+										</p>
+										{conversation.latest_message && (
+											<p
+												className={`content ${
+													conversation?.latest_message?.user_id !== user?.id &&
+													conversation?.latest_message?.status &&
+													conversation?.latest_message?.status !== 3
+														? 'new'
+														: ''
+												}`}>{`${
+												conversation?.latest_message?.user_id === user?.id
+													? 'Ty'
+													: 'Członek konwersacji'
+											}: ${
+												conversation.latest_message?.content.slice(0, 10) +
+												(conversation.latest_message?.content.length > 10 ? '...' : '')
+											}`}</p>
+										)}
 									</div>
 								</div>
 							</li>
@@ -368,9 +428,9 @@ export default function ChatPage() {
 					<div className='chat-content-top'>
 						<div className='chat-content-top-content'>
 							<div>
-								<p className='title'>{newConversation.announcement.title}</p>
+								<p className='title'>{newConversation?.announcement?.title}</p>
 								<div className='user-active'>
-									{newConversation.user_last_activity === true ? (
+									{newConversation.user.user_last_activity === true ? (
 										<>
 											<span className='user-active-dot green'> </span>
 											<p>Dostępny</p>
@@ -383,7 +443,7 @@ export default function ChatPage() {
 									)}
 								</div>
 							</div>
-							<p className='price'>3000 zł</p>
+							<p className='price'>{newConversation.announcement.price} zł</p>
 						</div>
 					</div>
 					<div className='chat-content-messages' ref={messagesContainerRef}></div>
@@ -412,23 +472,43 @@ export default function ChatPage() {
 					<div className='chat-content-top'>
 						<div className='chat-content-top-content'>
 							<div>
-								<p className='title'>{selectedConversation.announcement_title}</p>
+								{loadingMessages ? (
+									<>
+										<Skeleton count={1} height={20} width={200} />
+									</>
+								) : (
+									<p className='title'>{selectedConversation.announcement_title}</p>
+								)}
 								<div className='user-active'>
-									{selectedConversation.user_last_activity === true && (
+									{loadingMessages ? (
+										<div className='d-flex'>
+											<Skeleton className='me-2' circle={true} height={10} width={10} />
+											<Skeleton count={1} height={10} width={100} />
+										</div>
+									) : (
 										<>
-											<span className='user-active-dot green'> </span>
-											<p>Dostępny</p>
-										</>
-									)}
-									{selectedConversation.user_last_activity !== true && selectedConversation.user_last_activity  && (
-										<>
-											<span className='user-active-dot orange'> </span>
-											<p>Ostatnio aktywny: {selectedConversation.user_last_activity}</p>
+											{selectedConversation.user_last_activity === true ? (
+												<>
+													<span className='user-active-dot green'> </span>
+													<p>Dostępny</p>
+												</>
+											) : (
+												<>
+													<span className='user-active-dot orange'> </span>
+													<p>Ostatnio aktywny: {selectedConversation.user_last_activity}</p>
+												</>
+											)}
 										</>
 									)}
 								</div>
 							</div>
-							<p className='price'>3000 zł</p>
+							{loadingMessages ? (
+								<>
+									<Skeleton count={1} height={20} width={80} />
+								</>
+							) : (
+								<p className='price'>{selectedConversation.announcement_price} zł</p>
+							)}
 						</div>
 					</div>
 					<div className='chat-content-messages' ref={messagesContainerRef}>
