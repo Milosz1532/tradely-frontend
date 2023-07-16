@@ -49,10 +49,7 @@ export default function Navbar({ fluid = false }) {
 
 			// Nasłuchiwanie wiadomości
 			const listenForMessages = () => {
-				console.log(`object`)
 				echo.private(`messanger_user.${user.id}`).listen('MessageSent', e => {
-					console.log(`Dostałeś wiadomość`)
-					console.log(e)
 					dispatch(addUnreadConversation(e.data.conversation_id))
 				})
 			}
@@ -78,10 +75,16 @@ export default function Navbar({ fluid = false }) {
 		toast.success('Pomyślnie wylogowano!')
 	}
 
-	const [showMenu, setShowMenu] = useState(false)
+	const [showMenu, setShowMenu] = useState(null)
 
 	const handleShowMenu = () => {
 		setShowMenu(prevState => !prevState)
+	}
+
+	const handleAnimationEnd = () => {
+		if (showMenu === false) {
+			setShowMenu(null)
+		}
 	}
 
 	return (
@@ -222,28 +225,38 @@ export default function Navbar({ fluid = false }) {
 				</div>
 			</article>
 			{/* Mobile Menu */}
-			<div className={`mobile-menu ${showMenu ? 'active' : ''}`}>
+			<div
+				className={`mobile-menu ${
+					showMenu === true ? 'active' : showMenu === false ? 'closing' : ''
+				}`}
+				onAnimationEnd={handleAnimationEnd}>
 				<ul>
 					<li>
-						<i>
-							<FontAwesomeIcon icon='fa-regular fa-heart' />
-						</i>
+						<NavLink to={'/account/favorites'}>
+							<i>
+								<FontAwesomeIcon icon='fa-regular fa-heart' />
+							</i>
 
-						<span className='ms-2'>Obserwowane</span>
+							<span className='ms-2'>Obserwowane</span>
+						</NavLink>
 					</li>
 					<li>
-						<i>
-							<FontAwesomeIcon icon='fa-regular fa-comments' />
-						</i>
-						<span className='ms-2'>Wiadomości</span>
+						<NavLink to={'/account/chat'}>
+							<i>
+								<FontAwesomeIcon icon='fa-regular fa-comments' />
+							</i>
+							<span className='ms-2'>Wiadomości</span>
+						</NavLink>
 					</li>
 					<li>
-						<i>
-							<FontAwesomeIcon icon='fa-regular fa-user' />
-						</i>
-						<span className='ms-2'>Moje konto</span>
+						<NavLink to={'/account/profile'}>
+							<i>
+								<FontAwesomeIcon icon='fa-regular fa-user' />
+							</i>
+							<span className='ms-2'>Moje konto</span>
+						</NavLink>
 					</li>
-					<li>
+					<li onClick={handleLogoutUser}>
 						<i>
 							<FontAwesomeIcon icon='fa-solid fa-door-open' />
 						</i>
