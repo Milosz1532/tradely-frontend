@@ -1,156 +1,197 @@
 $main-color: #67ade0;
-$text-color: #676767;
+$text-color: #828282;
 $light-text-color: #fff;
 $section-background: #fff;
+$border-color: #eeeeee;
 
-.create-announcement-title {
-	color: $text-color;
-	font-weight: bold;
-	font-size: 24px;
-}
-
-.create-announcement-section {
+.createAnnouncement-page-title {
 	background-color: $section-background;
-	margin-top: 20px;
-	border-radius: 5px;
 	padding: 20px;
-	-webkit-box-shadow: 0px 0px 24px 0px rgba(214, 214, 214, 1);
-	-moz-box-shadow: 0px 0px 24px 0px rgba(214, 214, 214, 1);
-	box-shadow: 0px 0px 24px 0px rgba(214, 214, 214, 1);
-
-	.create-announcement-images-count {
+	border: 1px solid $border-color;
+	border-radius: 7px;
+	.title {
+		font-size: 24px;
+		color: $main-color;
+		font-weight: bold;
+	}
+	p {
 		color: $text-color;
 		font-size: 14px;
 	}
 }
 
-.create-announcement-image-box {
-	position: relative;
-	background-color: #efefef;
-	border-radius: 10px;
-	cursor: pointer;
-	opacity: 0.8;
-	transition: all 0.4s;
+.createAnnouncement-container {
+	display: flex;
 
-	&:hover {
-		opacity: 1;
-	}
+	.fixed-container {
+		.progress-container {
+			.progress-item {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+				position: relative;
 
-	.create-announcement-image-box-content {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		height: 200px;
-		text-align: center;
-		i {
-			font-size: 50px;
-		}
-		p {
-			margin-top: 10px;
-		}
+				.description {
+					color: $text-color;
+					width: 80%;
+					p {
+						margin: 0;
+						padding: 0;
+					}
 
-		.image-preview {
-			img {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				max-width: 100%;
-				max-height: 100%;
-				cursor: auto;
-			}
+					.title {
+						font-weight: bold;
+					}
+					.sub-title {
+						font-size: 10px;
+					}
+				}
 
-			.image-overlay {
-				// opacity: 0;
-				scale: 0;
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				pointer-events: none;
-				transform: translate(-50%, -50%);
-				transition: all 0.4s;
-				background-color: #ffffff94;
-				border-radius: 50%;
-				width: 60px;
-				height: 60px;
+				.step-number {
+					width: 40px;
+					height: 40px;
+					border-radius: 50%;
+					border: 2px solid #dadada;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					background-color: #fff;
+					opacity: 0.6;
+					z-index: 2;
+					cursor: pointer;
+					i {
+						color: $text-color;
+					}
+					transition: opacity 0.4s;
 
-				i {
-					font-size: 40px;
-					color: #fff;
+					&:hover {
+						opacity: 1;
+					}
+				}
+
+				&::after {
+					content: '';
+					position: absolute;
+					right: 20px;
+					top: 32px;
+					width: 2px;
+					background-image: linear-gradient(to bottom, transparent 50%, rgb(196, 196, 196) 50%);
+					background-size: 100% 10px;
+					background-repeat: repeat-y;
+					height: 100%;
+				}
+
+				&:first-child {
+					margin-top: 20px;
+				}
+
+				&:last-child:after {
+					content: none;
+				}
+
+				&.active {
+					.step-number {
+						border-color: $main-color;
+						cursor: default;
+						opacity: 1;
+					}
+				}
+
+				&.completed {
+					.step-number {
+						background-color: $main-color;
+						opacity: 1;
+						border-color: $main-color;
+						color: $light-text-color;
+						i {
+							color: $light-text-color;
+						}
+					}
+					&::after {
+						background-image: linear-gradient(to bottom, transparent 50%, $main-color 50%);
+						background-size: 100% 1px;
+					}
 				}
 			}
-			&:hover > .image-overlay {
-				opacity: 1;
-				scale: 1;
-				pointer-events: visible;
+		}
+	}
+
+	.scrollable-container {
+		flex: 3;
+		margin-left: 10px;
+	}
+
+	.container-content {
+		background-color: $section-background;
+		padding: 20px;
+		border: 1px solid $border-color;
+		border-radius: 7px;
+		max-height: 70vh;
+		min-height: 70vh;
+		overflow: scroll;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		.container-content-title {
+			color: $main-color;
+			padding-bottom: 5px;
+			border-bottom: 1px solid $border-color;
+		}
+	}
+}
+
+@media (max-width: 550px) {
+	.container-content {
+		min-height: unset !important;
+		max-height: unset !important;
+	}
+	.createAnnouncement-container {
+		flex-direction: column;
+
+		.fixed-container {
+			margin-bottom: 20px;
+			.progress-container {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				.progress-item {
+					padding-right: 25px;
+					.description {
+						margin-bottom: 10px;
+						display: none;
+					}
+
+					.step-number {
+						margin-right: 10px;
+						width: 30px;
+						height: 30px;
+					}
+
+					&::after {
+						content: '';
+						top: 50%;
+						right: 0;
+						transform: translate(0, -50%);
+						width: 100%;
+						height: 2px;
+						background: none;
+						background-image: linear-gradient(
+							to right,
+							transparent 0%,
+							transparent 40%,
+							rgb(155, 155, 155) 40%,
+							rgb(196, 196, 196) 60%,
+							transparent 60%,
+							transparent 100%
+						);
+						background-size: 8px 100%;
+					}
+					margin-top: 0;
+				}
 			}
 		}
 	}
-}
-
-.create-announcement-buttons {
-	display: flex;
-	justify-content: end;
-}
-
-input.empty-field,
-textarea.empty-field {
-	border-bottom: 2px solid tomato;
-}
-
-.tag-input-title {
-	display: flex;
-	align-items: end;
-	justify-content: space-between;
-	.title {
-		color: $text-color;
-		font-weight: bold;
-		margin: 0;
-		font-size: 18px;
-	}
-}
-
-.tag-container {
-	border: 1px solid #ccc;
-	padding: 1px;
-	border-radius: 5px;
-	display: flex;
-	flex-wrap: wrap;
-	.tag {
-		padding: 5px 10px;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		margin: 5px;
-		display: flex;
-		align-items: center;
-		background-color: #f2f2f2;
-		font-size: 14px;
-
-		span {
-			margin-left: 5px;
-			color: $text-color;
-		}
-		i {
-			cursor: pointer;
-			color: $main-color;
-		}
-	}
-
-	input {
-		border: 0;
-		flex: 1;
-		outline: none;
-		padding: 10px;
-		color: $text-color;
-
-		&::placeholder {
-			font-weight: 100;
-			opacity: 0.7;
-		}
-	}
-}
-.tag-info {
-	color: $main-color;
-	font-size: 12px;
 }
