@@ -59,10 +59,12 @@ $border-color: #eeeeee;
 					opacity: 0.6;
 					z-index: 2;
 					cursor: pointer;
+
 					i {
 						color: $text-color;
 					}
-					transition: opacity 0.4s;
+					transition: opacity 0.4s, transform 0.4s;
+					transform-origin: center;
 
 					&:hover {
 						opacity: 1;
@@ -79,6 +81,7 @@ $border-color: #eeeeee;
 					background-size: 100% 10px;
 					background-repeat: repeat-y;
 					height: 100%;
+					transition: all 0.4s;
 				}
 
 				&:first-child {
@@ -94,6 +97,7 @@ $border-color: #eeeeee;
 						border-color: $main-color;
 						cursor: default;
 						opacity: 1;
+						transform: scale(1.2);
 					}
 				}
 
@@ -190,6 +194,10 @@ $border-color: #eeeeee;
 						background-size: 8px 100%;
 					}
 					margin-top: 0;
+
+					&:first-child {
+						margin-top: 0;
+					}
 				}
 			}
 		}
