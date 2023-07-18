@@ -208,4 +208,15 @@ export const getNewConversationData = async id => {
 	}
 }
 
+export const getSuggestions = async keyword => {
+	if (keyword.trim() === '') return
+	try {
+		const response = await axiosClient.get(`/suggestions/?keyword=${keyword}`)
+		return response.data
+	} catch (error) {
+		console.log(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
 export default axiosClient

@@ -1,11 +1,182 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { getSuggestions } from '../../services/Api'
+
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+import Select from 'react-select'
 import '../../assets/styles/CreateAnnouncement.scss'
 
+const selectStyle = {
+	control: provided => ({
+		...provided,
+		border: 'none',
+		borderRadius: '10px',
+		padding: '10px 15px',
+		boxShadow: '0px 0px 10px 0px rgba(237, 237, 237, 1)',
+		opacity: 0.6,
+		transition: 'opacity 0.4s',
+		'&:focus': {
+			outline: 'none',
+			opacity: 1,
+			boxShadow: '0px 0px 10px 0px rgba(0, 0, 255, 0.7)', // Inny shadow dla aktywnego focusu
+		},
+	}),
+}
+
 const Step1 = () => {
-	return <p>Krok 1</p>
+	const temporaryCategories = [
+		{ id: 1, name: 'Kategoria 1' },
+		{ id: 2, name: 'Kategoria 2' },
+		{ id: 3, name: 'Kategoria 3' },
+		{ id: 4, name: 'Kategoria 4' },
+		{ id: 5, name: 'Kategoria 5' },
+		{ id: 6, name: 'Kategoria 6' },
+	]
+
+	const temporarySubCategories = [
+		{ id: 1, categoryId: 1, name: 'Podkategoria 1' },
+		{ id: 2, categoryId: 2, name: 'Podkategoria 2' },
+		{ id: 3, categoryId: 3, name: 'Podkategoria 3' },
+		{ id: 4, categoryId: 4, name: 'Podkategoria 4' },
+		{ id: 5, categoryId: 5, name: 'Podkategoria 5' },
+		{ id: 6, categoryId: 6, name: 'Podkategoria 6' },
+	]
+
+	const categoryOptions = temporaryCategories.map(category => ({
+		value: category.id,
+		label: category.name,
+	}))
+
+	const subcategoryOptions = temporarySubCategories.map(subcategory => ({
+		value: subcategory.id,
+		label: subcategory.name,
+	}))
+
+	const titleInputRef = useRef(null)
+	const [titleValue, setTitleValue] = useState('')
+	const [titleError, setTitleError] = useState('')
+
+	const [suggestions, setSuggestions] = useState([]) // Stan do przechowywania sugestii
+	const [typingTimer, setTypingTimer] = useState(null)
+	const [hasFocus, setHasFocus] = useState(false)
+	const [blurTimer, setBlurTimer] = useState(null)
+
+	const handleInputFocus = () => {
+		clearTimeout(blurTimer)
+		setHasFocus(true)
+	}
+
+	const handleInputBlur = () => {
+		setBlurTimer(setTimeout(() => setHasFocus(false), 200))
+	}
+
+	const fetchSuggestions = async value => {
+		try {
+			const response = await getSuggestions(value)
+			console.log(response)
+			setSuggestions(response)
+		} catch (error) {
+			console.log(error)
+			setSuggestions([])
+		}
+	}
+	const handleChangeTitleInput = e => {
+		setTitleValue(e.target.value)
+		clearTimeout(typingTimer)
+		setTypingTimer(
+			setTimeout(() => {
+				fetchSuggestions(e.target.value)
+			}, 200)
+		)
+	}
+
+	const handleSuggestionClick = suggestion => {
+		setTitleValue(suggestion)
+		setSuggestions([])
+		titleInputRef.current.focus()
+	}
+
+	const handleNextStep = () => {
+		if (!titleValue.trim()) {
+			setTitleError('Pole Tytuł ogłoszenia jest wymagane.')
+		} else {
+			// Możesz przenieść funkcjonalność obsługi przycisku "Dalej" tutaj
+			// np. przechodzenie do kolejnego kroku itp.
+			console.log('Submit Step 1:', titleValue)
+			setTitleError('')
+		}
+	}
+
+	return (
+		<>
+			<div className='form-group mt-2'>
+				<div className='form-input'>
+					<label htmlFor='title'>Tytuł ogłoszenia:</label>
+
+					<div className='sugestion-input active'>
+						<input
+							type='text'
+							id='title'
+							name='title'
+							placeholder='np. Konsola PlayStation 4'
+							value={titleValue}
+							onChange={handleChangeTitleInput}
+							onFocus={handleInputFocus}
+							onBlur={handleInputBlur}
+							ref={titleInputRef}
+						/>
+						{titleError && <div className='error-message'>{titleError}</div>}
+						{hasFocus && titleValue && suggestions?.length > 0 && (
+							<div className={`sugestion-input`}>
+								<div className='suggestions'>
+									{suggestions.map((suggestion, index) => (
+										<div
+											className='suggestion-element'
+											key={index}
+											onClick={() => handleSuggestionClick(suggestion)}>
+											<p>{suggestion}</p>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+
+			<div className='form-group mt-3'>
+				<div className='form-input'>
+					<label htmlFor='category'>Kategoria Ogłoszenia:</label>
+					<Select
+						options={categoryOptions}
+						placeholder={'np. Elektronika'}
+						styles={selectStyle} // Dodaj nasze niestandardowe style
+					/>
+				</div>
+			</div>
+			<div className='form-group mt-3'>
+				<div className='form-input'>
+					<label htmlFor='subcategory'>Podkategoria Ogłoszenia:</label>
+					<Select
+						options={categoryOptions}
+						placeholder={'np. Konsole PlayStation'}
+						styles={selectStyle} // Dodaj nasze niestandardowe style
+					/>
+				</div>
+			</div>
+			<div className='d-flex mt-3 justify-content-end'>
+				<button type='submit' className='btn-design btn-long' onClick={handleNextStep}>
+					Dalej
+					<i>
+						<FontAwesomeIcon icon='fa-solid fa-chevron-right' />
+					</i>
+				</button>
+			</div>
+		</>
+	)
 }
 
 const Step2 = () => {
@@ -21,7 +192,7 @@ const Step4 = () => {
 }
 
 const CreateAnnouncement = () => {
-	const [activeStep, setActiveStep] = useState(2)
+	const [activeStep, setActiveStep] = useState(1)
 
 	const progressItems = [
 		{
@@ -71,9 +242,9 @@ const CreateAnnouncement = () => {
 				<div className='col-12 mt-4 createAnnouncement-page-title'>
 					<h3 className='title'>Dodaj swoje nowe ogłoszenie</h3>
 					<p>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint alias, architecto est
-						minima sequi repudiandae rem pariatur quas magnam ullam dolorem sapiente eius excepturi
-						aperiam officiis doloremque distinctio nam aliquam?
+						Cieszymy się, że wybrałeś naszą platformę, która ułatwi Ci tworzenie interesujących
+						ogłoszeń. Nasz kreator pomoże Ci w kilku prostych krokach stworzyć wyjątkowe ogłoszenie,
+						które przyciągnie uwagę potencjalnych klientów.
 					</p>
 				</div>
 				<div className='createAnnouncement-container mt-3'>
@@ -106,15 +277,17 @@ const CreateAnnouncement = () => {
 							<h5 className='container-content-title'>
 								Krok {activeStep}: {progressItems[activeStep - 1].title}
 							</h5>
-							<motion.div
-								key={activeStep}
-								initial={{ opacity: 0, y: '-100%' }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: '100%' }}
-								transition={{ duration: 0.5 }}>
-								{getCurrentStepComponent()}{' '}
-								{/* Wyświetl odpowiedni komponent dla aktualnego kroku */}
-							</motion.div>
+
+							<article className='create-announcement-step-container'>
+								<motion.div
+									key={activeStep}
+									initial={{ opacity: 0, y: '-100%' }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: '100%' }}
+									transition={{ duration: 0.5 }}>
+									{getCurrentStepComponent()}
+								</motion.div>
+							</article>
 						</div>
 					</div>
 				</div>

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
 $main-color: #67ade0;
 $text-color: #828282;
 $light-text-color: #fff;
@@ -25,11 +27,16 @@ $border-color: #eeeeee;
 
 	.fixed-container {
 		.progress-container {
+			display: flex;
+			justify-content: space-between;
+			flex-direction: column;
+			height: 100%;
 			.progress-item {
 				display: flex;
 				justify-content: space-between;
 				margin-top: 30px;
 				position: relative;
+				height: 100%;
 
 				.description {
 					color: $text-color;
@@ -130,19 +137,105 @@ $border-color: #eeeeee;
 		padding: 20px;
 		border: 1px solid $border-color;
 		border-radius: 7px;
-		max-height: 70vh;
-		min-height: 70vh;
 		overflow: scroll;
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
 		&::-webkit-scrollbar {
 			display: none;
 		}
+		height: 100%;
+		max-height: 60vh;
+		min-height: 60vh;
 
 		.container-content-title {
 			color: $main-color;
 			padding-bottom: 5px;
 			border-bottom: 1px solid $border-color;
+		}
+	}
+}
+
+.create-announcement-step-container {
+	padding: 5px 0px;
+	height: 100%;
+}
+
+.form-input {
+	display: flex;
+	flex-direction: column;
+
+	font-family: 'Ubuntu', sans-serif;
+	color: $text-color;
+
+	label {
+		text-transform: uppercase;
+		font-size: 14px;
+		font-weight: 500;
+		margin: 0px 0px 5px 5px;
+	}
+
+	input {
+		border: none;
+		border-radius: 10px;
+		padding: 10px 15px;
+		-webkit-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
+		-moz-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
+		box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
+		opacity: 0.6;
+		transition: opacity 0.4s;
+		&:focus {
+			outline: none;
+			opacity: 1;
+		}
+		&::placeholder {
+			color: #dadada;
+		}
+	}
+}
+
+.sugestion-input {
+	input {
+		width: 100%;
+	}
+	.suggestions {
+		width: 100%;
+		position: absolute;
+		z-index: 3;
+		background-color: #fff;
+		border-top: 0;
+		-webkit-box-shadow: 0px 10px 10px 0px rgba(237, 237, 237, 1);
+		-moz-box-shadow: 0px 10px 10px 0px rgba(237, 237, 237, 1);
+		box-shadow: 0px 10px 10px 0px rgba(237, 237, 237, 1);
+		border-radius: 0px 0px 10px 10px;
+		overflow-y: scroll;
+		max-height: 0;
+		height: 0;
+		transition: height 0.4s;
+	}
+
+	&.active {
+		input {
+			border-radius: 10px 10px 0px 0px;
+		}
+		.suggestions {
+			max-height: 200px;
+			height: auto;
+		}
+	}
+
+	.suggestion-element {
+		border-top: 1px solid $border-color;
+		cursor: pointer;
+		p {
+			margin: 0;
+			padding: 10px 15px;
+		}
+
+		transition: all 0.4s;
+
+		&:hover {
+			background-color: $main-color;
+			color: $light-text-color;
 		}
 	}
 }
@@ -159,6 +252,7 @@ $border-color: #eeeeee;
 			margin-bottom: 20px;
 			.progress-container {
 				display: flex;
+				flex-direction: row;
 				align-items: center;
 				justify-content: center;
 				.progress-item {
