@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom' // Dodaj useHistory do importu
+
 import '../../assets/styles/Auth.scss'
 import { useDispatch } from 'react-redux'
 import { login } from '../../redux/actions/authActions'
@@ -10,13 +11,23 @@ import * as Yup from 'yup'
 
 export default function LoginPage() {
 	const dispatch = useDispatch()
+	const navigate = useNavigate() // Użyj useNavigate
 
 	const handleSubmit = (values, { setSubmitting }) => {
 		dispatch(login(values.email, values.password))
 			.then(() => {
 				toast.success('Pomyślnie zalogowano')
+
+				console.log(`Mogę coś zrobić tutaj?`)
+				const redirectPath = localStorage.getItem('redirectPath')
+				if (redirectPath) {
+					navigate(redirectPath)
+				} else {
+					console.log(`Nie ma`)
+				}
 			})
 			.catch(error => {
+				console.log(error)
 				Swal.fire({
 					icon: 'error',
 					text: error.error,

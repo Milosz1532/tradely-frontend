@@ -150,11 +150,7 @@ const Step1 = () => {
 			<div className='form-group mt-3'>
 				<div className='form-input'>
 					<label htmlFor='category'>Kategoria Ogłoszenia:</label>
-					<Select
-						options={categoryOptions}
-						placeholder={'np. Elektronika'}
-						styles={selectStyle} // Dodaj nasze niestandardowe style
-					/>
+					<Select options={categoryOptions} placeholder={'np. Elektronika'} styles={selectStyle} />
 				</div>
 			</div>
 			<div className='form-group mt-3'>
@@ -163,7 +159,7 @@ const Step1 = () => {
 					<Select
 						options={categoryOptions}
 						placeholder={'np. Konsole PlayStation'}
-						styles={selectStyle} // Dodaj nasze niestandardowe style
+						styles={selectStyle}
 					/>
 				</div>
 			</div>
