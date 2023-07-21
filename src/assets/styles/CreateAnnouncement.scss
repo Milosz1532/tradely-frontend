@@ -24,6 +24,7 @@ $border-color: #eeeeee;
 
 .createAnnouncement-container {
 	display: flex;
+	min-height: 70vh;
 
 	.container-content {
 		background-color: $section-background;
@@ -48,6 +49,7 @@ $border-color: #eeeeee;
 
 	.fixed-container {
 		.progress-container {
+			min-width: 360px;
 			display: flex;
 			justify-content: space-between;
 			flex-direction: column;
@@ -153,12 +155,15 @@ $border-color: #eeeeee;
 		margin-left: 10px;
 
 		.create-announcement-step-container {
+			min-width: 360px;
+
 			display: flex;
 			justify-content: space-between;
 			flex-direction: column;
 			height: 100%;
 
 			.create-announcement-bottom-buttons {
+				margin-top: 20px;
 				display: flex;
 				justify-content: space-between;
 
@@ -190,7 +195,6 @@ $border-color: #eeeeee;
 .form-input {
 	display: flex;
 	flex-direction: column;
-
 	font-family: 'Ubuntu', sans-serif;
 	color: $text-color;
 
@@ -477,10 +481,14 @@ $border-color: #eeeeee;
 	font-size: 12px;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 767px) {
 	.container-content {
 		min-height: unset !important;
 		max-height: unset !important;
+	}
+
+	.scrollable-container {
+		margin-left: 0 !important;
 	}
 	.createAnnouncement-container {
 		flex-direction: column;
@@ -492,8 +500,13 @@ $border-color: #eeeeee;
 				flex-direction: row;
 				align-items: center;
 				justify-content: center;
+				background-color: blue;
 				.progress-item {
 					padding-right: 25px;
+
+					&:last-child {
+						padding-right: 0;
+					}
 					.description {
 						margin-bottom: 10px;
 						display: none;

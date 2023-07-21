@@ -94,11 +94,14 @@ const ShowAnnouncement = ({ data }) => {
 	return (
 		<div className='container previewAnnouncement'>
 			<div className='row'>
-				<div className='top-information'>
-					<p className='top-information-category'>Ogłoszenie - Motoryzacja - Samochody osobowe</p>
-					<p className='top-information-back'>Wróć</p>
-					<p className='top-information-announcement-id'>Ogłoszenie: {data.id}</p>
+				<div className='col-12'>
+					<div className='top-information'>
+						<p className='top-information-category'>Ogłoszenie - Motoryzacja - Samochody osobowe</p>
+						<p className='top-information-back'>Wróć</p>
+						<p className='top-information-announcement-id'>Ogłoszenie: {data.id}</p>
+					</div>
 				</div>
+
 				<div className='col-lg-8'>
 					<section className='announcement-section announcement-image-section'>
 						<div className='image'>
@@ -126,6 +129,12 @@ const ShowAnnouncement = ({ data }) => {
 						<div className='announcement-description-title'>
 							<h4 className='announcement-title'>{data.title}</h4>
 							<h4 className='announcement-price'>{data.price} zł</h4>
+							<div className='announcement-tags'>
+								{data.tags.map(tag => (
+									<p className='tag'>{tag.name}</p>
+								))}
+							</div>
+
 							<hr />
 						</div>
 						<div className='announcement-description-content'>
@@ -227,6 +236,7 @@ export default function PreviewAnnouncement() {
 			.get(API_URL)
 			.then(({ data }) => {
 				setAnnouncementData(data)
+				console.log(data)
 				setLoadingAnnouncement(false)
 			})
 			.catch(error => {

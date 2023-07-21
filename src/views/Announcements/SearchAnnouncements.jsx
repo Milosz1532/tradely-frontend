@@ -282,7 +282,7 @@ function SearchAnnouncements() {
 			<section className='preview-announcement-search-section mb-3'>
 				<div className='container'>
 					<h2>Wyszukaj ogłoszenie</h2>
-					<SearchBar />
+					<SearchBar shadow={true} />
 				</div>
 			</section>
 			<section className='search-announcements container ' style={{ minHeight: '400px' }}>
