@@ -67,7 +67,7 @@ const Step1 = ({
 		setTypingTimer(
 			setTimeout(() => {
 				fetchSuggestions(e.target.value)
-			}, 200)
+			}, 100)
 		)
 	}
 

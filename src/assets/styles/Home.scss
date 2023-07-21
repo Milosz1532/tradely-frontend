@@ -91,6 +91,10 @@ $image-background: rgb(235, 235, 235);
 					width: 60px;
 					height: 60px;
 				}
+				.image-box-empty-image {
+					width: 60px;
+					height: 60px;
+				}
 			}
 
 			.title {
@@ -126,8 +130,6 @@ $image-background: rgb(235, 235, 235);
 	color: $text-color;
 	margin-top: 20px;
 }
-
-
 
 @media (max-width: 768px) {
 	.pupular-categories {

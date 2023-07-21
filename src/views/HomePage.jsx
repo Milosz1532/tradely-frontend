@@ -10,9 +10,9 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 import Searchbar from '../components/Layout/Searchbar'
-import Category from '../components/Home/Category'
+import { Category, LoadingCategory } from '../components/Home/Category'
 
-import { indexAnnouncements } from '../services/Api'
+import { indexAnnouncements, getAnnouncementCategories } from '../services/Api'
 
 import '../assets/styles/Home.scss'
 
@@ -47,6 +47,10 @@ const LoadingAnnouncement = () => {
 			</div>
 		</div>
 	)
+}
+
+const LoadingCategories = () => {
+	return <></>
 }
 
 const AnnouncementList = ({ data }) => {
@@ -132,18 +136,31 @@ const AnnouncementList = ({ data }) => {
 
 export default function HomePage() {
 	const [_loadingAnnouncements, _setLoadingAnnouncements] = useState(true)
+	const [_loadingCategories, _setLoadingCategories] = useState(true)
+	const [categories, setCategories] = useState([null])
 	const [announcementsData, setAnnouncementsData] = useState([null])
 
 	useEffect(() => {
 		const loadAnnouncements = async () => {
+			_setLoadingAnnouncements(true)
 			try {
 				const response = await indexAnnouncements()
 				setAnnouncementsData(response.data)
 				_setLoadingAnnouncements(false)
 			} catch {}
 		}
+		const fetchCategories = async () => {
+			_setLoadingCategories(true)
+			try {
+				const response = await getAnnouncementCategories()
+				setCategories(response)
+				_setLoadingCategories(false)
+				console.log(response)
+			} catch {}
+		}
 
 		loadAnnouncements()
+		fetchCategories()
 	}, [])
 
 	var settings = {
@@ -200,8 +217,27 @@ export default function HomePage() {
 						<h2>Popularne kategorie</h2>
 
 						<div className='row mx-auto'>
-							<Slider {...settings}>
-								<Category />
+							{_loadingCategories ? (
+								<Slider {...settings}>
+									<LoadingCategory />
+									<LoadingCategory />
+									<LoadingCategory />
+									<LoadingCategory />
+								</Slider>
+							) : (
+								<Slider {...settings}>
+									{categories.map(category => (
+										<Category
+											key={category.id}
+											id={category.id}
+											name={category.name}
+											image={category.image_path}
+										/>
+									))}
+								</Slider>
+							)}
+
+							{/* <Category />
 								<Category bg={`red`} />
 								<Category bg={`green`} />
 								<Category bg={`yellow`} />
@@ -212,8 +248,7 @@ export default function HomePage() {
 								<Category bg={`green`} />
 								<Category bg={`green`} />
 								<Category bg={`green`} />
-								<Category bg={`green`} />
-							</Slider>
+								<Category bg={`green`} /> */}
 						</div>
 					</div>
 				</section>

@@ -66,7 +66,7 @@ export default function Searchbar() {
 		setTypingTimer(
 			setTimeout(() => {
 				fetchSuggestions(e.target.value)
-			}, 200)
+			}, 100)
 		)
 	}
 
@@ -133,6 +133,7 @@ export default function Searchbar() {
 						type='text'
 						placeholder='Szukaj spośród 13 549 323 ogłoszeń...'
 						value={keyword}
+						onKeyDown={handleKeyDown}
 						onChange={e => handleChangeKeywordInput(e)}
 						onFocus={handleInputFocus}
 						onBlur={handleInputBlur}
