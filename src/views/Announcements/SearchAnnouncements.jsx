@@ -3,7 +3,7 @@ import { Link, useParams, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ScrollToTop from '../../ScrollToTop'
 
-import { searchAnnouncements } from '../../services/SearchService'
+import { searchAnnouncements } from '../../services/Api'
 
 import SearchBar from '../../components/Layout/Searchbar'
 import Skeleton from 'react-loading-skeleton'

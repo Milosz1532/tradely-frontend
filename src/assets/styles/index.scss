@@ -44,7 +44,6 @@ $image-background: rgb(235, 235, 235);
 		color: $text-color;
 		border-radius: 10px;
 		flex-grow: 2;
-		border: 1px solid $border-color;
 
 		.search-input-filters {
 			display: flex;
@@ -75,6 +74,60 @@ $image-background: rgb(235, 235, 235);
 
 			&:focus {
 				outline: none;
+			}
+		}
+
+		.search-bar-suggestions-input {
+			position: relative;
+			width: 100%;
+			position: relative;
+			display: flex;
+			align-items: center;
+			padding: 0px 5px;
+			width: 100%;
+			height: 100%;
+
+			input {
+				background: none;
+				border: none;
+				width: 100%;
+				color: $text-color;
+				&:focus {
+					outline: none;
+				}
+				&::placeholder {
+					font-weight: bold;
+					opacity: 0.6;
+				}
+			}
+			.suggestions {
+				width: 100%;
+				position: absolute;
+				top: 100%;
+				left: 0;
+				z-index: 3;
+				background-color: #fff;
+				border-top: 0;
+
+				// border-radius: 0px 0px 10px 10px;
+				// overflow-y: scroll;
+				transition: height 0.4s;
+			}
+
+			.suggestion-element {
+				border-top: 1px solid $border-color;
+				cursor: pointer;
+				p {
+					margin: 0;
+					padding: 10px 15px;
+				}
+
+				transition: all 0.4s;
+
+				&:hover {
+					background-color: $main-color;
+					color: $light-text-color;
+				}
 			}
 		}
 
@@ -121,6 +174,9 @@ $image-background: rgb(235, 235, 235);
 	.search-input-box {
 		.search-input {
 			flex-direction: column;
+			.search-bar-suggestions-input {
+				height: auto;
+			}
 			.submit-search-input {
 				border-radius: 2px;
 				height: 50px;

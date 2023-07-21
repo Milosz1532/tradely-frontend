@@ -1,7 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import Select from 'react-select'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getSuggestions, getAnnouncementCategories } from '../../../services/Api'
+import { getSuggestions } from '../../../services/Api'
 
 const selectStyle = {
 	control: provided => ({
@@ -33,7 +32,7 @@ const Step1 = ({
 
 	const [titleError, setTitleError] = useState('')
 
-	const [suggestions, setSuggestions] = useState([]) // Stan do przechowywania sugestii
+	const [suggestions, setSuggestions] = useState([])
 	const [typingTimer, setTypingTimer] = useState(null)
 	const [hasFocus, setHasFocus] = useState(false)
 	const [blurTimer, setBlurTimer] = useState(null)
@@ -78,15 +77,6 @@ const Step1 = ({
 		titleInputRef.current.focus()
 	}
 
-	const handleNextStep = () => {
-		if (!titleInput.trim()) {
-			setTitleError('Pole Tytuł ogłoszenia jest wymagane.')
-		} else {
-			console.log('Submit Step 1:', titleInput)
-			setTitleError('')
-		}
-	}
-
 	return (
 		<>
 			<article>
@@ -96,7 +86,7 @@ const Step1 = ({
 							Tytuł ogłoszenia
 						</label>
 
-						<div className='sugestion-input active'>
+						<div className='sugestion-input'>
 							<input
 								type='text'
 								id='title'
@@ -108,19 +98,16 @@ const Step1 = ({
 								onBlur={handleInputBlur}
 								ref={titleInputRef}
 							/>
-							{titleError && <div className='error-message'>{titleError}</div>}
 							{hasFocus && titleInput && suggestions?.length > 0 && (
-								<div className={`sugestion-input`}>
-									<div className='suggestions'>
-										{suggestions.map((suggestion, index) => (
-											<div
-												className='suggestion-element'
-												key={index}
-												onClick={() => handleSuggestionClick(suggestion)}>
-												<p>{suggestion}</p>
-											</div>
-										))}
-									</div>
+								<div className='suggestions'>
+									{suggestions.map((suggestion, index) => (
+										<div
+											className='suggestion-element'
+											key={index}
+											onClick={() => handleSuggestionClick(suggestion)}>
+											<p>{suggestion}</p>
+										</div>
+									))}
 								</div>
 							)}
 						</div>

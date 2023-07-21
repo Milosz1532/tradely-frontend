@@ -12,10 +12,9 @@ import 'slick-carousel/slick/slick-theme.css'
 import Searchbar from '../components/Layout/Searchbar'
 import Category from '../components/Home/Category'
 
-import { indexAnnouncements } from '../services/SearchService'
+import { indexAnnouncements } from '../services/Api'
 
 import '../assets/styles/Home.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Images //
 import searchBackground from '/images/search-background.jpg'

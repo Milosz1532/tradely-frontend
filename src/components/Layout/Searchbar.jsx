@@ -1,16 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { searchCategories } from '../../services/SearchService'
+import { getAnnouncementCategories, getSuggestions } from '../../services/Api'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Searchbar() {
+	const searchInputRef = useRef(null)
+
 	const [category, setCategory] = useState('all_categories')
 	const [location, setLocation] = useState('')
 	const [keyword, setKeyword] = useState('')
-	const navigate = useNavigate()
 	const [categories, setCategories] = useState([])
+	const [typingTimer, setTypingTimer] = useState(null)
+	const [suggestions, setSuggestions] = useState([])
+	const [hasFocus, setHasFocus] = useState(false)
+	const [blurTimer, setBlurTimer] = useState(null)
+
+	const navigate = useNavigate()
 
 	const handleSearch = () => {
 		let url = `/announcements/${location ? location : 'all_locations'}/${category}`
@@ -22,10 +29,21 @@ export default function Searchbar() {
 		navigate(url)
 	}
 
+	const fetchSuggestions = async value => {
+		try {
+			const response = await getSuggestions(value)
+			console.log(response)
+			setSuggestions(response)
+		} catch (error) {
+			console.log(error)
+			setSuggestions([])
+		}
+	}
+
 	useEffect(() => {
 		const getCategoriesList = async () => {
 			try {
-				const categoriesData = await searchCategories()
+				const categoriesData = await getAnnouncementCategories()
 				setCategories(categoriesData)
 			} catch {
 				setCategories([])
@@ -40,6 +58,31 @@ export default function Searchbar() {
 		if (event.key === 'Enter') {
 			handleSearch()
 		}
+	}
+
+	const handleChangeKeywordInput = e => {
+		setKeyword(e.target.value)
+		clearTimeout(typingTimer)
+		setTypingTimer(
+			setTimeout(() => {
+				fetchSuggestions(e.target.value)
+			}, 200)
+		)
+	}
+
+	const handleInputFocus = () => {
+		clearTimeout(blurTimer)
+		setHasFocus(true)
+	}
+
+	const handleInputBlur = () => {
+		setBlurTimer(setTimeout(() => setHasFocus(false), 300))
+	}
+
+	const handleSuggestionClick = suggestion => {
+		setKeyword(suggestion)
+		setSuggestions([])
+		searchInputRef.current.focus()
 	}
 
 	return (
@@ -77,14 +120,37 @@ export default function Searchbar() {
 					</div>
 				</div>
 
-				<input
-					onChange={e => setKeyword(e.target.value)}
+				{/* <input
+					onChange={e => handleChangeKeywordInput(e)}
 					onKeyDown={handleKeyDown}
 					value={keyword}
 					className='main-input'
 					type='text'
 					placeholder='Szukaj spośród 13 549 323 ogłoszeń...'
-				/>
+				/> */}
+				<div className={`search-bar-suggestions-input`}>
+					<input
+						type='text'
+						placeholder='Szukaj spośród 13 549 323 ogłoszeń...'
+						value={keyword}
+						onChange={e => handleChangeKeywordInput(e)}
+						onFocus={handleInputFocus}
+						onBlur={handleInputBlur}
+						ref={searchInputRef}
+					/>
+					{hasFocus && keyword && suggestions?.length > 0 && (
+						<div className='suggestions'>
+							{suggestions.map((suggestion, index) => (
+								<div
+									className='suggestion-element'
+									key={index}
+									onClick={() => handleSuggestionClick(suggestion)}>
+									<p>{suggestion}</p>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
 				<button onClick={handleSearch} className='submit-search-input'>
 					<i>
 						<FontAwesomeIcon icon='fa-solid fa-magnifying-glass' />
