@@ -23,27 +23,33 @@ import adBackground from '/images/advertisement.jpg'
 const LoadingAnnouncement = () => {
 	return (
 		<div className='container mt-5'>
-			<h2 className='home-title'>Najnowsze ogłoszenia</h2>
-			<div className='row'>
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
+			<div className='section-container mt-3 '>
+				<h2 className='home-title'>Najnowsze ogłoszenia</h2>
+
+				<div className='row'>
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+				</div>
 			</div>
-			<div className='row'>
-				<h2 className='home-title'>W twojej okolicy</h2>
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
+
+			<div className='section-container mt-3 '>
+				<div className='row'>
+					<h2 className='home-title'>W twojej okolicy</h2>
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+				</div>
 			</div>
 		</div>
 	)
@@ -110,23 +116,29 @@ const AnnouncementList = ({ data }) => {
 			<section className='new-announcements'>
 				{data.latest_announcements.length !== 0 && (
 					<>
-						<h2 className='home-title'>Najnowsze ogłoszenia</h2>
+						<div className='section-container mt-3 '>
+							<h2 className='home-title'>Najnowsze ogłoszenia</h2>
 
-						<div className='row'>{newAnnouncementsList}</div>
+							<div className='row'>{newAnnouncementsList}</div>
+						</div>
 					</>
 				)}
 				{data.location_announcements.length !== 0 && (
 					<>
-						<h2 className='home-title'>W twojej okolicy</h2>
-						<div className='row'>{locationAnnouncementsList}</div>
+						<div className='section-container mt-3'>
+							<h2 className='home-title'>W twojej okolicy</h2>
+							<div className='row'>{locationAnnouncementsList}</div>
+						</div>
 					</>
 				)}
 
 				{data.category_announcements.length !== 0 && (
 					<>
-						<h2 className='home-title mt-4'>Motoryzacja</h2>
+						<div className='section-container mt-3'>
+							<h2 className='home-title'>Motoryzacja</h2>
 
-						<div className='row'>{categoryAnnouncementsList}</div>
+							<div className='row'>{categoryAnnouncementsList}</div>
+						</div>
 					</>
 				)}
 			</section>

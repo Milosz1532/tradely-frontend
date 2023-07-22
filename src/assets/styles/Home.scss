@@ -1,7 +1,8 @@
 $main-color: #67ade0;
-$text-color: #676767;
+$text-color: #828282;
 $light-text-color: #fff;
 $image-background: rgb(235, 235, 235);
+$border-color: #e6e6e6;
 
 .top-bar {
 	background-color: $main-color;
@@ -128,7 +129,14 @@ $image-background: rgb(235, 235, 235);
 
 .home-title {
 	color: $text-color;
-	margin-top: 20px;
+	font-family: 'Ubuntu', sans-serif;
+
+	text-align: center;
+	font-weight: 400;
+	padding: 0;
+	margin: 0;
+	padding-bottom: 10px;
+	border-bottom: 1px solid $border-color;
 }
 
 @media (max-width: 768px) {

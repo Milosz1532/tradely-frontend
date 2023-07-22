@@ -133,70 +133,52 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	return (
 		<>
-			<div className='sort-announcements d-flex justify-content-between align-items-center'>
-				<h4 className='home-title'>
-					Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
-				</h4>
-				<div className='buttons'>
-					<i className={`me-3 sort-icon ${sortType && 'active'}`}>
-						<FontAwesomeIcon onClick={e => setSortType(true)} icon='fa-solid fa-list' />
-					</i>
-					<i className={`me-3 sort-icon ${!sortType && 'active'}`}>
-						<FontAwesomeIcon onClick={e => setSortType(false)} icon='fa-solid fa-table-cells' />
-					</i>
-				</div>
-			</div>
-			<hr />
-
-			<div className='row'>
-				<div className='col-lg-3 pt-2'>
-					<section className='search-filters '>
-						<h5>Filtry: </h5>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<h5>
-									<FontAwesomeIcon icon='fa-solid fa-location-dot' className='me-2' />
-									Lokalizacja
-								</h5>
-								<FontAwesomeIcon className='filter-icon' icon='fa-solid fa-angle-up' />
-							</div>
-							<input className='filter-input' type='text' placeholder='Wpisz lokalizacje...' />
-						</div>
-						<div className='filter mt-4'>
-							<div className='filter-title'>
-								<h5>
-									<FontAwesomeIcon className='me-2' icon='fa-solid fa-shapes' />
-									Podkategoria
-								</h5>
-								<FontAwesomeIcon className='filter-icon' icon='fa-solid fa-angle-up' />
-							</div>
-							<select className='filter-input medium'>
-								<option>Wszystkie podkategorie</option>
-							</select>
-						</div>
-						<div className='filter mt-4'>
-							<div className='filter-title'>
-								<h5>
-									<FontAwesomeIcon icon='fa-solid fa-coins' className='me-2' />
-									Cena
-								</h5>
-								<FontAwesomeIcon className='filter-icon' icon='fa-solid fa-angle-up' />
-							</div>
-							<div className='row'>
-								<div className='col-6'>
-									<input className='filter-input' min={0} type='number' placeholder='OD' />
-								</div>
-
-								<div className='col-6'>
-									<input className='filter-input' min={0} type='number' placeholder='DO' />
+			<div className='search-page-row row'>
+				<div className='col-lg-3 '>
+					<div className='section-container h-100 '>
+						<section className='search-filters '>
+							<h5>Filtry </h5>
+							<hr />
+							<div className='filter mt-3'>
+								<div className='form-input'>
+									<label>Lokalizacja</label>
+									<input type='text' placeholder='Wprowadź lokalizację...' />
 								</div>
 							</div>
-						</div>
-						<button className='btn-design white btn-md w-100 mt-4'>Zatwierdź</button>
-					</section>
+							<div className='filter mt-4'>
+								<div className='form-input'>
+									<label>Podkategoria</label>
+									<input type='text' placeholder='Wybierz podkategorię...' />
+								</div>
+							</div>
+							<div className='filter mt-4'>
+								<div className='row'>
+									<div className='col-6'>
+										<div className='form-input'>
+											<label>Cena od</label>
+											<input type='text' placeholder='0' />
+										</div>
+									</div>
+
+									<div className='col-6'>
+										<div className='form-input'>
+											<label>Cena do</label>
+											<input type='text' placeholder='0' />
+										</div>
+									</div>
+								</div>
+							</div>
+							<button className='btn-design white btn-md w-100 mt-4'>Zatwierdź</button>
+						</section>
+					</div>
 				</div>
 				<div className='col-lg-9'>
-					<div className='row'>{announcementsList}</div>
+					<div className='section-container h-100'>
+						<h4>
+							Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
+						</h4>
+						<div className='row'>{announcementsList}</div>
+					</div>
 				</div>
 			</div>
 
@@ -282,9 +264,10 @@ function SearchAnnouncements() {
 			<section className='preview-announcement-search-section mb-3'>
 				<div className='container'>
 					<h2>Wyszukaj ogłoszenie</h2>
-					<SearchBar shadow={true} />
+					<SearchBar />
 				</div>
 			</section>
+
 			<section className='search-announcements container ' style={{ minHeight: '400px' }}>
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />

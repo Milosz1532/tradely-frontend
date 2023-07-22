@@ -57,7 +57,7 @@ export const RectangularAnnouncement = ({
 	}).format(price)
 
 	return (
-		<div className='col-12 rectangular-announcement mt-2'>
+		<div className='col-12 rectangular-announcement mt-3'>
 			<NavLink
 				to={linkTo}
 				style={

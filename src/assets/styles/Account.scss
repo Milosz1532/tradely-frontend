@@ -407,6 +407,10 @@ $box-color: #fff;
 					cursor: pointer;
 					height: 80px;
 
+					&.new {
+						opacity: 1;
+					}
+
 					&.selected {
 						opacity: 1;
 						cursor: default;
@@ -736,6 +740,7 @@ $box-color: #fff;
 			display: inline-block;
 			margin-bottom: 20px;
 			max-height: 30vh;
+			padding: 0 !important;
 			border-right: none !important;
 
 			.chat-menu-list {
@@ -802,6 +807,7 @@ $box-color: #fff;
 		}
 		.chat-content {
 			max-height: 70vh;
+			margin-left: 0;
 		}
 	}
 }
