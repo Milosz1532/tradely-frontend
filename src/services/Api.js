@@ -12,7 +12,7 @@ axiosClient.interceptors.response.use(
 	error => {
 		if (!error.response || !error.response.status) {
 			const customError = {
-				error: 'Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie później',
+				message: 'Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie później',
 				isConnectionError: true,
 			}
 			throw customError

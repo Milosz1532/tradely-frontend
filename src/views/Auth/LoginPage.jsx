@@ -18,7 +18,6 @@ export default function LoginPage() {
 			.then(() => {
 				toast.success('Pomyślnie zalogowano')
 
-				console.log(`Mogę coś zrobić tutaj?`)
 				const redirectPath = localStorage.getItem('redirectPath')
 				if (redirectPath) {
 					navigate(redirectPath)
@@ -30,7 +29,7 @@ export default function LoginPage() {
 				console.log(error)
 				Swal.fire({
 					icon: 'error',
-					text: error.error,
+					text: error.message,
 				})
 			})
 			.finally(() => {

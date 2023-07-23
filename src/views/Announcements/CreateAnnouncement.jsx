@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getAnnouncementCategories } from '../../services/Api'
+import { useSelector } from 'react-redux'
 
 import '../../assets/styles/CreateAnnouncement.scss'
 
@@ -11,6 +12,7 @@ import Step2 from '../../components/CreateAnnouncement/steps/Step2'
 import Step3 from '../../components/CreateAnnouncement/steps/Step3'
 import Step4 from '../../components/CreateAnnouncement/steps/Step4'
 import Step5 from '../../components/CreateAnnouncement/steps/Step5'
+import Step6 from '../../components/CreateAnnouncement/steps/Step6'
 
 const IMAGES_LIMIT = 8
 
@@ -36,6 +38,11 @@ const progressItems = [
 		icon: 'fa-solid fa-coins',
 	},
 	{
+		title: 'Dane kontaktowe',
+		subTitle: 'Udostępnij twoje dane kontaktowe, aby można było się z tobą skontaktować',
+		icon: 'fa-solid fa-route',
+	},
+	{
 		title: 'Podsumowanie',
 		subTitle: 'Podsumowanie',
 		icon: 'fa-regular fa-circle-check',
@@ -43,6 +50,8 @@ const progressItems = [
 ]
 
 const CreateAnnouncement = () => {
+	const user = useSelector(state => state.auth.user)
+
 	const [activeStep, setActiveStep] = useState(1)
 
 	// STEP 1 //
@@ -65,8 +74,13 @@ const CreateAnnouncement = () => {
 	// STEP 4 //
 	const [priceInput, setPriceInput] = useState('')
 	const [selectedPriceType, setSelectedPriceType] = useState('')
-
 	// STEP 4 //
+
+	// STEP 5 //
+	const [locationData, setLocationData] = useState(null)
+	const [phoneNumber, setPhoneNumber] = useState('')
+
+	// STEP 5 //
 
 	useEffect(() => {
 		const getCategoriesList = async () => {
@@ -117,7 +131,16 @@ const CreateAnnouncement = () => {
 					/>
 				)
 			case 5:
-				return <Step5 />
+				return (
+					<Step5
+						locationData={locationData}
+						setLocationData={setLocationData}
+						phoneNumber={phoneNumber}
+						setPhoneNumber={setPhoneNumber}
+					/>
+				)
+			case 6:
+				return <Step6 />
 			default:
 				return null
 		}
@@ -136,7 +159,6 @@ const CreateAnnouncement = () => {
 				return
 			}
 		}
-		console.log(step)
 		if (step >= 5) {
 			if (!selectedPriceType || selectedPriceType <= 0) {
 				toast.error('Wypełnij wszystkie wymagane pola', { autoClose: 1500 })
@@ -150,7 +172,64 @@ const CreateAnnouncement = () => {
 				}
 			}
 		}
+		if (step >= 6) {
+			if (!locationData) {
+				toast.error(
+					'Wybierz miasto z wyskakującej listy, lub zezwól na automatyczną lokalizację.',
+					{ autoClose: 2500 }
+				)
+				return
+			}
+			if (!phoneNumber || phoneNumber.length < 9) {
+				toast.error('Wprowadź numer telefonu', { autoClose: 2500 })
+				return
+			}
+		}
 		setActiveStep(step)
+	}
+
+	const handleAddAnnouncement = async () => {
+		const convertedImages = await Promise.all(
+			images.map(async blobURL => {
+				const response = await fetch(blobURL.file)
+				const blob = await response.blob()
+				return blob
+			})
+		)
+
+		const tagsData = tagsArray.map(tag => tag.name)
+
+		const locationPayload = {
+			latitude: locationData.lat,
+			longitude: locationData.lon,
+		}
+
+		const formData = new FormData()
+		formData.append('title', titleInput)
+		formData.append('description', description)
+		formData.append('price', priceInput)
+		formData.append('price_type', selectedPriceType)
+		formData.append('user_id', user.id)
+		formData.append('category_id', selectedCategory.value)
+		// formData.append('location', cityInput.current.value)
+		// formData.append('postal_code', zipCodeInput.current.value)
+		// formData.append('phone_number', phoneNumberInput.current.value)
+		tagsData.forEach((tag, index) => {
+			formData.append(`tags[${index}]`, tag)
+		})
+
+		convertedImages.forEach((image, index) => {
+			formData.append(`images[${index}]`, image)
+		})
+
+		console.log(locationData)
+		console.log(locationPayload)
+		console.log(phoneNumber)
+
+		// console.log('FormData Content:')
+		// for (let [key, value] of formData.entries()) {
+		// 	console.log(key, value)
+		// }
 	}
 
 	return (
@@ -190,40 +269,44 @@ const CreateAnnouncement = () => {
 								Krok {activeStep}: {progressItems[activeStep - 1].title}
 							</h5>
 							<article className='create-announcement-step-container'>
-								{/* <motion.div
-									key={activeStep}
-									initial={{ opacity: 0, y: '-100%' }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: '100%' }}
-									transition={{ duration: 0.5 }}>
-									{getCurrentStepComponent()}
-								</motion.div> */}
-								{getCurrentStepComponent()}
-								<div
-									className={`create-announcement-bottom-buttons ${
-										activeStep > 1 ? '' : 'single'
-									}`}>
-									{activeStep > 1 && (
+								<div className='step-container-content'>{getCurrentStepComponent()}</div>
+								{activeStep >= 1 && activeStep < progressItems.length ? (
+									<div
+										className={`create-announcement-bottom-buttons ${
+											activeStep > 1 ? '' : 'single'
+										}`}>
+										{activeStep > 1 && (
+											<button
+												type='submit'
+												className='btn-design btn-long'
+												onClick={() => handleChangeStep(activeStep - 1)}>
+												<i className='me-2'>
+													<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+												</i>
+												Wróć
+											</button>
+										)}
 										<button
 											type='submit'
 											className='btn-design btn-long'
-											onClick={() => handleChangeStep(activeStep - 1)}>
-											<i className='me-2'>
-												<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+											onClick={() => handleChangeStep(activeStep + 1)}>
+											Dalej
+											<i className='ms-2'>
+												<FontAwesomeIcon icon='fa-solid fa-chevron-right' />
 											</i>
-											Wróć
 										</button>
-									)}
-									<button
-										type='submit'
-										className='btn-design btn-long'
-										onClick={() => handleChangeStep(activeStep + 1)}>
-										Dalej
-										<i className='ms-2'>
-											<FontAwesomeIcon icon='fa-solid fa-chevron-right' />
-										</i>
-									</button>
-								</div>
+									</div>
+								) : (
+									<>
+										<div className='row'>
+											<div className='col-12 text-center'>
+												<button onClick={handleAddAnnouncement} className='btn-design'>
+													Dodaj ogłoszenie
+												</button>
+											</div>
+										</div>
+									</>
+								)}
 							</article>
 						</div>
 					</div>

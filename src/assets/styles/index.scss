@@ -7,7 +7,7 @@ $text-color: #828282;
 $text-grey-color: #0a0606;
 $light-text-color: #fff;
 $border-color: #e6e6e6;
-
+$heading-color: #383838;
 $section-background: #fff;
 
 // $app-background-color: #f8f8f8;
@@ -19,6 +19,21 @@ $image-background: rgb(235, 235, 235);
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: $heading-color;
+}
+
+h6 {
+	font-size: 14px !important;
+	font-weight: bold !important;
+	text-transform: uppercase;
 }
 
 .App {
