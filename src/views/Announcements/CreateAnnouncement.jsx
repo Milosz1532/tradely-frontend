@@ -1,8 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import axiosClient from '../../services/Api'
 import { getAnnouncementCategories } from '../../services/Api'
 import { useSelector } from 'react-redux'
+import Swal from 'sweetalert2'
 
 import '../../assets/styles/CreateAnnouncement.scss'
 
@@ -72,7 +74,7 @@ const CreateAnnouncement = () => {
 	// STEP 3 //
 
 	// STEP 4 //
-	const [priceInput, setPriceInput] = useState('')
+	const [priceInput, setPriceInput] = useState(0)
 	const [selectedPriceType, setSelectedPriceType] = useState('')
 	// STEP 4 //
 
@@ -199,37 +201,102 @@ const CreateAnnouncement = () => {
 
 		const tagsData = tagsArray.map(tag => tag.name)
 
-		const locationPayload = {
-			latitude: locationData.lat,
-			longitude: locationData.lon,
+		const latitude = locationData.lat
+		const longitude = locationData.lon
+
+		try {
+			const response = await fetch(
+				`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&limit=1`
+			)
+
+			const data = await response.json()
+
+			if (data.address) {
+				const city = data.address.city || data.address.town || data.address.village || ''
+				let province = data.address.state || data.address.region || ''
+				if (province && province.startsWith('województwo')) {
+					province = province.replace('województwo', '').trim()
+				}
+				const formData = new FormData()
+				formData.append('title', titleInput)
+				formData.append('description', description)
+				formData.append('price', priceInput)
+				formData.append('price_type', selectedPriceType)
+				formData.append('category_id', selectedCategory.value)
+				formData.append('location', city)
+				formData.append('province', province)
+				formData.append('latitude', locationData.lat)
+				formData.append('longitude', locationData.lon)
+				formData.append('phone_number', phoneNumber)
+				tagsData.forEach((tag, index) => {
+					formData.append(`tags[${index}]`, tag)
+				})
+
+				convertedImages.forEach((image, index) => {
+					formData.append(`images[${index}]`, image)
+				})
+
+				console.log('FormData Content:')
+				for (let [key, value] of formData.entries()) {
+					console.log(key, value)
+				}
+
+				axiosClient
+					.post('/announcements', formData)
+					.then(({ data }) => {
+						console.log(data)
+						Swal.fire({
+							icon: 'success',
+							title: 'Ogłoszenie dodane',
+							text: 'Twoje ogłoszenie zostało pomyślnie dodane',
+							showCloseButton: true,
+							showCancelButton: true,
+							focusConfirm: false,
+							confirmButtonColor: '#3085d6',
+							cancelButtonColor: '#D9D9D9',
+							confirmButtonText: 'Przejdź do ogłoszenia',
+							cancelButtonText: 'Powrót do strony',
+						}).then(result => {
+							if (result.isConfirmed) {
+								console.log(`Tutaj też się zastanowię jescze`)
+							} else if (result.isDismissed) {
+								console.log(`Zastanowię się co dalej zrobić`)
+							}
+							// setLoadingScreen(false)
+						})
+					})
+					.catch(err => {
+						const response = err.response
+						console.log(response)
+
+						if (response && response.status === 422) {
+							Swal.fire({
+								icon: 'error',
+								title: 'Wystąpił błąd',
+								text: 'Przekazane dane nie są prawidłowe',
+								confirmButtonColor: '#3085d6',
+							})
+						} else if (response && response.status === 413) {
+							Swal.fire({
+								icon: 'error',
+								title: 'Wystąpił błąd',
+								text: 'Zdjęcia posiadają zbyt wysoką rozdzielczość. Przed dodaniem ogłoszenia, zalecamy skompresowanie zdjęć, aby zmniejszyć ich rozmiar',
+								confirmButtonColor: '#3085d6',
+							})
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Wystąpił błąd',
+								text: 'Nie udało się dodać ogłoszenia. Spróbuj ponownie później',
+								confirmButtonColor: '#3085d6',
+							})
+						}
+						// setLoadingScreen(false)
+					})
+			}
+		} catch (error) {
+			console.error('Błąd podczas pobierania danych z API:', error)
 		}
-
-		const formData = new FormData()
-		formData.append('title', titleInput)
-		formData.append('description', description)
-		formData.append('price', priceInput)
-		formData.append('price_type', selectedPriceType)
-		formData.append('user_id', user.id)
-		formData.append('category_id', selectedCategory.value)
-		// formData.append('location', cityInput.current.value)
-		// formData.append('postal_code', zipCodeInput.current.value)
-		// formData.append('phone_number', phoneNumberInput.current.value)
-		tagsData.forEach((tag, index) => {
-			formData.append(`tags[${index}]`, tag)
-		})
-
-		convertedImages.forEach((image, index) => {
-			formData.append(`images[${index}]`, image)
-		})
-
-		console.log(locationData)
-		console.log(locationPayload)
-		console.log(phoneNumber)
-
-		// console.log('FormData Content:')
-		// for (let [key, value] of formData.entries()) {
-		// 	console.log(key, value)
-		// }
 	}
 
 	return (
