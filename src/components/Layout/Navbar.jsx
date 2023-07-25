@@ -16,6 +16,8 @@ import Pusher from 'pusher-js'
 import Echo from 'laravel-echo'
 import Cookies from 'js-cookie'
 
+import Button from './Button'
+
 export default function Navbar({ fluid = false }) {
 	const dispatch = useDispatch()
 	const [showUserProfile, setShowUserProfile] = useState(false)
@@ -202,7 +204,12 @@ export default function Navbar({ fluid = false }) {
 														Tradely jesteś u siebie!
 													</p>
 													<NavLink to={'/login'}>
-														<button className='btn-design w-100'>Zaloguj się</button>
+														<Button
+															className={'w-100'}
+															text={'Zaloguj się'}
+															size={'medium'}
+															color={true}
+														/>
 													</NavLink>
 													<p className='nav-profile-register'>
 														Nie masz konta? <NavLink to={'/signup'}>Zarejestruj się</NavLink>
@@ -214,7 +221,8 @@ export default function Navbar({ fluid = false }) {
 								</div>
 							</div>
 							<NavLink to='/createAnnouncement'>
-								<button className='btn-design btn-md ms-4'>Dodaj ogłoszenie</button>
+								{/* <button className='btn-design btn-md ms-4'>Dodaj ogłoszenie</button> */}
+								<Button className={'ms-3'} text={'Dodaj ogłoszenie'} size={'medium'} />
 							</NavLink>
 						</div>
 					</div>

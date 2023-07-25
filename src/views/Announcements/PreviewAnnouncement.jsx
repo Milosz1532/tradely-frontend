@@ -247,12 +247,8 @@ export default function PreviewAnnouncement() {
 
 	return (
 		<>
-			<div className='preview-announcement-search-section mb-3'>
-				<div className='container'>
-					<h2>Wyszukaj ogłoszenie</h2>
-					<SearchBar />
-				</div>
-			</div>
+			<SearchBar />
+
 			{loadingAnnouncement ? (
 				<LoadingScreen />
 			) : announcementData && announcementData.status.id === 2 && !notFound ? (

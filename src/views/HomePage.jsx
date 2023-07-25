@@ -1,65 +1,106 @@
 import React, { useState, useEffect } from 'react'
+import Searchbar from '../components/Layout/Searchbar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import {
 	SquareAnnouncement,
 	SquareAnnouncementLoading,
 } from '../components/Announcements/SquareAnnouncement'
+import FeaturedAnnouncement from '../components/Announcements/FeaturedAnnouncement'
 
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
-import Searchbar from '../components/Layout/Searchbar'
-import { Category, LoadingCategory } from '../components/Home/Category'
-
 import { indexAnnouncements, getAnnouncementCategories } from '../services/Api'
-
-import '../assets/styles/Home.scss'
-
-// Images //
-import searchBackground from '/images/search-background.jpg'
-import adBackground from '/images/advertisement.jpg'
 
 const LoadingAnnouncement = () => {
 	return (
 		<div className='container mt-5'>
-			<div className='section-container mt-3 '>
-				<h2 className='home-title'>Najnowsze ogłoszenia</h2>
-
-				<div className='row'>
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-				</div>
+			<div className='row'>
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
 			</div>
 
-			<div className='section-container mt-3 '>
-				<div className='row'>
-					<h2 className='home-title'>W twojej okolicy</h2>
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-				</div>
+			<div className='row'>
+				<h2 className='home-title'>W twojej okolicy</h2>
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
 			</div>
 		</div>
 	)
 }
 
-const LoadingCategories = () => {
-	return <></>
+function SlidereNextArrow(props) {
+	const { onClick } = props
+	return (
+		<div className='slider-next-arrow' onClick={onClick}>
+			<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+		</div>
+	)
+}
+
+function SliderPrevArrow(props) {
+	const { onClick } = props
+	return (
+		<div className='slider-prev-arrow' onClick={onClick}>
+			<i>
+				<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+			</i>
+		</div>
+	)
 }
 
 const AnnouncementList = ({ data }) => {
+	var settings = {
+		dots: false,
+		infinite: false,
+		speed: 500,
+		slidesToShow: 4,
+		slidesToScroll: 1,
+		initialSlide: 0,
+		nextArrow: <SlidereNextArrow />,
+		prevArrow: <SliderPrevArrow />,
+
+		responsive: [
+			{
+				breakpoint: 1024,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 3,
+					infinite: true,
+				},
+			},
+			{
+				breakpoint: 768,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2,
+					initialSlide: 2,
+				},
+			},
+			{
+				breakpoint: 480,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+				},
+			},
+		],
+	}
+
 	const newAnnouncementsList = data.latest_announcements.map(a => (
 		<SquareAnnouncement
 			key={a.id}
@@ -75,6 +116,23 @@ const AnnouncementList = ({ data }) => {
 			is_favorited={a.is_favorited}
 			item={a}
 		/>
+	))
+
+	const featuredAnnouncements = data.latest_announcements.map((a, index) => (
+		<div
+			className={`featured-announcement-col ${
+				index < 2 ? 'col-xl-6 col-md-6 col-sm-6 col-xs-12' : 'col-xl-4 col-md-4 col-sm-4 col-xs-12 '
+			} px-3 py-2 mt-2`}
+			key={a.id}>
+			<FeaturedAnnouncement
+				id={a.id}
+				title={a.title}
+				price={a.price}
+				image={a.first_image}
+				location={a.location}
+				category={a.category}
+			/>
+		</div>
 	))
 
 	const categoryAnnouncementsList = data.category_announcements.map(a => (
@@ -116,31 +174,41 @@ const AnnouncementList = ({ data }) => {
 			<section className='new-announcements'>
 				{data.latest_announcements.length !== 0 && (
 					<>
-						<div className='section-container mt-3 '>
-							<h2 className='home-title'>Najnowsze ogłoszenia</h2>
+						<h2 className='announcements-section-title text-center mt-5'>Najnowsze ogłoszenia</h2>
 
-							<div className='row'>{newAnnouncementsList}</div>
+						{/* <div className='row'>{newAnnouncementsList}</div> */}
+						<div className='row mt-3'>
+							<Slider {...settings}>{newAnnouncementsList}</Slider>
 						</div>
 					</>
 				)}
 				{data.location_announcements.length !== 0 && (
 					<>
-						<div className='section-container mt-3'>
-							<h2 className='home-title'>W twojej okolicy</h2>
-							<div className='row'>{locationAnnouncementsList}</div>
-						</div>
+						<h2 className='announcements-section-title text-center mt-5'>
+							Ogłoszenia w twojej okolicy
+						</h2>
+
+						<div className='row'>{locationAnnouncementsList}</div>
 					</>
 				)}
 
 				{data.category_announcements.length !== 0 && (
 					<>
-						<div className='section-container mt-3'>
-							<h2 className='home-title'>Motoryzacja</h2>
+						<h2 className='announcements-section-title text-center mt-5'>Motoryzacja</h2>
 
-							<div className='row'>{categoryAnnouncementsList}</div>
+						{/* <div className='row'>{categoryAnnouncementsList}</div> */}
+						<div className='row mt-3'>
+							<Slider {...settings}>{categoryAnnouncementsList}</Slider>
 						</div>
 					</>
 				)}
+			</section>
+			<section>
+				<h2 className='announcements-section-title text-center mt-5'>Wyróżnione ogłoszenia</h2>
+				<p className='text-center announcements-section-subtitle'>
+					Ogłoszenia użytkowników Tradely +
+				</p>
+				<div className='row px-5'>{featuredAnnouncements}</div>
 			</section>
 		</div>
 	)
@@ -174,108 +242,26 @@ export default function HomePage() {
 		loadAnnouncements()
 		fetchCategories()
 	}, [])
-
-	var settings = {
-		dots: false,
-		infinite: false,
-		speed: 500,
-		slidesToShow: 4,
-		slidesToScroll: 1,
-		initialSlide: 0,
-		responsive: [
-			{
-				breakpoint: 1024,
-				settings: {
-					slidesToShow: 3,
-					slidesToScroll: 3,
-					infinite: true,
-				},
-			},
-			{
-				breakpoint: 768,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2,
-					initialSlide: 2,
-				},
-			},
-			{
-				breakpoint: 480,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-				},
-			},
-		],
-	}
-
 	return (
 		<>
-			<section className='search-section' style={{ backgroundImage: `url(${searchBackground}` }}>
-				<div className='container p-5'>
-					<div className='row'>
-						<div className='search-section-title'>
-							<h1>WORLD’S LARGEST MARKETPLACE</h1>
-							<p>The best place to buy your house, sell your car or find a job in Poland</p>
-						</div>
-						<Searchbar />
-					</div>
-				</div>
-			</section>
+			<Searchbar />
+			<div className='container'>
+				<h2 className='announcements-section-title text-center '>Twoje ostatnie wyszukiwania</h2>
+				<p className='text-center'>Tutaj będą ostatnio wyszukiwane ogłoszenia</p>
 
-			<div className='container '>
-				<section className='pupular-categories'>
-					<div className='pupular-categories-content'>
-						<h2>Popularne kategorie</h2>
+				<h2 className='announcements-section-title text-center mt-5'>To może Cię zainteresować</h2>
+				<p className='text-center announcements-section-subtitle'>
+					Sprawdź ofertę naszych partnerów
+				</p>
 
-						<div className='row mx-auto'>
-							{_loadingCategories ? (
-								<Slider {...settings}>
-									<LoadingCategory />
-									<LoadingCategory />
-									<LoadingCategory />
-									<LoadingCategory />
-								</Slider>
-							) : (
-								<Slider {...settings}>
-									{categories.map(category => (
-										<Category
-											key={category.id}
-											id={category.id}
-											name={category.name}
-											image={category.image_path}
-										/>
-									))}
-								</Slider>
-							)}
-
-							{/* <Category />
-								<Category bg={`red`} />
-								<Category bg={`green`} />
-								<Category bg={`yellow`} />
-								<Category bg={`blue`} />
-								<Category bg={`purple`} />
-								<Category bg={`orange`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} /> */}
-						</div>
-					</div>
+				<section>
+					{_loadingAnnouncements ? (
+						<LoadingAnnouncement />
+					) : (
+						<AnnouncementList data={announcementsData} />
+					)}
 				</section>
 			</div>
-			<section className='advertisement-section' style={{ backgroundImage: `url(${adBackground}` }}>
-				<div className='advertisement-content-company'>
-					<h1>Miejsce na twoją reklamę</h1>
-				</div>
-			</section>
-
-			{_loadingAnnouncements ? (
-				<LoadingAnnouncement />
-			) : (
-				<AnnouncementList data={announcementsData} />
-			)}
 		</>
 	)
 }
