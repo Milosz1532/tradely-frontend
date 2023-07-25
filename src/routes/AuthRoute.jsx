@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { startLoading, stopLoading } from '../redux/actions/loadingActions'
 
@@ -8,10 +8,11 @@ const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
 	const isLoading = useSelector(state => state.loading.isLoading)
 
 	const dispatch = useDispatch()
+	const location = useLocation()
 
 	if (isVerifying) {
 		dispatch(startLoading(true))
-		return
+		return null
 	} else {
 		setTimeout(() => {
 			dispatch(stopLoading())
@@ -19,8 +20,12 @@ const AuthRoute = ({ children, mustByLogin, navigateTo }) => {
 	}
 
 	if (mustByLogin && isAuthenticated) {
+		localStorage.getItem('redirectPath') && localStorage.removeItem('redirectPath')
 		return children
 	} else if (mustByLogin && !isAuthenticated) {
+		if (location.pathname) {
+			localStorage.setItem('redirectPath', location.pathname)
+		}
 		return <Navigate to='/login' />
 	} else if (!mustByLogin && isAuthenticated) {
 		return <Navigate to={navigateTo || '/'} />

@@ -380,6 +380,12 @@ export default function ChatPage() {
 								<div
 									className={`chat-menu-item ${
 										selectedConversation?.id === conversation.id ? 'selected' : ''
+									} ${
+										conversation?.latest_message?.user_id !== user?.id &&
+										conversation?.latest_message?.status &&
+										conversation?.latest_message?.status !== 3
+											? 'new'
+											: ''
 									}`}>
 									<div className='announcement-image'>
 										<img

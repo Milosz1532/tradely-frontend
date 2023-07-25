@@ -19,8 +19,7 @@ $box-color: #fff;
 
 .left-menu {
 	width: 300px;
-
-	margin-top: 10px;
+	background-color: #fff;
 	padding: 20px;
 	// max-height: 88vh;
 	overflow-y: scroll;
@@ -378,7 +377,6 @@ $box-color: #fff;
 	display: flex;
 	height: 88vh;
 	color: $text-color;
-	background-color: #ffffffbe;
 	overflow: hidden;
 
 	.chat-menu {
@@ -407,6 +405,10 @@ $box-color: #fff;
 					transition: opacity 0.4s;
 					cursor: pointer;
 					height: 80px;
+
+					&.new {
+						opacity: 1;
+					}
 
 					&.selected {
 						opacity: 1;
@@ -737,6 +739,7 @@ $box-color: #fff;
 			display: inline-block;
 			margin-bottom: 20px;
 			max-height: 30vh;
+			padding: 0 !important;
 			border-right: none !important;
 
 			.chat-menu-list {
@@ -803,6 +806,7 @@ $box-color: #fff;
 		}
 		.chat-content {
 			max-height: 70vh;
+			margin-left: 0;
 		}
 	}
 }

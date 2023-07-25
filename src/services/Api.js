@@ -12,7 +12,7 @@ axiosClient.interceptors.response.use(
 	error => {
 		if (!error.response || !error.response.status) {
 			const customError = {
-				error: 'Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie później',
+				message: 'Wystąpił problem z połączeniem z serwerem. Spróbuj ponownie później',
 				isConnectionError: true,
 			}
 			throw customError
@@ -55,8 +55,7 @@ export const login = async (email, password) => {
 			password: password,
 		}
 		const response = await axiosClient.post('/login', data)
-		const { token, user } = response.data
-		setAuthHeader(token)
+		setAuthHeader(response.data.token)
 		return response.data
 	} catch (error) {
 		console.log(error)
@@ -204,6 +203,51 @@ export const getNewConversationData = async id => {
 		return response
 	} catch (error) {
 		console.log(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const getSuggestions = async keyword => {
+	if (keyword.trim() === '') return
+	try {
+		const response = await axiosClient.get(`/suggestions/?keyword=${keyword}`)
+		return response.data
+	} catch (error) {
+		console.log(error)
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const getAnnouncementCategories = async () => {
+	try {
+		const response = await axiosClient.get('/categories')
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const searchAnnouncements = async (location, category, keyword, page) => {
+	try {
+		const response = await axiosClient.get('/announcements/search', {
+			params: {
+				location: location,
+				category: category,
+				keyword: keyword,
+				page: page,
+			},
+		})
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const indexAnnouncements = async () => {
+	try {
+		const response = await axiosClient.get('/announcements')
+		return response
+	} catch (error) {
 		throw error.response ? error.response.data : error
 	}
 }

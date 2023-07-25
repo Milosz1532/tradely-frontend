@@ -94,12 +94,15 @@ const ShowAnnouncement = ({ data }) => {
 	return (
 		<div className='container previewAnnouncement'>
 			<div className='row'>
-				<div className='top-information'>
-					<p className='top-information-category'>Ogłoszenie - Motoryzacja - Samochody osobowe</p>
-					<p className='top-information-back'>Wróć</p>
-					<p className='top-information-announcement-id'>Ogłoszenie: {data.id}</p>
+				<div className='col-12'>
+					<div className='top-information'>
+						<p className='top-information-category'>Ogłoszenie - Motoryzacja - Samochody osobowe</p>
+						<p className='top-information-back'>Wróć</p>
+						<p className='top-information-announcement-id'>Ogłoszenie: {data.id}</p>
+					</div>
 				</div>
-				<div className='col-lg-8'>
+
+				<div className='col-lg-8 col-md-6'>
 					<section className='announcement-section announcement-image-section'>
 						<div className='image'>
 							<img src={images.length > 0 ? images[selectedImage] : noImage} />
@@ -126,6 +129,12 @@ const ShowAnnouncement = ({ data }) => {
 						<div className='announcement-description-title'>
 							<h4 className='announcement-title'>{data.title}</h4>
 							<h4 className='announcement-price'>{data.price} zł</h4>
+							<div className='announcement-tags'>
+								{data.tags.map(tag => (
+									<p className='tag'>{tag.name}</p>
+								))}
+							</div>
+
 							<hr />
 						</div>
 						<div className='announcement-description-content'>
@@ -138,9 +147,9 @@ const ShowAnnouncement = ({ data }) => {
 						</div>
 					</section>
 				</div>
-				<div className='col-lg-4'>
+				<div className='col-lg-4 col-md-6'>
 					<div className='announcement-section announcement-user-section'>
-						<h5>Osoba prywatna</h5>
+						<h6>Osoba prywatna</h6>
 						<div className='announcement-user-info-box'>
 							<img src={userIcon} alt='user-icon' />
 							<div className='announcement-user-info-box-content'>
@@ -182,24 +191,24 @@ const ShowAnnouncement = ({ data }) => {
 						</div>
 
 						<div className='announcement-user-note mt-4'>
-							<h5>Notatka</h5>
+							<h6>Notatka</h6>
 							<p>
 								Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 								Ipsum has been the industry's standard dummy text ever since the 1500s, when an
 								unknown printer took a galley of type and scrambled it to make a type specimen book.
 							</p>
 						</div>
-						<div className='announcement-user-buttons'>
-							<button>
+						<div className='d-flex justify-content-center'>
+							<button className='btn-design btn-md ms-2'>
 								<FontAwesomeIcon icon='fa-solid fa-phone' /> Zadzwoń
 							</button>
-							<button>
+							<button className='btn-design white btn-md ms-2'>
 								<FontAwesomeIcon icon='fa-regular fa-comments' /> Wyślij wiadomość
 							</button>
 						</div>
 					</div>
 					<div className='announcement-section announcement-location mt-2'>
-						<h5>Lokalizacja</h5>
+						<h6>Lokalizacja</h6>
 						<Map city={data.location.location_name} />
 						<div className='location-content mt-2'>
 							<span>
@@ -227,6 +236,7 @@ export default function PreviewAnnouncement() {
 			.get(API_URL)
 			.then(({ data }) => {
 				setAnnouncementData(data)
+				console.log(data)
 				setLoadingAnnouncement(false)
 			})
 			.catch(error => {

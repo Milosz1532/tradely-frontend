@@ -10,12 +10,11 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 import Searchbar from '../components/Layout/Searchbar'
-import Category from '../components/Home/Category'
+import { Category, LoadingCategory } from '../components/Home/Category'
 
-import { indexAnnouncements } from '../services/SearchService'
+import { indexAnnouncements, getAnnouncementCategories } from '../services/Api'
 
 import '../assets/styles/Home.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // Images //
 import searchBackground from '/images/search-background.jpg'
@@ -24,30 +23,40 @@ import adBackground from '/images/advertisement.jpg'
 const LoadingAnnouncement = () => {
 	return (
 		<div className='container mt-5'>
-			<h2 className='home-title'>Najnowsze ogłoszenia</h2>
-			<div className='row'>
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
+			<div className='section-container mt-3 '>
+				<h2 className='home-title'>Najnowsze ogłoszenia</h2>
+
+				<div className='row'>
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+				</div>
 			</div>
-			<div className='row'>
-				<h2 className='home-title'>W twojej okolicy</h2>
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
-				<SquareAnnouncementLoading />
+
+			<div className='section-container mt-3 '>
+				<div className='row'>
+					<h2 className='home-title'>W twojej okolicy</h2>
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+					<SquareAnnouncementLoading />
+				</div>
 			</div>
 		</div>
 	)
+}
+
+const LoadingCategories = () => {
+	return <></>
 }
 
 const AnnouncementList = ({ data }) => {
@@ -107,23 +116,29 @@ const AnnouncementList = ({ data }) => {
 			<section className='new-announcements'>
 				{data.latest_announcements.length !== 0 && (
 					<>
-						<h2 className='home-title'>Najnowsze ogłoszenia</h2>
+						<div className='section-container mt-3 '>
+							<h2 className='home-title'>Najnowsze ogłoszenia</h2>
 
-						<div className='row'>{newAnnouncementsList}</div>
+							<div className='row'>{newAnnouncementsList}</div>
+						</div>
 					</>
 				)}
 				{data.location_announcements.length !== 0 && (
 					<>
-						<h2 className='home-title'>W twojej okolicy</h2>
-						<div className='row'>{locationAnnouncementsList}</div>
+						<div className='section-container mt-3'>
+							<h2 className='home-title'>W twojej okolicy</h2>
+							<div className='row'>{locationAnnouncementsList}</div>
+						</div>
 					</>
 				)}
 
 				{data.category_announcements.length !== 0 && (
 					<>
-						<h2 className='home-title mt-4'>Motoryzacja</h2>
+						<div className='section-container mt-3'>
+							<h2 className='home-title'>Motoryzacja</h2>
 
-						<div className='row'>{categoryAnnouncementsList}</div>
+							<div className='row'>{categoryAnnouncementsList}</div>
+						</div>
 					</>
 				)}
 			</section>
@@ -133,18 +148,31 @@ const AnnouncementList = ({ data }) => {
 
 export default function HomePage() {
 	const [_loadingAnnouncements, _setLoadingAnnouncements] = useState(true)
+	const [_loadingCategories, _setLoadingCategories] = useState(true)
+	const [categories, setCategories] = useState([null])
 	const [announcementsData, setAnnouncementsData] = useState([null])
 
 	useEffect(() => {
 		const loadAnnouncements = async () => {
+			_setLoadingAnnouncements(true)
 			try {
 				const response = await indexAnnouncements()
 				setAnnouncementsData(response.data)
 				_setLoadingAnnouncements(false)
 			} catch {}
 		}
+		const fetchCategories = async () => {
+			_setLoadingCategories(true)
+			try {
+				const response = await getAnnouncementCategories()
+				setCategories(response)
+				_setLoadingCategories(false)
+				console.log(response)
+			} catch {}
+		}
 
 		loadAnnouncements()
+		fetchCategories()
 	}, [])
 
 	var settings = {
@@ -201,8 +229,27 @@ export default function HomePage() {
 						<h2>Popularne kategorie</h2>
 
 						<div className='row mx-auto'>
-							<Slider {...settings}>
-								<Category />
+							{_loadingCategories ? (
+								<Slider {...settings}>
+									<LoadingCategory />
+									<LoadingCategory />
+									<LoadingCategory />
+									<LoadingCategory />
+								</Slider>
+							) : (
+								<Slider {...settings}>
+									{categories.map(category => (
+										<Category
+											key={category.id}
+											id={category.id}
+											name={category.name}
+											image={category.image_path}
+										/>
+									))}
+								</Slider>
+							)}
+
+							{/* <Category />
 								<Category bg={`red`} />
 								<Category bg={`green`} />
 								<Category bg={`yellow`} />
@@ -213,8 +260,7 @@ export default function HomePage() {
 								<Category bg={`green`} />
 								<Category bg={`green`} />
 								<Category bg={`green`} />
-								<Category bg={`green`} />
-							</Slider>
+								<Category bg={`green`} /> */}
 						</div>
 					</div>
 				</section>

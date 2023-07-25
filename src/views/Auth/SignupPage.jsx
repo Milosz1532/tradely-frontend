@@ -38,7 +38,7 @@ export default function SignupPage() {
 			.catch(error => {
 				Swal.fire({
 					icon: 'error',
-					text: error.error,
+					text: error.message,
 				})
 			})
 			.finally(() => {

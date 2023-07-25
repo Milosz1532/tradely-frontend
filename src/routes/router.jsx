@@ -58,7 +58,7 @@ const router = createBrowserRouter([
 	{
 		path: '/account',
 		element: (
-			<AuthRoute mustByLogin={true}>
+			<AuthRoute mustByLogin={true} path={'/account'}>
 				<ProfileLayout />
 			</AuthRoute>
 		),
