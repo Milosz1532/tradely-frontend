@@ -1,11 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { toast } from 'react-toastify'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useNavigate } from 'react-router-dom'
+
 import axiosClient from '../../services/Api'
 import { getAnnouncementCategories } from '../../services/Api'
 import { useSelector } from 'react-redux'
-import Swal from 'sweetalert2'
 
+import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
+import { HalfMalf } from 'react-spinner-animated'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import 'react-spinner-animated/dist/index.css'
 import '../../assets/styles/CreateAnnouncement.scss'
 
 // STEPS
@@ -51,7 +55,23 @@ const progressItems = [
 	},
 ]
 
+const BoxLoading = ({ text }) => {
+	return (
+		<>
+			<div className='box-loading'>
+				<div className='box-loading-content'>
+					<h4>{text}</h4>
+					<HalfMalf center={false} />
+				</div>
+			</div>
+			<div className='box-loading-shadow'></div>
+		</>
+	)
+}
+
 const CreateAnnouncement = () => {
+	let navigate = useNavigate()
+
 	const user = useSelector(state => state.auth.user)
 
 	const [activeStep, setActiveStep] = useState(1)
@@ -81,8 +101,9 @@ const CreateAnnouncement = () => {
 	// STEP 5 //
 	const [locationData, setLocationData] = useState(null)
 	const [phoneNumber, setPhoneNumber] = useState('')
-
 	// STEP 5 //
+
+	const [loadingPage, setLoadingPage] = useState(false)
 
 	useEffect(() => {
 		const getCategoriesList = async () => {
@@ -204,6 +225,8 @@ const CreateAnnouncement = () => {
 		const latitude = locationData.lat
 		const longitude = locationData.lon
 
+		setLoadingPage(true)
+
 		try {
 			const response = await fetch(
 				`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&limit=1`
@@ -236,66 +259,46 @@ const CreateAnnouncement = () => {
 					formData.append(`images[${index}]`, image)
 				})
 
-				console.log('FormData Content:')
-				for (let [key, value] of formData.entries()) {
-					console.log(key, value)
-				}
-
 				axiosClient
 					.post('/announcements', formData)
 					.then(({ data }) => {
-						console.log(data)
 						Swal.fire({
 							icon: 'success',
 							title: 'Ogłoszenie dodane',
 							text: 'Twoje ogłoszenie zostało pomyślnie dodane',
-							showCloseButton: true,
-							showCancelButton: true,
 							focusConfirm: false,
 							confirmButtonColor: '#3085d6',
-							cancelButtonColor: '#D9D9D9',
-							confirmButtonText: 'Przejdź do ogłoszenia',
-							cancelButtonText: 'Powrót do strony',
+							confirmButtonText: 'Przeglądaj ogłoszenia',
 						}).then(result => {
 							if (result.isConfirmed) {
-								console.log(`Tutaj też się zastanowię jescze`)
-							} else if (result.isDismissed) {
-								console.log(`Zastanowię się co dalej zrobić`)
+								navigate('/')
 							}
-							// setLoadingScreen(false)
 						})
 					})
 					.catch(err => {
 						const response = err.response
-						console.log(response)
 
-						if (response && response.status === 422) {
+						if (response) {
 							Swal.fire({
 								icon: 'error',
 								title: 'Wystąpił błąd',
-								text: 'Przekazane dane nie są prawidłowe',
-								confirmButtonColor: '#3085d6',
-							})
-						} else if (response && response.status === 413) {
-							Swal.fire({
-								icon: 'error',
-								title: 'Wystąpił błąd',
-								text: 'Zdjęcia posiadają zbyt wysoką rozdzielczość. Przed dodaniem ogłoszenia, zalecamy skompresowanie zdjęć, aby zmniejszyć ich rozmiar',
-								confirmButtonColor: '#3085d6',
-							})
-						} else {
-							Swal.fire({
-								icon: 'error',
-								title: 'Wystąpił błąd',
-								text: 'Nie udało się dodać ogłoszenia. Spróbuj ponownie później',
+								text: response.data.message,
 								confirmButtonColor: '#3085d6',
 							})
 						}
-						// setLoadingScreen(false)
+					})
+					.finally(() => {
+						setLoadingPage(false)
 					})
 			}
 		} catch (error) {
-			console.error('Błąd podczas pobierania danych z API:', error)
+			Swal.fire({
+				icon: 'error',
+				title: 'Wystąpił błąd',
+				text: 'Spróbuj ponownie za chwile',
+				confirmButtonColor: '#3085d6',
+			})
+			setLoadingPage(false)
 		}
 	}
 
@@ -379,6 +382,7 @@ const CreateAnnouncement = () => {
 					</div>
 				</div>
 			</div>
+			{loadingPage && <BoxLoading text={'Dodajemy twoje ogłoszenie'} />}
 		</>
 	)
 }

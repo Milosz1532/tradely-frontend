@@ -54,10 +54,8 @@ const Step1 = ({
 	const fetchSuggestions = async value => {
 		try {
 			const response = await getSuggestions(value)
-			console.log(response)
 			setSuggestions(response)
 		} catch (error) {
-			console.log(error)
 			setSuggestions([])
 		}
 	}
@@ -121,7 +119,7 @@ const Step1 = ({
 						</label>
 						<Select
 							options={categoryOptions}
-							placeholder={'np. Elektronika'}
+							placeholder={'Wybierz kategorię'}
 							styles={selectStyle}
 							value={selectedCategory}
 							onChange={e => setSelectedCategory(e)}
@@ -135,7 +133,7 @@ const Step1 = ({
 						</label>
 						<Select
 							options={categoryOptions}
-							placeholder={'np. Elektronika'}
+							placeholder={'Wybierzs podkategorię'}
 							styles={selectStyle}
 						/>
 					</div>
