@@ -129,20 +129,6 @@ h6 {
 					opacity: 0.6;
 				}
 			}
-			.suggestions {
-				width: 100%;
-				position: absolute;
-				top: 100%;
-				left: 0;
-				z-index: 3;
-				background-color: #fff;
-				border-top: 0;
-				text-align: left;
-
-				// border-radius: 0px 0px 10px 10px;
-				// overflow-y: scroll;
-				transition: height 0.4s;
-			}
 
 			.suggestion-element {
 				border-top: 1px solid $border-color;

@@ -5,10 +5,9 @@ import { getAnnouncementCategories, getSuggestions } from '../../services/Api'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export default function Searchbar() {
+export default function Searchbar({ keywords }) {
 	const searchInputRef = useRef(null)
 
-	const [category, setCategory] = useState('all_categories')
 	const [location, setLocation] = useState('')
 	const [keyword, setKeyword] = useState('')
 	const [categories, setCategories] = useState([])
@@ -20,7 +19,7 @@ export default function Searchbar() {
 	const navigate = useNavigate()
 
 	const handleSearch = () => {
-		let url = `/announcements/${location ? location : 'all_locations'}/${category}`
+		let url = `/announcements/${location ? location : 'all_locations'}/all_categories`
 
 		if (keyword.trim() !== '') {
 			url += `/${keyword}`
@@ -32,7 +31,6 @@ export default function Searchbar() {
 	const fetchSuggestions = async value => {
 		try {
 			const response = await getSuggestions(value)
-			console.log(response)
 			setSuggestions(response)
 		} catch (error) {
 			console.log(error)
@@ -41,6 +39,9 @@ export default function Searchbar() {
 	}
 
 	useEffect(() => {
+		if (keywords) {
+			setKeyword(keywords)
+		}
 		const getCategoriesList = async () => {
 			try {
 				const categoriesData = await getAnnouncementCategories()
@@ -87,7 +88,7 @@ export default function Searchbar() {
 
 	return (
 		<section className='header-search-section'>
-			<div className='container pt-2'>
+			<div className='container px-4 pt-4'>
 				<h1>Kupuj i sprzedawaj co tylko chcesz</h1>
 				<p className='header-search-section-subtitle'>Znajdź ogłoszenie spośród 13 843 320 ofert</p>
 
@@ -107,7 +108,7 @@ export default function Searchbar() {
 								onBlur={handleInputBlur}
 								ref={searchInputRef}
 							/>
-							{hasFocus && keyword && suggestions?.length > 0 && (
+							{true && keyword && suggestions?.length > 0 && (
 								<div className='suggestions'>
 									{suggestions.map((suggestion, index) => (
 										<div
@@ -127,7 +128,7 @@ export default function Searchbar() {
 							<input type='text' placeholder='Cała polska' />
 						</div>
 						<div className='header-search-section-search-button'>
-							<button>
+							<button onClick={handleSearch}>
 								<i>
 									<FontAwesomeIcon icon='fa-solid fa-magnifying-glass' />
 								</i>

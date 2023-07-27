@@ -91,7 +91,7 @@ export default function Navbar({ fluid = false }) {
 
 	return (
 		<header>
-			<article className={fluid ? 'container-fluid mt-0 pt-2 px-5 ' : 'container mt-0 pt-2'}>
+			<article className={fluid ? 'container-fluid mt-0 pt-2 px-5 ' : 'container mt-0 pt-2 px-4'}>
 				<div className='logo'>
 					<Link to='/'>
 						<h2>Tradely</h2>

@@ -243,9 +243,22 @@ export const searchAnnouncements = async (location, category, keyword, page) => 
 	}
 }
 
-export const indexAnnouncements = async () => {
+export const indexAnnouncements = async (recentAnnouncementIds, userLatitude, userLongitude) => {
 	try {
-		const response = await axiosClient.get('/announcements')
+		const queryParams = {
+			recentAnnouncementIds: recentAnnouncementIds.join(','),
+		}
+
+		// Dodaj współrzędne użytkownika do zapytania, jeśli są dostępne
+		if (userLatitude && userLongitude) {
+			queryParams.userLatitude = userLatitude
+			queryParams.userLongitude = userLongitude
+		}
+
+		const response = await axiosClient.get('/announcements', {
+			params: queryParams,
+		})
+
 		return response
 	} catch (error) {
 		throw error.response ? error.response.data : error

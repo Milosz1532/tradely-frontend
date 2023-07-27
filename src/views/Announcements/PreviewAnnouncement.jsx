@@ -223,7 +223,6 @@ const ShowAnnouncement = ({ data }) => {
 }
 
 export default function PreviewAnnouncement() {
-	// useEffect
 	const { id } = useParams()
 	const [loadingAnnouncement, setLoadingAnnouncement] = useState(true)
 	const [announcementData, setAnnouncementData] = useState(null)
@@ -238,12 +237,33 @@ export default function PreviewAnnouncement() {
 				setAnnouncementData(data)
 				console.log(data)
 				setLoadingAnnouncement(false)
+				console.log(`Dodaj tutaj do localstorage id ogłoszenia: ${data.id}`)
+				addAnnouncementIdToLocalStorage(data.id)
 			})
 			.catch(error => {
 				setLoadingAnnouncement(false)
 				setNotFund(true)
 			})
 	}, [])
+
+	const addAnnouncementIdToLocalStorage = announcementId => {
+		const recentAnnouncements = JSON.parse(localStorage.getItem('recentAnnouncements')) || []
+		const MAX_RECENT_ANNOUNCEMENTS = 5
+
+		const existingIndex = recentAnnouncements.indexOf(announcementId)
+
+		if (existingIndex !== -1) {
+			recentAnnouncements.splice(existingIndex, 1)
+		}
+
+		recentAnnouncements.unshift(announcementId)
+
+		if (recentAnnouncements.length > MAX_RECENT_ANNOUNCEMENTS) {
+			recentAnnouncements.pop()
+		}
+
+		localStorage.setItem('recentAnnouncements', JSON.stringify(recentAnnouncements))
+	}
 
 	return (
 		<>

@@ -33,7 +33,6 @@ export default function App() {
 	}, [dispatch, isAuthenticated])
 
 	useEffect(() => {
-		console.log(isLoading)
 		if (isLoading) {
 			setIsShowingLoading(true)
 		} else if (isLoading === false) {

@@ -19,6 +19,7 @@ export function SquareAnnouncement({
 	image,
 	location,
 	category,
+	price_type,
 	favorite_count = 0,
 	is_favorited = false,
 	item,
@@ -58,14 +59,22 @@ export function SquareAnnouncement({
 		useGrouping: true,
 	}).format(price)
 
+	let announcementPrice = formattedAmount
+
+	if (price_type === 2) {
+		announcementPrice = 'Zamienię'
+	} else if (price_type === 3) {
+		announcementPrice = 'Oddam za darmo'
+	}
+
 	return (
 		// <div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4 p-3'>
-		<div className='announcement-box mx-3'>
-			<div className='announcement-image'>
-				<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
-			</div>
-			<div className='announcement-content'>
-				<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+		<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+			<div className='announcement-box mx-3'>
+				<div className='announcement-image'>
+					<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
+				</div>
+				<div className='announcement-content'>
 					<div className='announcement-top-section'>
 						<span className='announcement-category'>{category ?? 'Brak danych'}</span>
 						<span className='announcement-likes'>
@@ -78,33 +87,34 @@ export function SquareAnnouncement({
 
 					<div className='announcement-title-section'>
 						<p className='announcement-title'>{title}</p>
-						<p className='announcement-price'>{formattedAmount ?? 'Brak danych'}</p>
+						<p className='announcement-price'>{announcementPrice}</p>
 					</div>
-				</NavLink>
-				<hr />
+					<hr />
 
-				<div className='announcement-bottom'>
-					<div className='announcement-date'>
-						<span>{created_at}</span>
-						<span>{location ?? 'Brak danych'}</span>
-					</div>
-					{user && user.id && user.id == user_id ? (
-						false
-					) : (
-						<div className='announcement-buttons'>
-							<i className='me-2 announcement-button' onClick={handleLikeAnnouncement}>
-								<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
-							</i>
-							<NavLink to={`/account/chat/new/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
-								<i>
-									<FontAwesomeIcon icon='fa-regular fa-comments' />
-								</i>
-							</NavLink>
+					<div className='announcement-bottom'>
+						<div className='announcement-date'>
+							<span>{created_at}</span>
+							<span>{location ?? 'Brak danych'}</span>
 						</div>
-					)}
+						{user && user.id && user.id == user_id ? (
+							false
+						) : (
+							<div className='announcement-buttons'>
+								<i className='me-2 announcement-button' onClick={handleLikeAnnouncement}>
+									<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
+								</i>
+								<NavLink to={`/account/chat/new/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+									<i>
+										<FontAwesomeIcon icon='fa-regular fa-comments' />
+									</i>
+								</NavLink>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
-		</div>
+		</NavLink>
+
 		// </div>
 	)
 }

@@ -97,6 +97,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			image={a.first_image}
 			title={a.title}
 			price={a.price}
+			price_type={a.price_type}
 			created_at={a.created_at}
 			tags={a.tags}
 			item={a}
@@ -133,88 +134,56 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	return (
 		<>
-			<div className='search-page-row row'>
-				<div className='col-lg-3 '>
-					<div className='section-container h-100 '>
-						<section className='search-filters '>
-							<h5>Filtry </h5>
-							<hr />
-							<div className='filter mt-3'>
-								<div className='form-input'>
-									<label>Lokalizacja</label>
-									<input type='text' placeholder='Wprowadź lokalizację...' />
-								</div>
-							</div>
-							<div className='filter mt-4'>
-								<div className='form-input'>
-									<label>Podkategoria</label>
-									<input type='text' placeholder='Wybierz podkategorię...' />
-								</div>
-							</div>
-							<div className='filter mt-4'>
-								<div className='row'>
-									<div className='col-6'>
-										<div className='form-input'>
-											<label>Cena od</label>
-											<input type='text' placeholder='0' />
-										</div>
-									</div>
-
-									<div className='col-6'>
-										<div className='form-input'>
-											<label>Cena do</label>
-											<input type='text' placeholder='0' />
-										</div>
-									</div>
-								</div>
-							</div>
-							<button className='btn-design white btn-md w-100 mt-4'>Zatwierdź</button>
+			<section className='section-element p-4'>
+				<div className='row'>
+					<div className='col-lg-3 '>
+						<section className='search-filters'>
+							<h5 className='header-title'>Filtry</h5>
 						</section>
 					</div>
-				</div>
-				<div className='col-lg-9'>
-					<div className='section-container h-100'>
-						<h4>
+					<div className='col-lg-9'>
+						<h5 className='header-title'>
 							Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
-						</h4>
-						<div className='row'>{announcementsList}</div>
-					</div>
-				</div>
-			</div>
+						</h5>
 
-			<div className='row'>
-				<div className='pagination mt-3'>
-					<div className='pagination-content'>
-						<ul>
-							<li className={currentPage <= 1 ? 'disable' : ''}>
-								<Link className='pagination-btn' to={`?page=${prevPage}`}>
-									<FontAwesomeIcon icon='fa-solid fa-angles-left' />
-								</Link>
-							</li>
-							{pageNumbers.map(pageNumber => (
-								<li key={pageNumber}>
-									<div
-										className={`pagination-page-number ${
-											pageNumber === currentPage ? 'active' : ''
-										}`}>
-										<Link
-											className={`pagination-number-btn`}
-											to={`?page=${pageNumber}`}
-											key={pageNumber}>
-											{pageNumber}
-										</Link>
-									</div>
-								</li>
-							))}
-							<li className={currentPage >= totalPages ? 'disable' : ''}>
-								<Link className='pagination-btn' to={`?page=${nextPage}`}>
-									<FontAwesomeIcon icon='fa-solid fa-angles-right' />
-								</Link>
-							</li>
-						</ul>
+						<div className='row'>{announcementsList}</div>
+
+						<div className='row mt-3 px-2'>
+							<div className='pagination'>
+								<div className='pagination-content'>
+									<ul>
+										<li className={currentPage <= 1 ? 'disable' : ''}>
+											<Link className='pagination-btn ' to={`?page=${prevPage}`}>
+												<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+											</Link>
+										</li>
+										{pageNumbers.map(pageNumber => (
+											<li key={pageNumber}>
+												<div
+													className={`pagination-page-number ${
+														pageNumber === currentPage ? 'active' : ''
+													}`}>
+													<Link
+														className={`pagination-number-btn`}
+														to={`?page=${pageNumber}`}
+														key={pageNumber}>
+														{pageNumber}
+													</Link>
+												</div>
+											</li>
+										))}
+										<li className={currentPage >= totalPages ? 'disable' : ''}>
+											<Link className='pagination-btn' to={`?page=${nextPage}`}>
+												<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+											</Link>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
+			</section>
 		</>
 	)
 }
@@ -261,14 +230,9 @@ function SearchAnnouncements() {
 
 	return (
 		<>
-			<section className='preview-announcement-search-section mb-3'>
-				<div className='container'>
-					<h2>Wyszukaj ogłoszenie</h2>
-					<SearchBar />
-				</div>
-			</section>
+			<SearchBar keywords={keyword} />
 
-			<section className='search-announcements container ' style={{ minHeight: '400px' }}>
+			<section className='search-announcements container px-4' style={{ minHeight: '400px' }}>
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />
 				) : announcements && announcements.data.length > 0 ? (
@@ -288,27 +252,3 @@ function SearchAnnouncements() {
 }
 
 export default SearchAnnouncements
-
-// Filters
-{
-	/* <div className='search-announcements-filters'>
-				<div className='row mb-4'>
-					<h4 className='home-title mt-0'>Filtry</h4>
-					<div className='col-2'>
-						<div className='standard-input-design'>
-							<p>Cena od:</p>
-							<input type='number' min={0} style={{ height: '40px' }} />
-						</div>
-					</div>
-					<div className='col-2 '>
-						<div className='standard-input-design'>
-							<p>Cena do:</p>
-							<input type='number' min={0} style={{ height: '40px' }} />
-						</div>
-					</div>
-					<div className='col-2 align-self-end'>
-						<button className='btn-design btn-sm'>Zastosuj filtry</button>
-					</div>
-				</div>
-			</div> */
-}

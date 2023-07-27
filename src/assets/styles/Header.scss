@@ -29,11 +29,18 @@ header {
 		transition: all 0.4s;
 
 		.logo {
+			transition: all 0.4s;
+			opacity: 0.9;
 			a {
 				color: $header-text-color;
 			}
 			h2 {
 				font-weight: bold;
+			}
+
+			&:hover {
+				scale: 1.05;
+				opacity: 1;
 			}
 		}
 		a {
@@ -389,14 +396,14 @@ header {
 		}
 	}
 	.suggestions {
-		width: 90%;
+		width: 98%;
 		position: absolute;
 		top: 100%;
 		left: 0;
-		z-index: 3;
 		background-color: #fff;
 		border-top: 0;
 		text-align: left;
+		z-index: 20;
 
 		// border-radius: 0px 0px 10px 10px;
 		// overflow-y: scroll;
@@ -405,6 +412,7 @@ header {
 
 	.suggestion-element {
 		// border-top: 1px solid $border-color;
+
 		cursor: pointer;
 		p {
 			margin: 0;
