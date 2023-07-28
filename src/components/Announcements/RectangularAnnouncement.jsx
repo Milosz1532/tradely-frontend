@@ -170,19 +170,15 @@ export const RectangularAnnouncement = ({
 							<li key={`announcement-${id}-tag-id-${t.id}`}>{t.name}</li>
 						))}
 					</ul>
-					<div className='location'>
-						<span>13.06.2023 12:00</span>
-						<span>Włocławek, 87-800</span>
-					</div>
-					{edit ? (
-						<div className='favorite-icon'>
-							<button className='btn-design btn-sm'>Zarządzaj</button>
+					<div className='rectangular-announcement-bottom'>
+						<div className='location'>
+							<span>13.06.2023 12:00</span>
+							<span>Włocławek, 87-800</span>
 						</div>
-					) : (
-						<i className='favorite-icon announcement-button' onClick={handleLikeAnnouncement}>
+						<i className='favorite-icon announcement-button me-3' onClick={handleLikeAnnouncement}>
 							<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
 						</i>
-					)}
+					</div>
 				</div>
 			</div>
 			{/* <NavLink

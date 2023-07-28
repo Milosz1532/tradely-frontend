@@ -15,6 +15,10 @@ import {
 import { SquareAnnouncement } from '../../components/Announcements/SquareAnnouncement'
 import AnnouncementNotFound from '../../components/Announcements/AnnouuncementNotFound'
 
+import ReactSlider from 'react-slider'
+
+import Button from '../../components/Layout/Button'
+
 const LoadingAnnouncementsScreen = () => {
 	return (
 		<>
@@ -132,55 +136,261 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	const pageNumbers = generatePageNumbers()
 
+	// FILTERS
+
+	const [progressDistance, setProgressDistance] = useState(0)
+	const [sliderAmountMax, setSliderAmountMax] = useState(1000)
+	const [amountFrom, setAmountFrom] = useState(null)
+	const [amountTo, setAmountTo] = useState(null)
+	const [mobileFilters, setMobileFilters] = useState(false)
+
+	const handleChangeAmountRange = values => {
+		setAmountFrom(parseInt(values[0]))
+		setAmountTo(parseInt(values[1]))
+	}
+
+	useEffect(() => {
+		if (amountTo && sliderAmountMax - amountTo <= 200) {
+			setSliderAmountMax(prevMax => prevMax + 1000)
+		}
+		if (amountTo && amountTo + 2000 < sliderAmountMax) {
+			setSliderAmountMax(prevMax => prevMax - 1000)
+		}
+	}, [amountTo])
+
+	const handleAmountFromChange = value => {
+		const newValue = Math.max(0, parseInt(value))
+		setAmountFrom(newValue)
+	}
+
+	const handleAmountToChange = value => {
+		const newValue = Math.max(0, parseInt(value))
+		setAmountTo(newValue)
+	}
+
 	return (
 		<>
+			<div className='search-sort-by-element d-flex justify-content-end me-1'>
+				<span>
+					Sortuj po: <strong>Trafność</strong>
+				</span>
+			</div>
 			<section className='section-element p-4'>
 				<div className='row'>
-					<div className='col-lg-3 '>
-						<section className='search-filters'>
+					<div>
+						<div className='mobile-section-buttons mb-3'>
+							<Button text='Filtry' size={'medium'} onClick={() => setMobileFilters(true)} />
+						</div>
+					</div>
+					<div
+						className={`col-lg-3 search-filters-container ${
+							mobileFilters ? 'mobile-container' : ''
+						} `}>
+						<div className='d-flex justify-content-between align-items-center'>
 							<h5 className='header-title'>Filtry</h5>
+							<i
+								onClick={() => setMobileFilters(false)}
+								className='search-filters-filters-menu-close-btn me-3'>
+								<FontAwesomeIcon icon='fa-solid fa-xmark' />
+							</i>
+						</div>
+						<section className='search-filters mt-4'>
+							<div className='search-filters-filter'>
+								<h5>Rodzaje oferty</h5>
+
+								<div className='form-check'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										value=''
+										id='search-filters-price-amount-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-price-amount-checkbox'>
+										Kwota
+									</label>
+								</div>
+								<div className='form-check mt-2'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										value=''
+										id='search-filters-price-replace-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-price-replace-checkbox'>
+										Zamienię
+									</label>
+								</div>
+								<div className='form-check mt-2'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										id='search-filters-price-free-checkbox'
+									/>
+									<label className='form-check-label' htmlFor='search-filters-price-free-checkbox'>
+										Oddam za darmo
+									</label>
+								</div>
+							</div>
+							<div className='search-filters-filter mt-3'>
+								<h5>Odległość </h5>
+
+								<div className='mt-4'>
+									<ReactSlider
+										value={progressDistance}
+										onChange={e => setProgressDistance(e)}
+										className='standard-slider'
+										thumbClassName='standard-slider-thumb'
+										trackClassName='standard-slider-track'
+										max={100}
+										renderThumb={(props, state) => (
+											<div {...props}>
+												<div className='standard-slider-value'>
+													<span>{state.valueNow}km</span>
+												</div>
+											</div>
+										)}
+									/>
+								</div>
+							</div>
+							<div className='search-filters-filter mt-3'>
+								<h5>Kwota </h5>
+
+								<div className='row'>
+									<div className='col-6'>
+										<div className='form-input'>
+											<label htmlFor='title'>Od</label>
+											<input
+												type='number'
+												value={amountFrom}
+												placeholder='Od'
+												onChange={e => handleAmountFromChange(e.target.value)}
+											/>
+										</div>
+									</div>
+
+									<div className='col-6'>
+										<div className='form-input '>
+											<label htmlFor='title'>Do</label>
+											<input
+												type='number'
+												placeholder='Do'
+												min='0'
+												value={amountTo}
+												onChange={e => handleAmountToChange(e.target.value)}
+											/>
+										</div>
+									</div>
+								</div>
+
+								<div className='mt-4'>
+									<ReactSlider
+										className='range-slider'
+										thumbClassName='range-slider-thumb'
+										trackClassName='range-slider-track'
+										value={[amountFrom, amountTo]}
+										onChange={handleChangeAmountRange}
+										pearling
+										minDistance={1}
+										max={sliderAmountMax}
+									/>
+								</div>
+							</div>
+							<div className='search-filters-filter mt-3'>
+								<h5>Stan produktu</h5>
+
+								<div className='form-check'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										value=''
+										id='search-filters-productType-new-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-productType-new-checkbox'>
+										Nowe
+									</label>
+								</div>
+								<div className='form-check mt-2'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										value=''
+										id='search-filters-productType-used-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-productType-used-checkbox'>
+										Używane
+									</label>
+								</div>
+								<div className='form-check mt-2'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										id='search-filters-productType-damaged-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-productType-damaged-checkbox'>
+										Uszkodzone
+									</label>
+								</div>
+							</div>
 						</section>
 					</div>
 					<div className='col-lg-9'>
-						<h5 className='header-title'>
-							Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
-						</h5>
+						<section className='d-flex flex-column justify-content-between h-100'>
+							<div>
+								<h5 className='header-title'>
+									Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
+								</h5>
 
-						<div className='row'>{announcementsList}</div>
+								<div className='row'>{announcementsList}</div>
+							</div>
 
-						<div className='row mt-3 px-2'>
-							<div className='pagination'>
-								<div className='pagination-content'>
-									<ul>
-										<li className={currentPage <= 1 ? 'disable' : ''}>
-											<Link className='pagination-btn ' to={`?page=${prevPage}`}>
-												<FontAwesomeIcon icon='fa-solid fa-angle-left' />
-											</Link>
-										</li>
-										{pageNumbers.map(pageNumber => (
-											<li key={pageNumber}>
-												<div
-													className={`pagination-page-number ${
-														pageNumber === currentPage ? 'active' : ''
-													}`}>
-													<Link
-														className={`pagination-number-btn`}
-														to={`?page=${pageNumber}`}
-														key={pageNumber}>
-														{pageNumber}
-													</Link>
-												</div>
+							<div className='row mt-3 px-2'>
+								<span className='pagination-total'>
+									Znalezione ogłoszenia: {announcements.meta.total}
+								</span>
+								<div className='pagination'>
+									<div className='pagination-content'>
+										<ul>
+											<li className={currentPage <= 1 ? 'disable' : ''}>
+												<Link className='pagination-btn ' to={`?page=${prevPage}`}>
+													<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+												</Link>
 											</li>
-										))}
-										<li className={currentPage >= totalPages ? 'disable' : ''}>
-											<Link className='pagination-btn' to={`?page=${nextPage}`}>
-												<FontAwesomeIcon icon='fa-solid fa-angle-right' />
-											</Link>
-										</li>
-									</ul>
+											{pageNumbers.map(pageNumber => (
+												<li key={pageNumber}>
+													<div
+														className={`pagination-page-number ${
+															pageNumber === currentPage ? 'active' : ''
+														}`}>
+														<Link
+															className={`pagination-number-btn`}
+															to={`?page=${pageNumber}`}
+															key={pageNumber}>
+															{pageNumber}
+														</Link>
+													</div>
+												</li>
+											))}
+											<li className={currentPage >= totalPages ? 'disable' : ''}>
+												<Link className='pagination-btn' to={`?page=${nextPage}`}>
+													<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+												</Link>
+											</li>
+										</ul>
+										<span className='pagination-total-pages'>Wyniki: 1 - {totalPages}</span>
+									</div>
 								</div>
 							</div>
-						</div>
+						</section>
 					</div>
 				</div>
 			</section>
@@ -232,6 +442,8 @@ function SearchAnnouncements() {
 		<>
 			<SearchBar keywords={keyword} />
 
+			<h2 className='announcements-section-title text-center mt-5 mb-3'>Wyniki wyszukiwania</h2>
+
 			<section className='search-announcements container px-4' style={{ minHeight: '400px' }}>
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />
@@ -252,3 +464,31 @@ function SearchAnnouncements() {
 }
 
 export default SearchAnnouncements
+
+// SLIDERY :
+
+{
+	/* <ReactSlider
+								value={value}
+								onChange={e => handleChange(e)}
+								className='standard-slider'
+								thumbClassName='standard-slider-thumb'
+								trackClassName='standard-slider-track'
+								max={100}
+								renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+							/>
+
+							<div className='mt-3'>
+								<ReactSlider
+									className='range-slider'
+									thumbClassName='range-slider-thumb'
+									trackClassName='range-slider-track'
+									defaultValue={[0, 100]}
+									ariaLabel={['Lower thumb', 'Upper thumb']}
+									ariaValuetext={state => `Thumb value ${state.valueNow}`}
+									renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+									pearling
+									minDistance={10}
+								/>
+							</div> */
+}

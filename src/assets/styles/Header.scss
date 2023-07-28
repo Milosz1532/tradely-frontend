@@ -225,7 +225,7 @@ header {
 
 .hamburger-menu {
 	font-size: 25px;
-	z-index: 999;
+	z-index: 20;
 	cursor: pointer;
 }
 
@@ -400,7 +400,7 @@ header {
 		position: absolute;
 		top: 100%;
 		left: 0;
-		background-color: #fff;
+		background: #fff;
 		border-top: 0;
 		text-align: left;
 		z-index: 20;
