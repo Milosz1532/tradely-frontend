@@ -156,36 +156,39 @@ export const RectangularAnnouncement = ({
 
 	return (
 		<div className='col-12 mt-3'>
-			<div className='rectangular-announcement'>
-				<div className='rectangular-announcement-image'>
-					<img src={image ? image : noImage} alt='Announcement photo' />
-				</div>
-				<div className='rectangular-announcement-content'>
-					<div className='reactangular-announement-top-section'>
-						<h5 className='title'>{title}</h5>
-						<h5 className='price'>{announcementPrice}</h5>
-					</div>
-					<ul className='announcement-tags-list'>
-						{tags.map(t => (
-							<li key={`announcement-${id}-tag-id-${t.id}`}>{t.name}</li>
-						))}
-					</ul>
-					<div className='rectangular-announcement-bottom'>
-						<div className='location'>
-							<span>13.06.2023 12:00</span>
-							<span>Włocławek, 87-800</span>
-						</div>
-						<i className='favorite-icon announcement-button me-3' onClick={handleLikeAnnouncement}>
-							<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
-						</i>
-					</div>
-				</div>
-			</div>
-			{/* <NavLink
+			<NavLink
 				to={linkTo}
 				style={
 					disabled ? { all: 'unset', cursor: 'default' } : { all: 'unset', cursor: 'pointer' }
-				}></NavLink> */}
+				}>
+				<div className='rectangular-announcement'>
+					<div className='rectangular-announcement-image'>
+						<img src={image ? image : noImage} alt='Announcement photo' />
+					</div>
+					<div className='rectangular-announcement-content'>
+						<div className='reactangular-announement-top-section'>
+							<h5 className='title'>{title}</h5>
+							<h5 className='price'>{announcementPrice}</h5>
+						</div>
+						<ul className='announcement-tags-list'>
+							{tags.map(t => (
+								<li key={`announcement-${id}-tag-id-${t.id}`}>{t.name}</li>
+							))}
+						</ul>
+						<div className='rectangular-announcement-bottom'>
+							<div className='location'>
+								<span>13.06.2023 12:00</span>
+								<span>Włocławek, 87-800</span>
+							</div>
+							<i
+								className='favorite-icon announcement-button me-3'
+								onClick={handleLikeAnnouncement}>
+								<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
+							</i>
+						</div>
+					</div>
+				</div>
+			</NavLink>
 		</div>
 	)
 }

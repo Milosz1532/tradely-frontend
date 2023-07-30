@@ -209,7 +209,11 @@ const ShowAnnouncement = ({ data }) => {
 					</div>
 					<div className='announcement-section announcement-location mt-2'>
 						<h6>Lokalizacja</h6>
-						<Map city={data.location.location_name} />
+						<Map
+							city={data.location.location_name}
+							latitude={data.location.latitude}
+							longitude={data.location.longitude}
+						/>
 						<div className='location-content mt-2'>
 							<span>
 								{data.location.location_name}, {data.location.postal_code}{' '}

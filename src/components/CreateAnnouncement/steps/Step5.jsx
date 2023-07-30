@@ -7,7 +7,7 @@ const getLocation = (setCityInput, setLocationData) => {
 		navigator.geolocation.getCurrentPosition(
 			position => {
 				const { latitude, longitude } = position.coords
-				const endpoint = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&limit=1`
+				const endpoint = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=500&limit=1`
 
 				axios
 					.get(endpoint)
@@ -28,7 +28,6 @@ const getSuggestions = async value => {
 			value
 		)}&limit=5&countrycodes=PL`
 		const response = await axios.get(endpoint)
-		console.log(response.data)
 		return response.data
 	} catch (error) {
 		console.log(error)
