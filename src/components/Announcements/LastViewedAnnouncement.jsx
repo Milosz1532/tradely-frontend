@@ -1,7 +1,8 @@
 import noImage from '/images/no-image.png'
 import Skeleton from 'react-loading-skeleton'
+import { NavLink } from 'react-router-dom'
 
-export function LastViewedAnnouncement({ image, title, price, price_type }) {
+export function LastViewedAnnouncement({ id, image, title, price, price_type }) {
 	const formattedAmount = new Intl.NumberFormat('pl-PL', {
 		style: 'currency',
 		currency: 'PLN',
@@ -17,17 +18,19 @@ export function LastViewedAnnouncement({ image, title, price, price_type }) {
 	}
 	return (
 		<>
-			<div className='section-element mx-2'>
-				<div className='last-viewed-announcement'>
-					<div className='last-viewed-announcement-image'>
-						<img src={image ? image : noImage} alt='Zdjęcie ogłoszenia' />
-					</div>
-					<div className='last-viewed-announcement-content'>
-						<p>{title}</p>
-						<p>{announcementPrice}</p>
+			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+				<div className='section-element mx-2'>
+					<div className='last-viewed-announcement'>
+						<div className='last-viewed-announcement-image'>
+							<img src={image ? image : noImage} alt='Zdjęcie ogłoszenia' />
+						</div>
+						<div className='last-viewed-announcement-content'>
+							<p>{title}</p>
+							<p>{announcementPrice}</p>
+						</div>
 					</div>
 				</div>
-			</div>
+			</NavLink>
 		</>
 	)
 }

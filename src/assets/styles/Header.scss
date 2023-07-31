@@ -425,6 +425,12 @@ header {
 	}
 }
 
+@media (max-width: 991px) {
+	.header-search-section-search-input-container .header-search-section-search-button button > span {
+		display: none;
+	}
+}
+
 @media (max-width: 768px) {
 	.hamburger-menu {
 		display: block;
@@ -433,5 +439,31 @@ header {
 	.header-right-section {
 		display: none !important;
 		background-color: red;
+	}
+}
+
+@media (max-width: 452px) {
+	.header-search-section-search-input-container {
+		border-radius: 5px 5px 0px 0px !important;
+		.header-search-section-content {
+			flex-direction: column !important;
+			.header-search-section-search-suggestion-input {
+				font-size: 12px;
+				&.keywords-input::after {
+					content: none !important;
+				}
+			}
+			.header-search-section-search-button {
+				width: 100%;
+				button {
+					span {
+						display: inline-block;
+					}
+					font-size: 14px !important;
+					height: 40px !important;
+					border-radius: 0px 0px 5px 5px !important;
+				}
+			}
+		}
 	}
 }

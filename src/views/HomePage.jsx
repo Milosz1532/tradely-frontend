@@ -461,6 +461,7 @@ export default function HomePage() {
 										{announcementsData.recent_announcements.map(a => (
 											<div key={a.id} className='py-3'>
 												<LastViewedAnnouncement
+													id={a.id}
 													image={a.first_image}
 													title={a.title}
 													price={a.price}
