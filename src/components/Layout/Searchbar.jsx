@@ -42,17 +42,6 @@ export default function Searchbar({ keywords }) {
 		if (keywords) {
 			setKeyword(keywords)
 		}
-		const getCategoriesList = async () => {
-			try {
-				const categoriesData = await getAnnouncementCategories()
-				setCategories(categoriesData)
-			} catch {
-				setCategories([])
-			}
-		}
-		if (categories.length === 0) {
-			getCategoriesList()
-		}
 	}, [])
 
 	const handleKeyDown = event => {

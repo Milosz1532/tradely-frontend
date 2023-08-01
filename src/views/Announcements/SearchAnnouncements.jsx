@@ -3,10 +3,12 @@ import { Link, useParams, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ScrollToTop from '../../ScrollToTop'
 
-import { searchAnnouncements } from '../../services/Api'
+import { searchAnnouncements, getSubcategoryFilters } from '../../services/Api'
 
 import SearchBar from '../../components/Layout/Searchbar'
 import Skeleton from 'react-loading-skeleton'
+
+import { getAnnouncementCategories } from '../../services/Api'
 
 import {
 	RectangularAnnouncement,
@@ -18,6 +20,7 @@ import AnnouncementNotFound from '../../components/Announcements/AnnouuncementNo
 import ReactSlider from 'react-slider'
 
 import Button from '../../components/Layout/Button'
+import CustomSelect from '../../components/Layout/CustomSelect'
 
 const LoadingAnnouncementsScreen = () => {
 	return (
@@ -93,6 +96,25 @@ const LoadingAnnouncementsScreen = () => {
 
 const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, totalPages }) => {
 	const [sortType, setSortType] = useState(true)
+
+	const [categories, setCategories] = useState([])
+	const [subcategories, setSubcategories] = useState([])
+
+	useEffect(() => {
+		const getCategoriesList = async () => {
+			try {
+				const categoriesData = await getAnnouncementCategories()
+				setCategories(categoriesData.categories)
+				setSubcategories(categoriesData.subcategories)
+			} catch {
+				setCategories([])
+			}
+		}
+		if (categories.length === 0) {
+			getCategoriesList()
+		}
+	}, [])
+
 	const AnnouncementComponent = sortType ? RectangularAnnouncement : SquareAnnouncement
 	const announcementsList = announcements.data.map(a => (
 		<AnnouncementComponent
@@ -138,6 +160,11 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	// FILTERS
 
+	const [selectedCategory, setSelectedCategory] = useState(false)
+	const [selectedSubcategory, setSelectedSubcategory] = useState(false)
+
+	const [subcategoryFiltersList, setSubcategoryFiltersList] = useState(false)
+
 	const [progressDistance, setProgressDistance] = useState(0)
 	const [sliderAmountMax, setSliderAmountMax] = useState(1000)
 	const [amountFrom, setAmountFrom] = useState(null)
@@ -167,6 +194,48 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		const newValue = Math.max(0, parseInt(value))
 		setAmountTo(newValue)
 	}
+
+	const categoryOptions = categories.map(category => ({
+		value: category.id,
+		label: category.name,
+	}))
+
+	const [subcategoriesOptions, setSubcategoryOptions] = useState(null)
+
+	useEffect(() => {
+		const filterSubcategories = () => {
+			if (selectedCategory) {
+				const filteredSubcategories = subcategories.filter(
+					subcategory => subcategory.category_id === selectedCategory.value
+				)
+				setSelectedSubcategory(null)
+				setSubcategoryOptions(
+					filteredSubcategories.map(subcategory => ({
+						value: subcategory.id,
+						label: subcategory.name,
+					}))
+				)
+			} else {
+				setSelectedSubcategory(null)
+			}
+		}
+
+		filterSubcategories()
+	}, [selectedCategory])
+
+	useEffect(() => {
+		const fetchSubcategoryFilters = async () => {
+			if (!selectedSubcategory) return
+			try {
+				const response = await getSubcategoryFilters(selectedSubcategory.value)
+				setSubcategoryFiltersList(response.filters)
+				console.log(subcategoryFiltersList)
+			} catch (error) {
+				console.log(error)
+			}
+		}
+		fetchSubcategoryFilters()
+	}, [selectedSubcategory])
 
 	return (
 		<>
@@ -236,6 +305,74 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 								</div>
 							</div>
 							<div className='search-filters-filter mt-3'>
+								<h5>Stan produktu</h5>
+
+								<div className='form-check'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										value=''
+										id='search-filters-productType-new-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-productType-new-checkbox'>
+										Nowe
+									</label>
+								</div>
+								<div className='form-check mt-2'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										value=''
+										id='search-filters-productType-used-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-productType-used-checkbox'>
+										Używane
+									</label>
+								</div>
+								<div className='form-check mt-2'>
+									<input
+										className='form-check-input'
+										type='checkbox'
+										id='search-filters-productType-damaged-checkbox'
+									/>
+									<label
+										className='form-check-label'
+										htmlFor='search-filters-productType-damaged-checkbox'>
+										Uszkodzone
+									</label>
+								</div>
+							</div>
+
+							<div className='search-filters-filter mt-3'>
+								<h5>Kategoria</h5>
+
+								<div className='form-input'>
+									<CustomSelect
+										options={categoryOptions}
+										placeholder={'Wybierz kategorię'}
+										value={selectedCategory}
+										onChange={e => setSelectedCategory(e)}
+									/>
+								</div>
+							</div>
+							<div className='search-filters-filter mt-3'>
+								<h5>Podkategoria</h5>
+
+								<div className='form-input'>
+									<CustomSelect
+										options={subcategoriesOptions}
+										placeholder={'Wybierz podkategorie'}
+										value={selectedSubcategory}
+										onChange={e => setSelectedSubcategory(e)}
+										isDisabled={!selectedCategory && true}
+									/>
+								</div>
+							</div>
+							<div className='search-filters-filter mt-3'>
 								<h5>Odległość </h5>
 
 								<div className='mt-4'>
@@ -299,48 +436,55 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 									/>
 								</div>
 							</div>
-							<div className='search-filters-filter mt-3'>
-								<h5>Stan produktu</h5>
 
-								<div className='form-check'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										value=''
-										id='search-filters-productType-new-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-productType-new-checkbox'>
-										Nowe
-									</label>
-								</div>
-								<div className='form-check mt-2'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										value=''
-										id='search-filters-productType-used-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-productType-used-checkbox'>
-										Używane
-									</label>
-								</div>
-								<div className='form-check mt-2'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										id='search-filters-productType-damaged-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-productType-damaged-checkbox'>
-										Uszkodzone
-									</label>
-								</div>
-							</div>
+							{subcategoryFiltersList && subcategoryFiltersList.length > 0 && (
+								<>
+									{subcategoryFiltersList.map(filter => (
+										<div key={filter.id} className='search-filters-filter mt-3'>
+											<h5>{filter.name}</h5>
+
+											<div className='form-input'>
+												{filter.input_type === 'select' && (
+													<CustomSelect
+														placeholder={filter.placeholder}
+														options={filter.values.map(value => ({
+															value: value.id,
+															label: value.value,
+														}))}
+													/>
+												)}
+												{filter.input_type === 'input' && (
+													<>
+														<input type='text' placeholder={filter.placeholder} />
+													</>
+												)}
+											</div>
+
+											{filter.input_type === 'radio' && (
+												<>
+													{filter.values.map(value => (
+														<>
+															<div className='form-check mt-2'>
+																<input
+																	className='form-check-input'
+																	type='radio'
+																	name='flexRadioDefault'
+																	id={`flexRadio-${value.id}`}
+																/>
+																<label
+																	className='form-check-label'
+																	htmlFor={`flexRadio-${value.id}`}>
+																	{value.value}
+																</label>
+															</div>
+														</>
+													))}
+												</>
+											)}
+										</div>
+									))}
+								</>
+							)}
 						</section>
 					</div>
 					<div className='col-lg-9'>

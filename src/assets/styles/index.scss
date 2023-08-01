@@ -513,7 +513,7 @@ img.loading-image {
 	}
 
 	.standard-slider-track.standard-slider-track-1 {
-		background-color: #bbbbbb;
+		background-color: #d3d3d3;
 		border-radius: 6px;
 	}
 
@@ -554,19 +554,16 @@ img.loading-image {
 
 	.range-slider-track {
 		position: relative;
-		background-color: #bbbbbb;
+		background-color: #d3d3d3;
 		border-radius: 6px;
 	}
 
 	.range-slider-track.range-slider-track-1 {
-		// background-color: #bbbbbb;
 		background-color: $app-elements-color;
-
 		border-radius: 6px;
 	}
 
 	.range-slider-track.range-slider-track-1 {
-		// background-color: red;
 		background-color: $app-elements-color;
 	}
 

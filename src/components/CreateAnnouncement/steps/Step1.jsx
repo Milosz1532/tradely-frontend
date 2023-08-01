@@ -1,23 +1,7 @@
 import { useRef, useState } from 'react'
-import Select from 'react-select'
 import { getSuggestions } from '../../../services/Api'
 
-const selectStyle = {
-	control: provided => ({
-		...provided,
-		border: 'none',
-		borderRadius: '10px',
-		padding: '10px 15px',
-		boxShadow: '0px 0px 10px 0px rgba(237, 237, 237, 1)',
-		opacity: 0.6,
-		transition: 'opacity 0.4s',
-		'&:focus': {
-			outline: 'none',
-			opacity: 1,
-			boxShadow: '0px 0px 10px 0px rgba(0, 0, 255, 0.7)',
-		},
-	}),
-}
+import CustomSelect from '../../Layout/CustomSelect'
 
 const Step1 = ({
 	titleInput,
@@ -117,10 +101,10 @@ const Step1 = ({
 						<label className='required' htmlFor='category'>
 							Kategoria Ogłoszenia
 						</label>
-						<Select
+
+						<CustomSelect
 							options={categoryOptions}
 							placeholder={'Wybierz kategorię'}
-							styles={selectStyle}
 							value={selectedCategory}
 							onChange={e => setSelectedCategory(e)}
 						/>
@@ -131,11 +115,7 @@ const Step1 = ({
 						<label className='required' htmlFor='subcategory'>
 							Podkategoria Ogłoszenia
 						</label>
-						<Select
-							options={categoryOptions}
-							placeholder={'Wybierzs podkategorię'}
-							styles={selectStyle}
-						/>
+						<CustomSelect options={categoryOptions} placeholder={'Wybierz podkategorię'} />
 					</div>
 				</div>
 			</article>

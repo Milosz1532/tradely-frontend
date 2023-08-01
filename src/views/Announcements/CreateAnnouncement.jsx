@@ -109,7 +109,7 @@ const CreateAnnouncement = () => {
 		const getCategoriesList = async () => {
 			try {
 				const categoriesData = await getAnnouncementCategories()
-				setCategories(categoriesData)
+				setCategories(categoriesData.categories)
 			} catch {
 				setCategories([])
 			}
