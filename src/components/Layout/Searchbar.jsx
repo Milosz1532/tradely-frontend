@@ -19,7 +19,7 @@ export default function Searchbar({ keywords }) {
 	const navigate = useNavigate()
 
 	const handleSearch = () => {
-		let url = `/announcements/${location ? location : 'all_locations'}/all_categories`
+		let url = `/announcements/${location ? location : 'all_locations'}/all_categories/all_subcategories`
 
 		if (keyword.trim() !== '') {
 			url += `/${keyword}`

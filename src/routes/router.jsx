@@ -50,7 +50,7 @@ const router = createBrowserRouter([
 				element: <PreviewAnnouncement />,
 			},
 			{
-				path: '/announcements/:location/:category/:keyword?',
+				path: '/announcements/:location/:category/:subcategory?/:keyword?',
 				element: <SearchAnnouncements />,
 			},
 		],

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams, useLocation } from 'react-router-dom'
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ScrollToTop from '../../ScrollToTop'
 
@@ -95,6 +96,8 @@ const LoadingAnnouncementsScreen = () => {
 }
 
 const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, totalPages }) => {
+	const { location, category, subcategory, keyword } = useParams()
+
 	const [sortType, setSortType] = useState(true)
 
 	const [categories, setCategories] = useState([])
@@ -164,12 +167,20 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	const [selectedSubcategory, setSelectedSubcategory] = useState(false)
 
 	const [subcategoryFiltersList, setSubcategoryFiltersList] = useState(false)
+	const [filterValues, setFilterValues] = useState({})
 
 	const [progressDistance, setProgressDistance] = useState(0)
 	const [sliderAmountMax, setSliderAmountMax] = useState(1000)
 	const [amountFrom, setAmountFrom] = useState(null)
 	const [amountTo, setAmountTo] = useState(null)
 	const [mobileFilters, setMobileFilters] = useState(false)
+
+	const handleFilterChange = (filterId, value) => {
+		setFilterValues(prevFilterValues => ({
+			...prevFilterValues,
+			[filterId]: { filter_id: filterId, value },
+		}))
+	}
 
 	const handleChangeAmountRange = values => {
 		setAmountFrom(parseInt(values[0]))
@@ -203,39 +214,75 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	const [subcategoriesOptions, setSubcategoryOptions] = useState(null)
 
 	useEffect(() => {
-		const filterSubcategories = () => {
-			if (selectedCategory) {
-				const filteredSubcategories = subcategories.filter(
-					subcategory => subcategory.category_id === selectedCategory.value
-				)
-				setSelectedSubcategory(null)
-				setSubcategoryOptions(
-					filteredSubcategories.map(subcategory => ({
-						value: subcategory.id,
-						label: subcategory.name,
-					}))
-				)
-			} else {
-				setSelectedSubcategory(null)
-			}
-		}
-
-		filterSubcategories()
-	}, [selectedCategory])
-
-	useEffect(() => {
 		const fetchSubcategoryFilters = async () => {
 			if (!selectedSubcategory) return
 			try {
 				const response = await getSubcategoryFilters(selectedSubcategory.value)
 				setSubcategoryFiltersList(response.filters)
-				console.log(subcategoryFiltersList)
 			} catch (error) {
 				console.log(error)
 			}
 		}
 		fetchSubcategoryFilters()
 	}, [selectedSubcategory])
+
+	useEffect(() => {
+		if (selectedCategory) {
+			const filteredSubcategories = subcategories.filter(
+				subcategory => subcategory.category_id === selectedCategory.value
+			)
+			setSubcategoryOptions(
+				filteredSubcategories.map(subcategory => ({
+					value: subcategory.id,
+					label: subcategory.name,
+				}))
+			)
+		}
+	}, [selectedCategory])
+
+	useEffect(() => {
+		const selectedCat = categories.find(cat => cat.name === category)
+		setSelectedCategory(selectedCat ? { value: selectedCat.id, label: selectedCat.name } : null)
+
+		const selectedSubCat = subcategories.find(subcat => subcat.name === subcategory)
+		setSelectedSubcategory(
+			selectedSubCat ? { value: selectedSubCat.id, label: selectedSubCat.name } : null
+		)
+	}, [category, subcategory, categories])
+
+	const pageLocation = useLocation()
+	const navigate = useNavigate()
+
+	const handleApplyFilters = () => {
+		const filtersCategory = selectedCategory ? selectedCategory.label : category
+		const filtersSubcategory = selectedSubcategory ? selectedSubcategory.label : 'all_subcategories'
+
+		let newPath = `/announcements/${location}/${filtersCategory}/${filtersSubcategory}/${
+			keyword ? keyword : ''
+		}`
+
+		const filtersSearchParams = new URLSearchParams()
+		Object.entries(filterValues).forEach(([filterId, value]) => {
+			if (value) {
+				filtersSearchParams.set(filterId, value.value)
+			}
+		})
+
+		const filtersQueryString = filtersSearchParams.toString()
+
+		if (filtersQueryString) {
+			newPath += `?filters=${filtersQueryString}`
+		}
+
+		navigate(newPath)
+	}
+
+	const handleChangeSelectedCategory = e => {
+		setSelectedCategory(e)
+		setSelectedSubcategory(null)
+		setSubcategoryFiltersList(null)
+		setFilterValues({})
+	}
 
 	return (
 		<>
@@ -355,7 +402,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 										options={categoryOptions}
 										placeholder={'Wybierz kategorię'}
 										value={selectedCategory}
-										onChange={e => setSelectedCategory(e)}
+										onChange={e => handleChangeSelectedCategory(e)}
 									/>
 								</div>
 							</div>
@@ -451,11 +498,20 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 															value: value.id,
 															label: value.value,
 														}))}
+														value={
+															filterValues[filter.id] ? filter.values[filterValues[filter.id]] : ''
+														}
+														onChange={value => handleFilterChange(filter.id, value.value)}
 													/>
 												)}
 												{filter.input_type === 'input' && (
 													<>
-														<input type='text' placeholder={filter.placeholder} />
+														<input
+															type='text'
+															placeholder={filter.placeholder}
+															value={filterValues[filter.id]?.value || ''}
+															onChange={e => handleFilterChange(filter.id, e.target.value)}
+														/>
 													</>
 												)}
 											</div>
@@ -463,21 +519,19 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 											{filter.input_type === 'radio' && (
 												<>
 													{filter.values.map(value => (
-														<>
-															<div className='form-check mt-2'>
-																<input
-																	className='form-check-input'
-																	type='radio'
-																	name='flexRadioDefault'
-																	id={`flexRadio-${value.id}`}
-																/>
-																<label
-																	className='form-check-label'
-																	htmlFor={`flexRadio-${value.id}`}>
-																	{value.value}
-																</label>
-															</div>
-														</>
+														<div key={value.id} className='form-check mt-2'>
+															<input
+																className='form-check-input'
+																type='radio'
+																name={`flexRadioDefault-${filter.id}`}
+																id={`flexRadio-${value.id}`}
+																checked={filterValues[filter.id]?.value === value.id}
+																onChange={() => handleFilterChange(filter.id, value.id)}
+															/>
+															<label className='form-check-label' htmlFor={`flexRadio-${value.id}`}>
+																{value.value}
+															</label>
+														</div>
 													))}
 												</>
 											)}
@@ -485,6 +539,10 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 									))}
 								</>
 							)}
+
+							<div className='text-center mt-3'>
+								<Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} />
+							</div>
 						</section>
 					</div>
 					<div className='col-lg-9'>
@@ -543,7 +601,8 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 }
 
 function SearchAnnouncements() {
-	const { location, category, keyword } = useParams()
+	const { location, category, subcategory, keyword } = useParams()
+
 	const [announcements, setAnnouncements] = useState(false)
 	const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
 
@@ -554,7 +613,18 @@ function SearchAnnouncements() {
 	const nextPage = currentPage + 1
 	const prevPage = currentPage - 1
 
-	const maxPages = 10 // Maksymalna liczba stron
+	const maxPages = 10
+
+	const filtersQueryString = searchParams.get('filters')
+
+	let filtersObject = {}
+	if (filtersQueryString) {
+		const parsedFilters = new URLSearchParams(filtersQueryString)
+		parsedFilters.forEach((value, key) => {
+			filtersObject[key] = value
+			console.log(`Filter_ID: ${key} : ${value}`)
+		})
+	}
 
 	useEffect(() => {
 		const fetchAnnouncements = async () => {
@@ -570,7 +640,6 @@ function SearchAnnouncements() {
 					setLoadingAnnouncements(false)
 				}, 500)
 			} catch (error) {
-				console.error('Wystąpił błąd podczas pobierania ogłoszeń:', error)
 				setLoadingAnnouncements(false)
 			}
 		}
@@ -578,7 +647,7 @@ function SearchAnnouncements() {
 		setLoadingAnnouncements(true)
 		fetchAnnouncements()
 		window.scrollTo(0, 0)
-	}, [location, category, keyword, currentPage])
+	}, [location, subcategory, category, keyword, currentPage])
 
 	const totalPages = announcements ? announcements.meta.last_page : maxPages
 
@@ -608,31 +677,3 @@ function SearchAnnouncements() {
 }
 
 export default SearchAnnouncements
-
-// SLIDERY :
-
-{
-	/* <ReactSlider
-								value={value}
-								onChange={e => handleChange(e)}
-								className='standard-slider'
-								thumbClassName='standard-slider-thumb'
-								trackClassName='standard-slider-track'
-								max={100}
-								renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-							/>
-
-							<div className='mt-3'>
-								<ReactSlider
-									className='range-slider'
-									thumbClassName='range-slider-thumb'
-									trackClassName='range-slider-track'
-									defaultValue={[0, 100]}
-									ariaLabel={['Lower thumb', 'Upper thumb']}
-									ariaValuetext={state => `Thumb value ${state.valueNow}`}
-									renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-									pearling
-									minDistance={10}
-								/>
-							</div> */
-}
