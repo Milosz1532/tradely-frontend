@@ -314,6 +314,10 @@ header {
 		background-color: $white-elements;
 		// transform: translateY(20px);
 		box-shadow: 0px 0px 8px 4px #00000040;
+
+		&.header-search-no-border {
+			border-radius: 8px 8px 8px 0px;
+		}
 		.header-search-section-content {
 			display: flex;
 			flex-direction: row;
@@ -330,6 +334,7 @@ header {
 				i {
 					font-size: 20px;
 				}
+
 				input {
 					border: none;
 					margin-left: 10px;
@@ -363,17 +368,16 @@ header {
 					}
 					.suggestions {
 						position: absolute;
-						width: 98%;
+						width: 99%;
 						height: auto;
-						left: 0;
-						// top: 100%;
-						top: 50%;
+						left: -1px;
+						top: 100%;
 						background: #fff;
-						background-color: red;
 						border-top: 0;
 						text-align: left;
 						z-index: 60;
-
+						border: 1px solid $text-color;
+						border-top: none;
 						// border-radius: 0px 0px 10px 10px;
 						// overflow-y: scroll;
 						transition: height 0.4s;

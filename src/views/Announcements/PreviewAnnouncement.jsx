@@ -176,9 +176,15 @@ const ShowAnnouncement = ({ data }) => {
 								<h4 className='announcement-title'>{data.title}</h4>
 								<h4 className='announcement-price'>{data.price} zł</h4>
 								<div className='announcement-tags'>
-									{data.tags.map(tag => (
-										<p className='tag'>{tag.name}</p>
-									))}
+									{data.tags && (
+										<>
+											{data.tags.map(tag => (
+												<p key={tag.id} className='tag'>
+													{tag.name}
+												</p>
+											))}
+										</>
+									)}
 								</div>
 
 								<hr />

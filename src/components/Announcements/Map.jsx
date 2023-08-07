@@ -9,7 +9,7 @@ const CityMarker = ({ position }) => {
 const Map = ({ city = null, latitude, longitude }) => {
 	const cityPosition = [latitude, longitude]
 
-	if (!cityPosition) {
+	if (!latitude || !longitude) {
 		return <p>City not found</p>
 	}
 

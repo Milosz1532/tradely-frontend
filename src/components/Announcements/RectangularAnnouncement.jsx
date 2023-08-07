@@ -103,6 +103,7 @@ export const RectangularAnnouncement = ({
 	title,
 	price,
 	price_type,
+	city,
 	created_at,
 	tags,
 	edit = false,
@@ -178,7 +179,7 @@ export const RectangularAnnouncement = ({
 						<div className='rectangular-announcement-bottom'>
 							<div className='location'>
 								<span>13.06.2023 12:00</span>
-								<span>Włocławek, 87-800</span>
+								<span>{city}, 87-800</span>
 							</div>
 							<i
 								className='favorite-icon announcement-button me-3'

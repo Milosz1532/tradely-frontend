@@ -126,6 +126,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			image={a.first_image}
 			title={a.title}
 			price={a.price}
+			city={a.location}
 			price_type={a.price_type}
 			created_at={a.created_at}
 			tags={a.tags}
@@ -178,7 +179,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	const handleFilterChange = (filterId, value) => {
 		setFilterValues(prevFilterValues => ({
 			...prevFilterValues,
-			[filterId]: { filter_id: filterId, value },
+			[filterId]: { filter_id: parseInt(filterId), value },
 		}))
 	}
 
@@ -240,6 +241,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		}
 	}, [selectedCategory])
 
+	const pageLocation = useLocation()
+	const navigate = useNavigate()
+
 	useEffect(() => {
 		const selectedCat = categories.find(cat => cat.name === category)
 		setSelectedCategory(selectedCat ? { value: selectedCat.id, label: selectedCat.name } : null)
@@ -248,31 +252,35 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		setSelectedSubcategory(
 			selectedSubCat ? { value: selectedSubCat.id, label: selectedSubCat.name } : null
 		)
-	}, [category, subcategory, categories])
 
-	const pageLocation = useLocation()
-	const navigate = useNavigate()
+		const queryParams = new URLSearchParams(pageLocation.search)
+
+		const filtersQueryParam = queryParams.get('filters')
+		const filters = filtersQueryParam ? JSON.parse(decodeURIComponent(filtersQueryParam)) : {}
+
+		for (const filterId in filters) {
+			// console.log(`${filterId} - ${filters[filterId]}`)
+			handleFilterChange(filterId, filters[filterId])
+		}
+	}, [category, subcategory, categories])
 
 	const handleApplyFilters = () => {
 		const filtersCategory = selectedCategory ? selectedCategory.label : category
 		const filtersSubcategory = selectedSubcategory ? selectedSubcategory.label : 'all_subcategories'
 
-		let newPath = `/announcements/${location}/${filtersCategory}/${filtersSubcategory}/${
-			keyword ? keyword : ''
-		}`
+		console.log(filterValues)
 
-		const filtersSearchParams = new URLSearchParams()
-		Object.entries(filterValues).forEach(([filterId, value]) => {
-			if (value) {
-				filtersSearchParams.set(filterId, value.value)
-			}
-		})
+		const filters = {}
 
-		const filtersQueryString = filtersSearchParams.toString()
-
-		if (filtersQueryString) {
-			newPath += `?filters=${filtersQueryString}`
+		for (const filterId in filterValues) {
+			filters[filterId] = filterValues[filterId].value
 		}
+
+		const filtersQueryParam = encodeURIComponent(JSON.stringify(filters))
+
+		const newPath = `/announcements/${location}/${filtersCategory}/${filtersSubcategory}/${
+			keyword ? keyword : ''
+		}?filters=${filtersQueryParam}`
 
 		navigate(newPath)
 	}
@@ -282,6 +290,11 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		setSelectedSubcategory(null)
 		setSubcategoryFiltersList(null)
 		setFilterValues({})
+	}
+
+	const handleTest = e => {
+		console.log(filterValues)
+		handleFilterChange(1, 1)
 	}
 
 	return (
@@ -542,6 +555,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 							<div className='text-center mt-3'>
 								<Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} />
+								<Button text={'Test'} size={'medium'} onClick={handleTest} />
 							</div>
 						</section>
 					</div>
@@ -614,17 +628,6 @@ function SearchAnnouncements() {
 	const prevPage = currentPage - 1
 
 	const maxPages = 10
-
-	const filtersQueryString = searchParams.get('filters')
-
-	let filtersObject = {}
-	if (filtersQueryString) {
-		const parsedFilters = new URLSearchParams(filtersQueryString)
-		parsedFilters.forEach((value, key) => {
-			filtersObject[key] = value
-			console.log(`Filter_ID: ${key} : ${value}`)
-		})
-	}
 
 	useEffect(() => {
 		const fetchAnnouncements = async () => {

@@ -19,7 +19,9 @@ export default function Searchbar({ keywords }) {
 	const navigate = useNavigate()
 
 	const handleSearch = () => {
-		let url = `/announcements/${location ? location : 'all_locations'}/all_categories/all_subcategories`
+		let url = `/announcements/${
+			location ? location : 'all_locations'
+		}/all_categories/all_subcategories`
 
 		if (keyword.trim() !== '') {
 			url += `/${keyword}`
@@ -84,9 +86,12 @@ export default function Searchbar({ keywords }) {
 						Znajdź ogłoszenie spośród 13 843 320 ofert
 					</p>
 
-					<div className='header-search-section-search-input-container'>
+					<div
+						className={`header-search-section-search-input-container ${
+							hasFocus && keyword && suggestions?.length > 0 ? 'header-search-no-border' : ''
+						}`}>
 						<div className='header-search-section-content'>
-							<div className='header-search-section-search-suggestion-input keywords-input'>
+							<div className={`header-search-section-search-suggestion-input keywords-input `}>
 								<i>
 									<FontAwesomeIcon icon='fa-solid fa-magnifying-glass' />
 								</i>
@@ -100,7 +105,7 @@ export default function Searchbar({ keywords }) {
 									onBlur={handleInputBlur}
 									ref={searchInputRef}
 								/>
-								{true && keyword && suggestions?.length > 0 && (
+								{hasFocus && keyword && suggestions?.length > 0 && (
 									<div className='suggestions'>
 										{suggestions.map((suggestion, index) => (
 											<div
@@ -117,7 +122,11 @@ export default function Searchbar({ keywords }) {
 								<i>
 									<FontAwesomeIcon icon='fa-solid fa-location-dot' />
 								</i>
-								<input type='text' placeholder='Cała polska' />
+								<input
+									onChange={e => setLocation(e.target.value)}
+									type='text'
+									placeholder='Cała polska'
+								/>
 							</div>
 							<div className='header-search-section-search-button'>
 								<button onClick={handleSearch}>
