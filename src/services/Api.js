@@ -227,7 +227,16 @@ export const getAnnouncementCategories = async () => {
 	}
 }
 
-export const searchAnnouncements = async (location, category, keyword, page) => {
+export const searchAnnouncements = async (
+	location,
+	category,
+	keyword,
+	page,
+	filters,
+	distance,
+	amountFrom,
+	amountTo
+) => {
 	try {
 		const response = await axiosClient.get('/announcements/search', {
 			params: {
@@ -235,6 +244,10 @@ export const searchAnnouncements = async (location, category, keyword, page) => 
 				category: category,
 				keyword: keyword,
 				page: page,
+				filters: filters,
+				distance: distance,
+				amountFrom: amountFrom,
+				amountTo: amountTo,
 			},
 		})
 		return response.data

@@ -8,6 +8,7 @@ const selectStyle = {
 		borderRadius: '10px',
 		padding: '5px 5px',
 		margin: '0',
+		fontSize: '13px',
 		boxShadow: '0px 0px 10px 0px rgba(237, 237, 237, 1)',
 		opacity: 0.8,
 		transition: 'opacity 0.4s',
@@ -16,9 +17,14 @@ const selectStyle = {
 			opacity: 1,
 			boxShadow: '0px 0px 10px 0px rgba(0, 0, 255, 0.7)',
 			zIndex: '100',
+			fontSize: '13px',
 		},
 	}),
-	menu: provided => ({ ...provided, zIndex: 5 }),
+	menu: provided => ({
+		...provided,
+		zIndex: 5,
+		fontSize: '13px',
+	}),
 }
 
 export default function CustomSelect({ options, placeholder, value, onChange, isDisabled }) {

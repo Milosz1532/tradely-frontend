@@ -24,6 +24,8 @@ import Button from '../../components/Layout/Button'
 import CustomSelect from '../../components/Layout/CustomSelect'
 
 const LoadingAnnouncementsScreen = () => {
+	const skeletonArray = Array.from({ length: 5 })
+
 	return (
 		<>
 			<div className='row'>
@@ -31,66 +33,53 @@ const LoadingAnnouncementsScreen = () => {
 					<Skeleton height={40} />
 				</div>
 			</div>
-			<div className='row'>
-				<div className='col-lg-3 mt-3'>
-					<section className='search-filters '>
-						<Skeleton width={120} />
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
+			<section className='section-element mt-3 pb-4'>
+				<div className='row'>
+					<div className='col-lg-3 search-filters-container mt-3 px-4'>
+						<section className='search-filters '>
+							{skeletonArray.map((_, index) => (
+								<div key={index}>
+									<div className='w-100 mt-2'>
+										<Skeleton height={28} />
+									</div>
+									<div className='filter mt-3'>
+										<div className='filter-title'>
+											<div className='d-flex'>
+												<Skeleton width={15} height={15} borderRadius={'50%'} />
+												<Skeleton className='ms-2' width={160} />
+											</div>
+											<div className='d-flex mt-1'>
+												<Skeleton width={15} height={15} borderRadius={'50%'} />
+												<Skeleton className='ms-2' width={160} />
+											</div>
+											<div className='d-flex mt-1'>
+												<Skeleton width={15} height={15} borderRadius={'50%'} />
+												<Skeleton className='ms-2' width={160} />
+											</div>
+											<div className='d-flex mt-1'>
+												<Skeleton width={15} height={15} borderRadius={'50%'} />
+												<Skeleton className='ms-2' width={160} />
+											</div>
+										</div>
+									</div>
 								</div>
+							))}
 
-								<Skeleton width={20} />
+							<div className='w-75 m-auto'>
+								<Skeleton height={40} className='mt-3' />
 							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<Skeleton height={30} className='mt-3' />
-					</section>
+						</section>
+					</div>
+					<div className='col-lg-9 mt-2 px-4'>
+						<RectangularAnnouncementLoading />
+						<RectangularAnnouncementLoading />
+						<RectangularAnnouncementLoading />
+						<RectangularAnnouncementLoading />
+						<RectangularAnnouncementLoading />
+						<RectangularAnnouncementLoading />
+					</div>
 				</div>
-				<div className='col-lg-9 mt-2'>
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-				</div>
-			</div>
+			</section>
 		</>
 	)
 }
@@ -176,10 +165,12 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	const [amountTo, setAmountTo] = useState(null)
 	const [mobileFilters, setMobileFilters] = useState(false)
 
-	const handleFilterChange = (filterId, value) => {
+	const [loadingFilters, setLoadingFilters] = useState(false)
+
+	const handleFilterChange = (filterId, selectedValue) => {
 		setFilterValues(prevFilterValues => ({
 			...prevFilterValues,
-			[filterId]: { filter_id: parseInt(filterId), value },
+			[filterId]: selectedValue,
 		}))
 	}
 
@@ -217,11 +208,13 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	useEffect(() => {
 		const fetchSubcategoryFilters = async () => {
 			if (!selectedSubcategory) return
+			setLoadingFilters(true)
 			try {
 				const response = await getSubcategoryFilters(selectedSubcategory.value)
 				setSubcategoryFiltersList(response.filters)
 			} catch (error) {
-				console.log(error)
+			} finally {
+				setLoadingFilters(false)
 			}
 		}
 		fetchSubcategoryFilters()
@@ -256,31 +249,45 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		const queryParams = new URLSearchParams(pageLocation.search)
 
 		const filtersQueryParam = queryParams.get('filters')
-		const filters = filtersQueryParam ? JSON.parse(decodeURIComponent(filtersQueryParam)) : {}
 
+		if (queryParams.get('distance')) {
+			setProgressDistance(queryParams.get('distance'))
+		}
+		if (queryParams.get('amountFrom')) {
+			setAmountFrom(queryParams.get('amountFrom'))
+		}
+		if (queryParams.get('amountTo')) {
+			setAmountTo(queryParams.get('amountTo'))
+		}
+
+		const filters = filtersQueryParam ? JSON.parse(decodeURIComponent(filtersQueryParam)) : {}
 		for (const filterId in filters) {
-			// console.log(`${filterId} - ${filters[filterId]}`)
 			handleFilterChange(filterId, filters[filterId])
 		}
-	}, [category, subcategory, categories])
+	}, [categories, pageLocation])
 
 	const handleApplyFilters = () => {
 		const filtersCategory = selectedCategory ? selectedCategory.label : category
 		const filtersSubcategory = selectedSubcategory ? selectedSubcategory.label : 'all_subcategories'
 
-		console.log(filterValues)
+		// Dodane zmienne dla dystansu, kwoty od i kwoty do
+		const _distance = progressDistance || null
+		const _amountFrom = amountFrom || null
+		const _amountTo = amountTo || null
 
 		const filters = {}
 
 		for (const filterId in filterValues) {
-			filters[filterId] = filterValues[filterId].value
+			filters[filterId] = filterValues[filterId]
 		}
 
 		const filtersQueryParam = encodeURIComponent(JSON.stringify(filters))
 
 		const newPath = `/announcements/${location}/${filtersCategory}/${filtersSubcategory}/${
 			keyword ? keyword : ''
-		}?filters=${filtersQueryParam}`
+		}?filters=${filtersQueryParam}${_distance ? `&distance=${_distance}` : ''}${
+			_amountFrom ? `&amountFrom=${_amountFrom}` : ''
+		}${_amountTo ? `&amountTo=${_amountTo}` : ''}`
 
 		navigate(newPath)
 	}
@@ -292,9 +299,21 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		setFilterValues({})
 	}
 
-	const handleTest = e => {
-		console.log(filterValues)
-		handleFilterChange(1, 1)
+	function updatePageParameter(newPage) {
+		const currentURL = window.location.href
+		const urlObj = new URL(currentURL)
+		const searchParams = new URLSearchParams(urlObj.search)
+
+		if (searchParams.has('page')) {
+			searchParams.set('page', newPage)
+		} else {
+			searchParams.append('page', newPage)
+		}
+
+		urlObj.search = searchParams.toString()
+		const updatedURL = urlObj.toString()
+
+		return updatedURL
 	}
 
 	return (
@@ -323,241 +342,259 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 								<FontAwesomeIcon icon='fa-solid fa-xmark' />
 							</i>
 						</div>
-						<section className='search-filters mt-4'>
-							<div className='search-filters-filter'>
-								<h5>Rodzaje oferty</h5>
 
-								<div className='form-check'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										value=''
-										id='search-filters-price-amount-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-price-amount-checkbox'>
-										Kwota
-									</label>
-								</div>
-								<div className='form-check mt-2'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										value=''
-										id='search-filters-price-replace-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-price-replace-checkbox'>
-										Zamienię
-									</label>
-								</div>
-								<div className='form-check mt-2'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										id='search-filters-price-free-checkbox'
-									/>
-									<label className='form-check-label' htmlFor='search-filters-price-free-checkbox'>
-										Oddam za darmo
-									</label>
-								</div>
-							</div>
-							<div className='search-filters-filter mt-3'>
-								<h5>Stan produktu</h5>
+						<>
+							<section className='search-filters mt-4'>
+								<div className='search-filters-filter'>
+									<h5>Rodzaje oferty</h5>
 
-								<div className='form-check'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										value=''
-										id='search-filters-productType-new-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-productType-new-checkbox'>
-										Nowe
-									</label>
+									<div className='form-check'>
+										<input
+											className='form-check-input'
+											type='checkbox'
+											value=''
+											id='search-filters-price-amount-checkbox'
+										/>
+										<label
+											className='form-check-label'
+											htmlFor='search-filters-price-amount-checkbox'>
+											Kwota
+										</label>
+									</div>
+									<div className='form-check mt-2'>
+										<input
+											className='form-check-input'
+											type='checkbox'
+											value=''
+											id='search-filters-price-replace-checkbox'
+										/>
+										<label
+											className='form-check-label'
+											htmlFor='search-filters-price-replace-checkbox'>
+											Zamienię
+										</label>
+									</div>
+									<div className='form-check mt-2'>
+										<input
+											className='form-check-input'
+											type='checkbox'
+											id='search-filters-price-free-checkbox'
+										/>
+										<label
+											className='form-check-label'
+											htmlFor='search-filters-price-free-checkbox'>
+											Oddam za darmo
+										</label>
+									</div>
 								</div>
-								<div className='form-check mt-2'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										value=''
-										id='search-filters-productType-used-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-productType-used-checkbox'>
-										Używane
-									</label>
-								</div>
-								<div className='form-check mt-2'>
-									<input
-										className='form-check-input'
-										type='checkbox'
-										id='search-filters-productType-damaged-checkbox'
-									/>
-									<label
-										className='form-check-label'
-										htmlFor='search-filters-productType-damaged-checkbox'>
-										Uszkodzone
-									</label>
-								</div>
-							</div>
+								<div className='search-filters-filter mt-3'>
+									<h5>Stan produktu</h5>
 
-							<div className='search-filters-filter mt-3'>
-								<h5>Kategoria</h5>
-
-								<div className='form-input'>
-									<CustomSelect
-										options={categoryOptions}
-										placeholder={'Wybierz kategorię'}
-										value={selectedCategory}
-										onChange={e => handleChangeSelectedCategory(e)}
-									/>
+									<div className='form-check'>
+										<input
+											className='form-check-input'
+											type='checkbox'
+											value=''
+											id='search-filters-productType-new-checkbox'
+										/>
+										<label
+											className='form-check-label'
+											htmlFor='search-filters-productType-new-checkbox'>
+											Nowe
+										</label>
+									</div>
+									<div className='form-check mt-2'>
+										<input
+											className='form-check-input'
+											type='checkbox'
+											value=''
+											id='search-filters-productType-used-checkbox'
+										/>
+										<label
+											className='form-check-label'
+											htmlFor='search-filters-productType-used-checkbox'>
+											Używane
+										</label>
+									</div>
+									<div className='form-check mt-2'>
+										<input
+											className='form-check-input'
+											type='checkbox'
+											id='search-filters-productType-damaged-checkbox'
+										/>
+										<label
+											className='form-check-label'
+											htmlFor='search-filters-productType-damaged-checkbox'>
+											Uszkodzone
+										</label>
+									</div>
 								</div>
-							</div>
-							<div className='search-filters-filter mt-3'>
-								<h5>Podkategoria</h5>
 
-								<div className='form-input'>
-									<CustomSelect
-										options={subcategoriesOptions}
-										placeholder={'Wybierz podkategorie'}
-										value={selectedSubcategory}
-										onChange={e => setSelectedSubcategory(e)}
-										isDisabled={!selectedCategory && true}
-									/>
+								<div className='search-filters-filter mt-3'>
+									<h5>Kategoria</h5>
+
+									<div className='form-input'>
+										<CustomSelect
+											options={categoryOptions}
+											placeholder={'Wybierz kategorię'}
+											value={selectedCategory}
+											onChange={e => handleChangeSelectedCategory(e)}
+										/>
+									</div>
 								</div>
-							</div>
-							<div className='search-filters-filter mt-3'>
-								<h5>Odległość </h5>
+								<div className='search-filters-filter mt-3'>
+									<h5>Podkategoria</h5>
 
-								<div className='mt-4'>
-									<ReactSlider
-										value={progressDistance}
-										onChange={e => setProgressDistance(e)}
-										className='standard-slider'
-										thumbClassName='standard-slider-thumb'
-										trackClassName='standard-slider-track'
-										max={100}
-										renderThumb={(props, state) => (
-											<div {...props}>
-												<div className='standard-slider-value'>
-													<span>{state.valueNow}km</span>
+									<div className='form-input'>
+										<CustomSelect
+											options={subcategoriesOptions}
+											placeholder={'Wybierz podkategorie'}
+											value={selectedSubcategory}
+											onChange={e => setSelectedSubcategory(e)}
+											isDisabled={!selectedCategory && true}
+										/>
+									</div>
+								</div>
+								<div className='search-filters-filter mt-3'>
+									<h5>Odległość </h5>
+
+									<div className='mt-4'>
+										<ReactSlider
+											value={progressDistance}
+											onChange={e => setProgressDistance(e)}
+											className='standard-slider'
+											thumbClassName='standard-slider-thumb'
+											trackClassName='standard-slider-track'
+											max={100}
+											renderThumb={(props, state) => (
+												<div {...props}>
+													<div className='standard-slider-value'>
+														<span>{state.valueNow}km</span>
+													</div>
 												</div>
-											</div>
-										)}
-									/>
-								</div>
-							</div>
-							<div className='search-filters-filter mt-3'>
-								<h5>Kwota </h5>
-
-								<div className='row'>
-									<div className='col-6'>
-										<div className='form-input'>
-											<label htmlFor='title'>Od</label>
-											<input
-												type='number'
-												value={amountFrom}
-												placeholder='Od'
-												onChange={e => handleAmountFromChange(e.target.value)}
-											/>
-										</div>
-									</div>
-
-									<div className='col-6'>
-										<div className='form-input '>
-											<label htmlFor='title'>Do</label>
-											<input
-												type='number'
-												placeholder='Do'
-												min='0'
-												value={amountTo}
-												onChange={e => handleAmountToChange(e.target.value)}
-											/>
-										</div>
+											)}
+										/>
 									</div>
 								</div>
+								<div className='search-filters-filter mt-3'>
+									<h5>Kwota </h5>
 
-								<div className='mt-4'>
-									<ReactSlider
-										className='range-slider'
-										thumbClassName='range-slider-thumb'
-										trackClassName='range-slider-track'
-										value={[amountFrom, amountTo]}
-										onChange={handleChangeAmountRange}
-										pearling
-										minDistance={1}
-										max={sliderAmountMax}
-									/>
-								</div>
-							</div>
-
-							{subcategoryFiltersList && subcategoryFiltersList.length > 0 && (
-								<>
-									{subcategoryFiltersList.map(filter => (
-										<div key={filter.id} className='search-filters-filter mt-3'>
-											<h5>{filter.name}</h5>
-
+									<div className='row'>
+										<div className='col-6'>
 											<div className='form-input'>
-												{filter.input_type === 'select' && (
-													<CustomSelect
-														placeholder={filter.placeholder}
-														options={filter.values.map(value => ({
-															value: value.id,
-															label: value.value,
-														}))}
-														value={
-															filterValues[filter.id] ? filter.values[filterValues[filter.id]] : ''
-														}
-														onChange={value => handleFilterChange(filter.id, value.value)}
-													/>
-												)}
-												{filter.input_type === 'input' && (
-													<>
-														<input
-															type='text'
+												<label htmlFor='title'>Od</label>
+												<input
+													type='number'
+													value={amountFrom}
+													placeholder='Od'
+													onChange={e => handleAmountFromChange(e.target.value)}
+												/>
+											</div>
+										</div>
+
+										<div className='col-6'>
+											<div className='form-input '>
+												<label htmlFor='title'>Do</label>
+												<input
+													type='number'
+													placeholder='Do'
+													min='0'
+													value={amountTo}
+													onChange={e => handleAmountToChange(e.target.value)}
+												/>
+											</div>
+										</div>
+									</div>
+
+									<div className='mt-4'>
+										<ReactSlider
+											className='range-slider'
+											thumbClassName='range-slider-thumb'
+											trackClassName='range-slider-track'
+											value={[amountFrom, amountTo]}
+											onChange={handleChangeAmountRange}
+											pearling
+											minDistance={1}
+											max={sliderAmountMax}
+										/>
+									</div>
+								</div>
+
+								{subcategoryFiltersList && subcategoryFiltersList.length > 0 && (
+									<>
+										{subcategoryFiltersList.map(filter => (
+											<div key={filter.id} className='search-filters-filter mt-3'>
+												<h5>{filter.name}</h5>
+
+												<div className='form-input'>
+													{filter.input_type === 'select' && (
+														<CustomSelect
 															placeholder={filter.placeholder}
-															value={filterValues[filter.id]?.value || ''}
-															onChange={e => handleFilterChange(filter.id, e.target.value)}
+															options={filter.values.map(value => ({
+																value: value.id,
+																label: value.value,
+															}))}
+															value={
+																filterValues[filter.id]
+																	? {
+																			value: filterValues[filter.id],
+																			label: filter.values.find(
+																				value => value.id === filterValues[filter.id]
+																			)?.value,
+																	  }
+																	: null
+															}
+															onChange={selectedOption =>
+																handleFilterChange(
+																	filter.id,
+																	selectedOption ? selectedOption.value : null
+																)
+															}
 														/>
+													)}
+													{filter.input_type === 'input' && (
+														<>
+															<input
+																type='text'
+																placeholder={filter.placeholder}
+																value={filterValues[filter.id] || ''}
+																onChange={e => handleFilterChange(filter.id, e.target.value)}
+															/>
+														</>
+													)}
+												</div>
+
+												{filter.input_type === 'radio' && (
+													<>
+														{filter.values.map(value => (
+															<div key={value.id} className='form-check mt-2'>
+																<input
+																	className='form-check-input'
+																	type='radio'
+																	name={`flexRadioDefault-${filter.id}`}
+																	id={`flexRadio-${value.id}`}
+																	checked={filterValues[filter.id]?.value === value.id}
+																	onChange={() => handleFilterChange(filter.id, value.id)}
+																/>
+																<label
+																	className='form-check-label'
+																	htmlFor={`flexRadio-${value.id}`}>
+																	{value.value}
+																</label>
+															</div>
+														))}
 													</>
 												)}
 											</div>
+										))}
+									</>
+								)}
 
-											{filter.input_type === 'radio' && (
-												<>
-													{filter.values.map(value => (
-														<div key={value.id} className='form-check mt-2'>
-															<input
-																className='form-check-input'
-																type='radio'
-																name={`flexRadioDefault-${filter.id}`}
-																id={`flexRadio-${value.id}`}
-																checked={filterValues[filter.id]?.value === value.id}
-																onChange={() => handleFilterChange(filter.id, value.id)}
-															/>
-															<label className='form-check-label' htmlFor={`flexRadio-${value.id}`}>
-																{value.value}
-															</label>
-														</div>
-													))}
-												</>
-											)}
-										</div>
-									))}
-								</>
-							)}
-
-							<div className='text-center mt-3'>
-								<Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} />
-								<Button text={'Test'} size={'medium'} onClick={handleTest} />
-							</div>
-						</section>
+								<div className='text-center mt-3'>
+									<Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} />
+								</div>
+							</section>
+						</>
 					</div>
 					<div className='col-lg-9'>
 						<section className='d-flex flex-column justify-content-between h-100'>
@@ -577,7 +614,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 									<div className='pagination-content'>
 										<ul>
 											<li className={currentPage <= 1 ? 'disable' : ''}>
-												<Link className='pagination-btn ' to={`?page=${prevPage}`}>
+												<Link className='pagination-btn ' to={updatePageParameter(prevPage)}>
 													<FontAwesomeIcon icon='fa-solid fa-angle-left' />
 												</Link>
 											</li>
@@ -589,7 +626,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 														}`}>
 														<Link
 															className={`pagination-number-btn`}
-															to={`?page=${pageNumber}`}
+															to={updatePageParameter(pageNumber)}
 															key={pageNumber}>
 															{pageNumber}
 														</Link>
@@ -597,7 +634,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 												</li>
 											))}
 											<li className={currentPage >= totalPages ? 'disable' : ''}>
-												<Link className='pagination-btn' to={`?page=${nextPage}`}>
+												<Link className='pagination-btn' to={updatePageParameter(nextPage)}>
 													<FontAwesomeIcon icon='fa-solid fa-angle-right' />
 												</Link>
 											</li>
@@ -632,11 +669,21 @@ function SearchAnnouncements() {
 	useEffect(() => {
 		const fetchAnnouncements = async () => {
 			try {
+				const queryParams = new URLSearchParams(page_location.search)
+
+				const filtersQueryParam = queryParams.get('filters')
+				const distanceQueryParam = queryParams.get('distance')
+				const amountFromsQueryParam = queryParams.get('amountFrom')
+				const amountToQueryParam = queryParams.get('amountTo')
 				const announcementsData = await searchAnnouncements(
 					location,
 					category,
 					keyword,
-					currentPage
+					currentPage,
+					filtersQueryParam,
+					distanceQueryParam,
+					amountFromsQueryParam,
+					amountToQueryParam
 				)
 				setTimeout(() => {
 					setAnnouncements(announcementsData)
@@ -650,7 +697,7 @@ function SearchAnnouncements() {
 		setLoadingAnnouncements(true)
 		fetchAnnouncements()
 		window.scrollTo(0, 0)
-	}, [location, subcategory, category, keyword, currentPage])
+	}, [page_location])
 
 	const totalPages = announcements ? announcements.meta.last_page : maxPages
 

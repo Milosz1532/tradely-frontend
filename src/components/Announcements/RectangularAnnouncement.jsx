@@ -196,47 +196,28 @@ export const RectangularAnnouncement = ({
 
 export const RectangularAnnouncementLoading = () => {
 	return (
-		<div className='col-12 rectangular-announcement mt-2 '>
-			<div className='row'>
-				<div className='col-2 rectangular-announcement-image'>
-					<div className='ms-3 mt-1'>
-						<Skeleton height={100} />
-					</div>
+		<div className='col-12 mt-3'>
+			<div className='rectangular-announcement'>
+				<div className='rectangular-announcement-image'>
+					<Skeleton height={100} />
 				</div>
-				<div className='col-10 rectangular-announcement-content'>
+				<div className='rectangular-announcement-content'>
 					<div className='reactangular-announement-top-section'>
-						<h5 className='title'>
-							<Skeleton width={200} />
-						</h5>
-						<h5 className='price'>
-							<Skeleton width={100} />
-						</h5>
+						<Skeleton width={300} height={30} />
+						<Skeleton width={200} />
 					</div>
-					<ul className='announcement-tags-list'>
-						<li>
-							<Skeleton width={60} />
-						</li>
-						<li>
-							<Skeleton width={80} />
-						</li>
-						<li>
-							<Skeleton width={100} />
-						</li>
-						<li>
-							<Skeleton width={80} />
-						</li>
-					</ul>
-					<div className='location'>
-						<span>
-							<Skeleton width={120} />
-						</span>
-						<span>
-							<Skeleton width={120} />
-						</span>
+					<ul className='announcement-tags-list'></ul>
+					<div className='rectangular-announcement-bottom'>
+						<div className='location'>
+							<div className='d-flex'>
+								<Skeleton className='me-2' width={100} />
+								<Skeleton width={90} />
+							</div>
+						</div>
+						<div className='d-flex justify-content-end me-3'>
+							<Skeleton className='' width={30} height={30} />
+						</div>
 					</div>
-					<i className='favorite-icon'>
-						<Skeleton circle={true} height={20} width={20} />
-					</i>
 				</div>
 			</div>
 		</div>
