@@ -230,6 +230,7 @@ export const getAnnouncementCategories = async () => {
 export const searchAnnouncements = async (
 	location,
 	category,
+	subcategory,
 	keyword,
 	page,
 	filters,
@@ -242,6 +243,7 @@ export const searchAnnouncements = async (
 			params: {
 				location: location,
 				category: category,
+				subcategory: subcategory,
 				keyword: keyword,
 				page: page,
 				filters: filters,

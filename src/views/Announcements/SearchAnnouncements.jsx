@@ -678,6 +678,7 @@ function SearchAnnouncements() {
 				const announcementsData = await searchAnnouncements(
 					location,
 					category,
+					subcategory,
 					keyword,
 					currentPage,
 					filtersQueryParam,
