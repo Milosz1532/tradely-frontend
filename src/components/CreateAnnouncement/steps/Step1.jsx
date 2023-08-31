@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { getSuggestions } from '../../../services/Api'
 
 import CustomSelect from '../../Layout/CustomSelect'
@@ -9,8 +9,9 @@ const Step1 = ({
 	selectedCategory,
 	setSelectedCategory,
 	selectedSubCategory,
-	setSelectedSubCategory,
+	setSelectedSubcategory,
 	categories,
+	subcategories,
 }) => {
 	const titleInputRef = useRef(null)
 
@@ -25,6 +26,27 @@ const Step1 = ({
 		value: category.id,
 		label: category.name,
 	}))
+
+	// const subcategoriesOptions = subcategories.map(subcategory => ({
+	// 	value: subcategory.id,
+	// 	label: subcategory.name,
+	// }))
+
+	const [subcategoriesOptions, setSubcategoryOptions] = useState(null)
+
+	useEffect(() => {
+		if (selectedCategory) {
+			const filteredSubcategories = subcategories.filter(
+				subcategory => subcategory.category_id === selectedCategory.value
+			)
+			setSubcategoryOptions(
+				filteredSubcategories.map(subcategory => ({
+					value: subcategory.id,
+					label: subcategory.name,
+				}))
+			)
+		}
+	}, [selectedCategory])
 
 	const handleInputFocus = () => {
 		clearTimeout(blurTimer)
@@ -57,6 +79,12 @@ const Step1 = ({
 		setTitleInput(suggestion)
 		setSuggestions([])
 		titleInputRef.current.focus()
+	}
+
+	const handleChangeSelectedCategory = e => {
+		setSelectedCategory(e)
+		setSelectedSubcategory(null)
+		// setSubcategoryFiltersList(null)
 	}
 
 	return (
@@ -106,7 +134,8 @@ const Step1 = ({
 							options={categoryOptions}
 							placeholder={'Wybierz kategorię'}
 							value={selectedCategory}
-							onChange={e => setSelectedCategory(e)}
+							// onChange={e => setSelectedCategory(e)}
+							onChange={e => handleChangeSelectedCategory(e)}
 						/>
 					</div>
 				</div>
@@ -115,7 +144,13 @@ const Step1 = ({
 						<label className='required' htmlFor='subcategory'>
 							Podkategoria Ogłoszenia
 						</label>
-						<CustomSelect options={categoryOptions} placeholder={'Wybierz podkategorię'} />
+						<CustomSelect
+							options={subcategoriesOptions}
+							value={selectedSubCategory}
+							onChange={e => setSelectedSubcategory(e)}
+							placeholder={'Wybierz podkategorię'}
+							isDisabled={!selectedCategory && true}
+						/>
 					</div>
 				</div>
 			</article>

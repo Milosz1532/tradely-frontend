@@ -19,6 +19,7 @@ import Step3 from '../../components/CreateAnnouncement/steps/Step3'
 import Step4 from '../../components/CreateAnnouncement/steps/Step4'
 import Step5 from '../../components/CreateAnnouncement/steps/Step5'
 import Step6 from '../../components/CreateAnnouncement/steps/Step6'
+import Step7 from '../../components/CreateAnnouncement/steps/Step7'
 
 const IMAGES_LIMIT = 8
 
@@ -42,6 +43,11 @@ const progressItems = [
 		title: 'Twoja wycena',
 		subTitle: 'To ty decydujesz ile chcesz zarobić na swoim przedmiocie',
 		icon: 'fa-solid fa-coins',
+	},
+	{
+		title: 'Dodatkowe informacje',
+		subTitle: 'Dodatkowe informacje twojego ogłoszenia',
+		icon: 'fa-solid fa-chart-pie',
 	},
 	{
 		title: 'Dane kontaktowe',
@@ -79,8 +85,9 @@ const CreateAnnouncement = () => {
 	// STEP 1 //
 	const [titleInput, setTitleInput] = useState('')
 	const [selectedCategory, setSelectedCategory] = useState('')
-	const [selectedSubCategory, setSelectedSubCategory] = useState('')
+	const [selectedSubcategory, setSelectedSubcategory] = useState('')
 	const [categories, setCategories] = useState([])
+	const [subcategories, setSubCategories] = useState([])
 	// STEP 1 //
 
 	// STEP 2 //
@@ -99,9 +106,13 @@ const CreateAnnouncement = () => {
 	// STEP 4 //
 
 	// STEP 5 //
+	const [filterValues, setFilterValues] = useState({})
+	// STEP 5 //
+
+	// STEP 6 //
 	const [locationData, setLocationData] = useState(null)
 	const [phoneNumber, setPhoneNumber] = useState('')
-	// STEP 5 //
+	// STEP 6 //
 
 	const [loadingPage, setLoadingPage] = useState(false)
 
@@ -109,7 +120,9 @@ const CreateAnnouncement = () => {
 		const getCategoriesList = async () => {
 			try {
 				const categoriesData = await getAnnouncementCategories()
+				console.log(categoriesData)
 				setCategories(categoriesData.categories)
+				setSubCategories(categoriesData.subcategories)
 			} catch {
 				setCategories([])
 			}
@@ -126,9 +139,10 @@ const CreateAnnouncement = () => {
 						setTitleInput={setTitleInput}
 						selectedCategory={selectedCategory}
 						setSelectedCategory={setSelectedCategory}
-						selectedSubCategory={selectedSubCategory}
-						setSelectedSubCategory={setSelectedSubCategory}
+						selectedSubcategory={selectedSubcategory}
+						setSelectedSubcategory={setSelectedSubcategory}
 						categories={categories}
+						subcategories={subcategories}
 					/>
 				)
 			case 2:
@@ -154,16 +168,18 @@ const CreateAnnouncement = () => {
 					/>
 				)
 			case 5:
+				return <Step5 selectedSubcategory={selectedSubcategory} filterValues={filterValues} setFilterValues={setFilterValues} />
+			case 6:
 				return (
-					<Step5
+					<Step6
 						locationData={locationData}
 						setLocationData={setLocationData}
 						phoneNumber={phoneNumber}
 						setPhoneNumber={setPhoneNumber}
 					/>
 				)
-			case 6:
-				return <Step6 />
+			case 7:
+				return <Step7 />
 			default:
 				return null
 		}
@@ -196,6 +212,9 @@ const CreateAnnouncement = () => {
 			}
 		}
 		if (step >= 6) {
+			//Dodatkowe filtry
+		}
+		if (step >= 7) {
 			if (!locationData) {
 				toast.error(
 					'Wybierz miasto z wyskakującej listy, lub zezwól na automatyczną lokalizację.',
@@ -234,63 +253,68 @@ const CreateAnnouncement = () => {
 
 			const data = await response.json()
 
-			if (data.address) {
-				const city = data.address.city || data.address.town || data.address.village || ''
-				let province = data.address.state || data.address.region || ''
-				if (province && province.startsWith('województwo')) {
-					province = province.replace('województwo', '').trim()
-				}
-				const formData = new FormData()
-				formData.append('title', titleInput)
-				formData.append('description', description)
-				formData.append('price', priceInput)
-				formData.append('price_type', selectedPriceType)
-				formData.append('category_id', selectedCategory.value)
-				formData.append('location', city)
-				formData.append('province', province)
-				formData.append('latitude', locationData.lat)
-				formData.append('longitude', locationData.lon)
-				formData.append('phone_number', phoneNumber)
-				tagsData.forEach((tag, index) => {
-					formData.append(`tags[${index}]`, tag)
-				})
+			// if (data.address) {
+			// 	const city = data.address.city || data.address.town || data.address.village || ''
+			// 	let province = data.address.state || data.address.region || ''
+			// 	if (province && province.startsWith('województwo')) {
+			// 		province = province.replace('województwo', '').trim()
+			// 	}
+			// 	const formData = new FormData()
+			// 	formData.append('title', titleInput)
+			// 	formData.append('description', description)
+			// 	formData.append('price', priceInput)
+			// 	formData.append('price_type', selectedPriceType)
+			// 	formData.append('category_id', selectedCategory.value)
+			// 	formData.append('subcategory_id', selectedSubcategory.value)
+			// 	formData.append('location', city)
+			// 	formData.append('province', province)
+			// 	formData.append('latitude', locationData.lat)
+			// 	formData.append('longitude', locationData.lon)
+			// 	formData.append('phone_number', phoneNumber)
+			// 	tagsData.forEach((tag, index) => {
+			// 		formData.append(`tags[${index}]`, tag)
+			// 	})
 
-				convertedImages.forEach((image, index) => {
-					formData.append(`images[${index}]`, image)
-				})
+			// 	convertedImages.forEach((image, index) => {
+			// 		formData.append(`images[${index}]`, image)
+			// 	})
 
-				axiosClient
-					.post('/announcements', formData)
-					.then(({ data }) => {
-						Swal.fire({
-							icon: 'success',
-							title: 'Ogłoszenie dodane',
-							text: 'Twoje ogłoszenie zostało pomyślnie dodane',
-							focusConfirm: false,
-							confirmButtonColor: '#3085d6',
-							confirmButtonText: 'Przeglądaj ogłoszenia',
-						}).then(result => {
-							if (result.isConfirmed) {
-								navigate('/')
-							}
-						})
-					})
-					.catch(err => {
-						const response = err.response
+			// 	axiosClient
+			// 		.post('/announcements', formData)
+			// 		.then(({ data }) => {
+			// 			Swal.fire({
+			// 				icon: 'success',
+			// 				title: 'Ogłoszenie dodane',
+			// 				text: 'Twoje ogłoszenie zostało pomyślnie dodane',
+			// 				focusConfirm: false,
+			// 				confirmButtonColor: '#3085d6',
+			// 				confirmButtonText: 'Przeglądaj ogłoszenia',
+			// 			}).then(result => {
+			// 				if (result.isConfirmed) {
+			// 					navigate('/')
+			// 				}
+			// 			})
+			// 		})
+			// 		.catch(err => {
+			// 			const response = err.response
 
-						if (response) {
-							Swal.fire({
-								icon: 'error',
-								title: 'Wystąpił błąd',
-								text: response.data.message,
-								confirmButtonColor: '#3085d6',
-							})
-						}
-					})
-					.finally(() => {
-						setLoadingPage(false)
-					})
-			}
+			// 			if (response) {
+			// 				Swal.fire({
+			// 					icon: 'error',
+			// 					title: 'Wystąpił błąd',
+			// 					text: response.data.message,
+			// 					confirmButtonColor: '#3085d6',
+			// 				})
+			// 			}
+			// 		})
+			// 		.finally(() => {
+			// 			setLoadingPage(false)
+			// 		})
+			// }
+			console.log(`Filtry:`);
+			console.log(filterValues);
+			setLoadingPage(false)
+
 		} catch (error) {
 			Swal.fire({
 				icon: 'error',

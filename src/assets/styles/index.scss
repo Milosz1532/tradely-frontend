@@ -449,11 +449,11 @@ img.loading-image {
 
 .search-filters {
 	padding-right: 20px;
-
 	.search-filters-filter {
 		margin-top: 10px;
 
-		color: $light-gray-text-color;
+		// color: $light-gray-text-color;
+		color: $heading-color;
 		h5 {
 			font-size: 16px;
 			font-weight: 700;
@@ -694,11 +694,13 @@ img.loading-image {
 
 .section-element {
 	background-color: $white-elements;
-	-webkit-box-shadow: 0px 0px 13px 0px rgba(224, 224, 224, 1);
-	-moz-box-shadow: 0px 0px 13px 0px rgba(224, 224, 224, 1);
-	box-shadow: 0px 0px 13px 0px rgba(224, 224, 224, 1);
+	// -webkit-box-shadow: 0px 0px 13px 0px rgba(224, 224, 224, 1);
+	// -moz-box-shadow: 0px 0px 13px 0px rgba(224, 224, 224, 1);
+	// box-shadow: 0px 0px 13px 0px rgba(224, 224, 224, 1);
 	border-radius: 6px;
 	padding: 5px;
+
+	border: 1px solid $border-color;
 
 	.header-title {
 		color: $title-text-color;

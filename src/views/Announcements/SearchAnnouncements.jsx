@@ -318,15 +318,15 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	return (
 		<>
-			<div className='search-sort-by-element d-flex justify-content-end me-1'>
+			<div className='search-sort-by-element d-flex justify-content-end '>
 				<span>
 					Sortuj po: <strong>Trafność</strong>
 				</span>
 			</div>
-			<section className='section-element p-4'>
+			<section className=''>
 				<div className='row'>
 					<div>
-						<div className='mobile-section-buttons mb-3'>
+						<div className='mobile-section-buttons mb-3 '>
 							<Button text='Filtry' size={'medium'} onClick={() => setMobileFilters(true)} />
 						</div>
 					</div>
@@ -334,17 +334,17 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 						className={`col-lg-3 search-filters-container ${
 							mobileFilters ? 'mobile-container' : ''
 						} `}>
-						<div className='d-flex justify-content-between align-items-center'>
-							<h5 className='header-title'>Filtry</h5>
-							<i
-								onClick={() => setMobileFilters(false)}
-								className='search-filters-filters-menu-close-btn me-3'>
-								<FontAwesomeIcon icon='fa-solid fa-xmark' />
-							</i>
-						</div>
+						<div className='section-element p-4 h-100'>
+							<div className='d-flex justify-content-between align-items-center'>
+								<h5 className='header-title'>Filtry</h5>
+								<i
+									onClick={() => setMobileFilters(false)}
+									className='search-filters-filters-menu-close-btn me-3'>
+									<FontAwesomeIcon icon='fa-solid fa-xmark' />
+								</i>
+							</div>
 
-						<>
-							<section className='search-filters mt-4'>
+							<section className='search-filters mt-2'>
 								<div className='search-filters-filter'>
 									<h5>Rodzaje oferty</h5>
 
@@ -594,9 +594,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 									<Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} />
 								</div>
 							</section>
-						</>
+						</div>
 					</div>
-					<div className='col-lg-9'>
+					<div className='section-element p-4 col-lg-9 '>
 						<section className='d-flex flex-column justify-content-between h-100'>
 							<div>
 								<h5 className='header-title'>
