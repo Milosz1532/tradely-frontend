@@ -20,6 +20,8 @@ import App from './App'
 import { Provider } from 'react-redux'
 import store from './redux/store/store'
 
+document.body.style = 'background: #f4f8fc;'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<div className='App'>
 		<React.StrictMode>

@@ -280,9 +280,9 @@ export const indexAnnouncements = async (recentAnnouncementIds, userLatitude, us
 	}
 }
 
-export const getSubcategoryFilters = async subcategory_id => {
+export const getSubcategoryFilters = async (subcategory_id, context) => {
 	try {
-		const response = await axiosClient.get(`/subcategoriesFilters/${subcategory_id}`)
+		const response = await axiosClient.get(`/subcategoriesFilters/${subcategory_id}/${context}`)
 		return response.data
 	} catch (error) {
 		throw error.response ? error.response.data : error

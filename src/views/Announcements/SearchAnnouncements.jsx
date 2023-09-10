@@ -210,7 +210,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			if (!selectedSubcategory) return
 			setLoadingFilters(true)
 			try {
-				const response = await getSubcategoryFilters(selectedSubcategory.value)
+				const response = await getSubcategoryFilters(selectedSubcategory.value, 'search')
 				setSubcategoryFiltersList(response.filters)
 			} catch (error) {
 			} finally {
