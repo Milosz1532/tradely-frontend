@@ -21,6 +21,7 @@ import AnnouncementNotFound from '../../components/Announcements/AnnouuncementNo
 import ReactSlider from 'react-slider'
 
 import Button from '../../components/Layout/Button'
+import Select from '../../components/Layout/Select'
 import CustomSelect from '../../components/Layout/CustomSelect'
 
 const LoadingAnnouncementsScreen = () => {
@@ -96,8 +97,8 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		const getCategoriesList = async () => {
 			try {
 				const categoriesData = await getAnnouncementCategories()
-				setCategories(categoriesData.categories)
-				setSubcategories(categoriesData.subcategories)
+				setCategories(categoriesData)
+				// setSubcategories(categoriesData.subcategories)
 			} catch {
 				setCategories([])
 			}
@@ -165,8 +166,6 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	const [amountTo, setAmountTo] = useState(null)
 	const [mobileFilters, setMobileFilters] = useState(false)
 
-	const [loadingFilters, setLoadingFilters] = useState(false)
-
 	const handleFilterChange = (filterId, selectedValue) => {
 		setFilterValues(prevFilterValues => ({
 			...prevFilterValues,
@@ -198,53 +197,26 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		setAmountTo(newValue)
 	}
 
-	const categoryOptions = categories.map(category => ({
-		value: category.id,
-		label: category.name,
-	}))
-
-	const [subcategoriesOptions, setSubcategoryOptions] = useState(null)
-
 	useEffect(() => {
 		const fetchSubcategoryFilters = async () => {
 			if (!selectedSubcategory) return
-			setLoadingFilters(true)
 			try {
-				const response = await getSubcategoryFilters(selectedSubcategory.value, 'search')
+				const response = await getSubcategoryFilters(selectedSubcategory.id, 'search')
 				setSubcategoryFiltersList(response.filters)
-			} catch (error) {
-			} finally {
-				setLoadingFilters(false)
-			}
+			} catch (error) {}
 		}
 		fetchSubcategoryFilters()
 	}, [selectedSubcategory])
-
-	useEffect(() => {
-		if (selectedCategory) {
-			const filteredSubcategories = subcategories.filter(
-				subcategory => subcategory.category_id === selectedCategory.value
-			)
-			setSubcategoryOptions(
-				filteredSubcategories.map(subcategory => ({
-					value: subcategory.id,
-					label: subcategory.name,
-				}))
-			)
-		}
-	}, [selectedCategory])
 
 	const pageLocation = useLocation()
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		const selectedCat = categories.find(cat => cat.name === category)
-		setSelectedCategory(selectedCat ? { value: selectedCat.id, label: selectedCat.name } : null)
+		setSelectedCategory(selectedCat ? selectedCat : null)
 
-		const selectedSubCat = subcategories.find(subcat => subcat.name === subcategory)
-		setSelectedSubcategory(
-			selectedSubCat ? { value: selectedSubCat.id, label: selectedSubCat.name } : null
-		)
+		const selectedSubCat = selectedCat?.subcategories.find(subcat => subcat.name === subcategory)
+		setSelectedSubcategory(selectedSubCat ? selectedSubCat : null)
 
 		const queryParams = new URLSearchParams(pageLocation.search)
 
@@ -267,8 +239,10 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	}, [categories, pageLocation])
 
 	const handleApplyFilters = () => {
-		const filtersCategory = selectedCategory ? selectedCategory.label : category
-		const filtersSubcategory = selectedSubcategory ? selectedSubcategory.label : 'all_subcategories'
+		const filtersCategory = selectedCategory?.id ? selectedCategory.name : 'all_categories'
+		const filtersSubcategory = selectedSubcategory?.id
+			? selectedSubcategory.name
+			: 'all_subcategories'
 
 		// Dodane zmienne dla dystansu, kwoty od i kwoty do
 		const _distance = progressDistance || null
@@ -292,11 +266,15 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		navigate(newPath)
 	}
 
-	const handleChangeSelectedCategory = e => {
-		setSelectedCategory(e)
+	const handleChangeSelectedCategory = category => {
+		setSelectedCategory(category)
 		setSelectedSubcategory(null)
 		setSubcategoryFiltersList(null)
 		setFilterValues({})
+	}
+
+	function handleChangeSelectedSubcategory(selectedValue) {
+		setSelectedSubcategory(selectedValue)
 	}
 
 	function updatePageParameter(newPage) {
@@ -331,12 +309,11 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 						</div>
 					</div>
 					<div
-						className={`col-lg-3 search-filters-container ${
+						className={`col-xl-3 col-lg-4 search-filters-container ${
 							mobileFilters ? 'mobile-container' : ''
 						} `}>
-						<div className='section-element p-4 h-100'>
+						<div className='section-element p-0'>
 							<div className='d-flex justify-content-between align-items-center'>
-								<h5 className='header-title'>Filtry</h5>
 								<i
 									onClick={() => setMobileFilters(false)}
 									className='search-filters-filters-menu-close-btn me-3'>
@@ -344,8 +321,8 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 								</i>
 							</div>
 
-							<section className='search-filters mt-2'>
-								<div className='search-filters-filter'>
+							<section className='search-filters mt-4'>
+								<div className='search-filters-filter px-3'>
 									<h5>Rodzaje oferty</h5>
 
 									<div className='form-check'>
@@ -387,7 +364,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 										</label>
 									</div>
 								</div>
-								<div className='search-filters-filter mt-3'>
+								<div className='search-filters-filter mt-3 px-3'>
 									<h5>Stan produktu</h5>
 
 									<div className='form-check'>
@@ -430,32 +407,77 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 									</div>
 								</div>
 
-								<div className='search-filters-filter mt-3'>
+								<div className='search-filters-filter mt-3 px-3'>
 									<h5>Kategoria</h5>
 
 									<div className='form-input'>
-										<CustomSelect
-											options={categoryOptions}
-											placeholder={'Wybierz kategorię'}
+										<Select
+											options={categories}
+											defaultOption={{ name: 'Wszystkie kategorie', value: 'all_categories' }}
 											value={selectedCategory}
-											onChange={e => handleChangeSelectedCategory(e)}
+											onChange={selectedOption => {
+												handleChangeSelectedCategory(selectedOption)
+												console.log(`Zmieniam`)
+											}}
+											renderOption={option => <>{option.name}</>}
 										/>
+
+										{/* <select
+											onChange={handleChangeSelectedCategory}
+											value={selectedCategory ? JSON.stringify(selectedCategory) : ''}>
+											<option key='all_categories' value='all_categories'>
+												Wszystkie kategorie
+											</option>
+											{categories.map(category => (
+												<option key={category.id} value={JSON.stringify(category)}>
+													{category.name}
+												</option>
+											))}
+										</select> */}
 									</div>
 								</div>
-								<div className='search-filters-filter mt-3'>
+								<div className='search-filters-filter mt-3 px-3'>
 									<h5>Podkategoria</h5>
 
 									<div className='form-input'>
-										<CustomSelect
+										{/* <CustomSelect
 											options={subcategoriesOptions}
 											placeholder={'Wybierz podkategorie'}
 											value={selectedSubcategory}
 											onChange={e => setSelectedSubcategory(e)}
 											isDisabled={!selectedCategory && true}
+										/> */}
+										{/* <select
+											onChange={handleChangeSelectedSubcategory}
+											value={selectedSubcategory ? JSON.stringify(selectedSubcategory) : ''}
+											disabled={!selectedCategory}>
+											{selectedCategory && (
+												<>
+													<option key='all_subcategories' value='all_subcategories'>
+														Wszystkie podkategorie
+													</option>
+													{selectedCategory.subcategories &&
+														selectedCategory?.subcategories.map(subcategory => (
+															<option key={subcategory.id} value={JSON.stringify(subcategory)}>
+																{subcategory.name}
+															</option>
+														))}
+												</>
+											)}
+										</select> */}
+										<Select
+											disabled={!selectedCategory}
+											value={selectedSubcategory}
+											options={selectedCategory?.subcategories && selectedCategory?.subcategories}
+											defaultOption={{ name: 'Wszystkie podkategorie', value: 'all_subcategories' }}
+											onChange={selectedOption => {
+												handleChangeSelectedSubcategory(selectedOption)
+											}}
+											renderOption={option => <>{option.name}</>}
 										/>
 									</div>
 								</div>
-								<div className='search-filters-filter mt-3'>
+								<div className='search-filters-filter mt-3 px-3'>
 									<h5>Odległość </h5>
 
 									<div className='mt-4'>
@@ -476,7 +498,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 										/>
 									</div>
 								</div>
-								<div className='search-filters-filter mt-3'>
+								<div className='search-filters-filter mt-3 px-3'>
 									<h5>Kwota </h5>
 
 									<div className='row'>
@@ -523,7 +545,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 								{subcategoryFiltersList && subcategoryFiltersList.length > 0 && (
 									<>
 										{subcategoryFiltersList.map(filter => (
-											<div key={filter.id} className='search-filters-filter mt-3'>
+											<div key={filter.id} className='search-filters-filter mt-3 px-3'>
 												<h5>{filter.name}</h5>
 
 												<div className='form-input'>
@@ -590,13 +612,19 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 									</>
 								)}
 
-								<div className='text-center mt-3'>
-									<Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} />
+								<div className='text-center mt-3 mb-3'>
+									{/* <Button text={'Zatwierdź'} size={'medium'} onClick={handleApplyFilters} /> */}
+									<Button
+										color={true}
+										rounded={true}
+										className={'text-md'}
+										onClick={handleApplyFilters}
+										text={'Zatwierdź filtry'}></Button>
 								</div>
 							</section>
 						</div>
 					</div>
-					<div className='section-element p-4 col-lg-9 '>
+					<div className='section-element p-4 col-xl-9 col-lg-8 '>
 						<section className='d-flex flex-column justify-content-between h-100'>
 							<div>
 								<h5 className='header-title'>
