@@ -1,50 +1,33 @@
 $main-color: #67ade0;
 $text-color: #828282;
 $light-text-color: #fff;
-$section-background: #f8f8f8;
+$section-background: #fff;
 $border-color: #e6e6e6;
 
 .top-information {
-	margin: 10px 0;
-	background-color: $section-background;
-	color: $text-color;
-	border: 1px solid $border-color;
-	-webkit-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	-moz-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	border-radius: 7px;
-	color: $text-color;
-	padding: 20px;
 	p {
 		margin: 0;
 	}
 	.top-information-category {
-		color: $main-color;
 		font-size: 12px;
 	}
 
 	.top-information-back {
 		font-weight: bold;
-		color: $text-color;
 		font-size: 20px;
+		cursor: pointer;
+		opacity: 0.6;
+		transition: opacity 0.4s;
+		&:hover {
+			opacity: 1;
+		}
+		display: inline-flex;
+		align-items: center;
 	}
 
 	.top-information-announcement-id {
-		color: $text-color;
 		font-size: 12px;
 	}
-}
-
-.announcement-section {
-	background-color: $section-background;
-	color: $text-color;
-	border: 1px solid $border-color;
-	-webkit-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	-moz-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	border-radius: 7px;
-	color: $text-color;
-	padding: 20px;
 }
 
 .announcement-image-section {

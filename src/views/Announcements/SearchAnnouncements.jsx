@@ -109,21 +109,23 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	}, [])
 
 	const AnnouncementComponent = sortType ? RectangularAnnouncement : SquareAnnouncement
-	const announcementsList = announcements.data.map(a => (
-		<AnnouncementComponent
-			key={a.id}
-			id={a.id}
-			image={a.first_image}
-			title={a.title}
-			price={a.price}
-			city={a.location}
-			price_type={a.price_type}
-			created_at={a.created_at}
-			tags={a.tags}
-			item={a}
-			is_favorited={a.is_favorited}
-		/>
-	))
+	const announcementsList =
+		announcements?.data.length > 0 &&
+		announcements.data.map(a => (
+			<AnnouncementComponent
+				key={a.id}
+				id={a.id}
+				image={a.first_image}
+				title={a.title}
+				price={a.price}
+				city={a.location}
+				price_type={a.price_type}
+				created_at={a.created_at}
+				tags={a.tags}
+				item={a}
+				is_favorited={a.is_favorited}
+			/>
+		))
 
 	const generatePageNumbers = () => {
 		const pageNumbers = []
@@ -627,17 +629,24 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 					<div className='section-element p-4 col-xl-9 col-lg-8 '>
 						<section className='d-flex flex-column justify-content-between h-100'>
 							<div>
-								<h5 className='header-title'>
-									Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
-								</h5>
+								{announcements?.data.length > 0 && (
+									<h5 className='header-title'>
+										Znalezione ogłoszenia: <strong>{announcements?.meta?.total || '0'}</strong>
+									</h5>
+								)}
 
-								<div className='row'>{announcementsList}</div>
+								{announcements?.data.length > 0 ? (
+									<div className='row'>{announcementsList}</div>
+								) : (
+									<AnnouncementNotFound />
+								)}
 							</div>
 
 							<div className='row mt-3 px-2'>
 								<span className='pagination-total'>
-									Znalezione ogłoszenia: {announcements.meta.total}
+									Znalezione ogłoszenia: {announcements?.meta?.total || '0'}
 								</span>
+
 								<div className='pagination'>
 									<div className='pagination-content'>
 										<ul>
@@ -682,7 +691,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 function SearchAnnouncements() {
 	const { location, category, subcategory, keyword } = useParams()
 
-	const [announcements, setAnnouncements] = useState(false)
+	const [announcements, setAnnouncements] = useState([])
 	const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
 
 	const page_location = useLocation()
@@ -728,7 +737,7 @@ function SearchAnnouncements() {
 		window.scrollTo(0, 0)
 	}, [page_location])
 
-	const totalPages = announcements ? announcements.meta.last_page : maxPages
+	const totalPages = announcements?.data?.length > 0 ? announcements.meta.last_page : 0
 
 	return (
 		<>
@@ -739,7 +748,7 @@ function SearchAnnouncements() {
 			<section className='search-announcements container px-4' style={{ minHeight: '400px' }}>
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />
-				) : announcements && announcements.data.length > 0 ? (
+				) : (
 					<ShowAnnouncements
 						announcements={announcements}
 						nextPage={nextPage}
@@ -747,8 +756,6 @@ function SearchAnnouncements() {
 						currentPage={currentPage}
 						totalPages={totalPages}
 					/>
-				) : (
-					<AnnouncementNotFound />
 				)}
 			</section>
 		</>

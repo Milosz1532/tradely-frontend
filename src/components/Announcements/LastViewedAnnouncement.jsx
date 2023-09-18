@@ -19,15 +19,13 @@ export function LastViewedAnnouncement({ id, image, title, price, price_type }) 
 	return (
 		<>
 			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
-				<div className='section-element mx-2'>
-					<div className='last-viewed-announcement'>
-						<div className='last-viewed-announcement-image'>
-							<img src={image ? image : noImage} alt='Zdjęcie ogłoszenia' />
-						</div>
-						<div className='last-viewed-announcement-content'>
-							<p>{title}</p>
-							<p>{announcementPrice}</p>
-						</div>
+				<div className='last-viewed-announcement mx-3 p-1'>
+					<div className='last-viewed-announcement-image'>
+						<img src={image ? image : noImage} alt='Zdjęcie ogłoszenia' />
+					</div>
+					<div className='last-viewed-announcement-content'>
+						<p className='text-sm'>{title}</p>
+						<p className='text-sm color-main'>{announcementPrice}</p>
 					</div>
 				</div>
 			</NavLink>

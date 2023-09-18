@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { useNavigate } from 'react-router-dom'
+
 import moment from 'moment'
 
 import '../../assets/styles/previewAnnouncement.scss'
@@ -14,8 +16,6 @@ import userIcon from '/images/user.png'
 import Skeleton from 'react-loading-skeleton'
 
 import Map from '../../components/Announcements/Map'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
 
 import Button from '../../components/Layout/Button'
 
@@ -79,6 +79,14 @@ const ShowAnnouncement = ({ data }) => {
 		}
 	}
 
+	console.log(data)
+
+	const navigate = useNavigate()
+
+	const handleGoBack = () => {
+		navigate(-1) // Powrót do poprzedniej strony
+	}
+
 	const images_dots = images.map((dot, index) => {
 		return (
 			<i
@@ -93,6 +101,20 @@ const ShowAnnouncement = ({ data }) => {
 			</i>
 		)
 	})
+
+	const formattedAmount = new Intl.NumberFormat('pl-PL', {
+		style: 'currency',
+		currency: 'PLN',
+		useGrouping: true,
+	}).format(data.price)
+
+	let announcementPrice = formattedAmount
+
+	if (data.price_type === 2) {
+		announcementPrice = 'Zamienię'
+	} else if (data.price_type === 3) {
+		announcementPrice = 'Oddam za darmo'
+	}
 
 	return (
 		<>
@@ -135,17 +157,39 @@ const ShowAnnouncement = ({ data }) => {
 			<div className='container previewAnnouncement'>
 				<div className='row'>
 					<div className='col-12'>
-						<div className='top-information'>
-							<p className='top-information-category'>
-								Ogłoszenie - Motoryzacja - Samochody osobowe
-							</p>
-							<p className='top-information-back'>Wróć</p>
-							<p className='top-information-announcement-id'>Ogłoszenie: {data.id}</p>
+						<div className='main-content-box top-information '>
+							<div>
+								<p className='color-main text-xs'>
+									Ogłoszenie
+									{data?.category && (
+										<>
+											<i className='mx-2'>
+												<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+											</i>
+											{data.category.name}
+										</>
+									)}
+									{data?.subcategory && (
+										<>
+											<i className='mx-2'>
+												<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+											</i>
+											{data.subcategory.name}
+										</>
+									)}
+								</p>
+								<div className='top-information-back' onClick={handleGoBack}>
+									<i className='icon-xl me-2'>
+										<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+									</i>
+									<span>Wróć</span>
+								</div>
+							</div>
 						</div>
 					</div>
 
-					<div className='col-lg-8 col-md-6 mt-2'>
-						<section className='announcement-section announcement-image-section'>
+					<div className='col-lg-8 col-md-6 mt-3'>
+						<section className='main-content-box announcement-image-section'>
 							<div className='image'>
 								<img
 									onClick={e => setGalleryModal(true)}
@@ -163,7 +207,7 @@ const ShowAnnouncement = ({ data }) => {
 							</div>
 							<div className='image-count'>{images_dots}</div>
 						</section>
-						<section className='announcement-section announcement-description-section mt-3'>
+						<section className='main-content-box announcement-description-section mt-3'>
 							<div className='announcement-description-top'>
 								<p className='date'>
 									Dodane {moment(data.created_at, 'DD.MM.YYYY HH:mm:ss').format('DD.MM.YYYY HH:mm')}
@@ -174,30 +218,26 @@ const ShowAnnouncement = ({ data }) => {
 							</div>
 							<div className='announcement-description-title'>
 								<h4 className='announcement-title'>{data.title}</h4>
-								<h4 className='announcement-price'>{data.price} zł</h4>
-								<div className='announcement-tags'>
-									{data.tags && (
-										<>
-											{data.tags.map(tag => (
-												<p key={tag.id} className='tag'>
-													{tag.name}
-												</p>
-											))}
-										</>
-									)}
-								</div>
+								<h4 className='announcement-price'>{announcementPrice}</h4>
+
+								<ul className='preview-announcement-filters'>
+									{data.tags.map(t => (
+										<li key={`announcement-${t.id}-tag-id-${t.id}`}>{t.name}</li>
+									))}
+								</ul>
 
 								<hr />
 							</div>
 							<div className='announcement-description-content'>
-								<h5>Opis: </h5>
+								<h5>O przedmiocie: </h5>
 
-								<ReactQuill value={data.description} readOnly={true} theme={'bubble'} />
+								{/* <ReactQuill value={data.description} readOnly={true} theme={'bubble'} /> */}
+								<pre>{data.description}</pre>
 							</div>
 						</section>
 					</div>
-					<div className='col-lg-4 col-md-6 mt-2'>
-						<div className='announcement-section announcement-user-section'>
+					<div className='col-lg-4 col-md-6 mt-3'>
+						<div className='main-content-box announcement-user-section'>
 							<h6>Osoba prywatna</h6>
 							<div className='announcement-user-info-box'>
 								<img draggable={false} src={userIcon} alt='user-icon' />
@@ -255,7 +295,7 @@ const ShowAnnouncement = ({ data }) => {
 								<Button text={'Wyślij wiadomość'} color={true} />
 							</div>
 						</div>
-						<div className='announcement-section announcement-location mt-2'>
+						<div className='main-content-box announcement-location mt-3'>
 							<h6>Lokalizacja</h6>
 							<div className='map-container'>
 								<Map
@@ -289,9 +329,7 @@ export default function PreviewAnnouncement() {
 			.get(API_URL)
 			.then(({ data }) => {
 				setAnnouncementData(data)
-				console.log(data)
 				setLoadingAnnouncement(false)
-				console.log(`Dodaj tutaj do localstorage id ogłoszenia: ${data.id}`)
 				addAnnouncementIdToLocalStorage(data.id)
 			})
 			.catch(error => {

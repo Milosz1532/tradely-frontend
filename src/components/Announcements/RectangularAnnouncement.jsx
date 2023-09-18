@@ -171,11 +171,17 @@ export const RectangularAnnouncement = ({
 							<h5 className='title'>{title}</h5>
 							<h5 className='price'>{announcementPrice}</h5>
 						</div>
-						<ul className='announcement-tags-list'>
+						{/* <ul className='announcement-tags-list'>
+							{tags.map(t => (
+								<li key={`announcement-${id}-tag-id-${t.id}`}>{t.name}</li>
+							))}
+						</ul> */}
+						<ul className='preview-announcement-filters'>
 							{tags.map(t => (
 								<li key={`announcement-${id}-tag-id-${t.id}`}>{t.name}</li>
 							))}
 						</ul>
+
 						<div className='rectangular-announcement-bottom'>
 							<div className='location'>
 								<span>13.06.2023 12:00</span>

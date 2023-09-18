@@ -411,7 +411,7 @@ export default function HomePage() {
 		dots: false,
 		infinite: false,
 		speed: 500,
-		slidesToShow: 3,
+		slidesToShow: 4,
 		slidesToScroll: 1,
 		initialSlide: 0,
 		nextArrow: <SlidereNextArrow />,

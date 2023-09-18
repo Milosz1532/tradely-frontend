@@ -26,7 +26,7 @@ export default function featuredAnnouncement({
 
 	return (
 		<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
-			<div className='featured-announcement-box '>
+			<div className='featured-announcement-box'>
 				<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
 
 				<div className='featured-announcement-box-content'>
