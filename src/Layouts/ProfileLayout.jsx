@@ -28,61 +28,70 @@ export default function ProfileLayout() {
 
 	return (
 		<>
-			<Navbar fluid={true} />
-			<div className='layout-content'>
-				<div className={`left-menu ${fullSizeMenu && 'full-size'}`}>
-					<div className='left-menu-close-btn ' onClick={e => setFullSizeMenu(false)}>
-						<i>
-							<FontAwesomeIcon icon='fa-solid fa-angles-left' />
-						</i>
-						<span>Zwiń menu</span>
-					</div>
-					<div className='left-menu-profile-info'>
-						<img src={userIcon} alt='user-icon' width={60} height={60} draggable={false} />
-						<div className='profile-info-data ms-2'>
-							<p className='user-username'>{`${
-								user?.first_name && user?.last_name
-									? `${user.first_name} ${user.last_name}`
-									: 'Anonimowy użytkownik'
-							}`}</p>
-							<p className='user-email'>{user.email}</p>
-							<p className='user-id'>ID: {user.id}</p>
+			<Navbar />
+			<div className='container mt-3'>
+				<div className='row'>
+					<div className='col-xl-5'>
+						<div className='main-content-box p-0 pb-2 sticky-column' style={{ minHeight: '300px' }}>
+							{menuItems.map(category =>
+								category.category === 'Administracja' && !showAdministrationSection ? null : (
+									<React.Fragment key={category.category}>
+										<div className='main-content-header pb-3'>
+											<h5 className='m-0 ms-2'>{category.category}</h5>
+										</div>
+										<ul className='profile-menu-list mt-2'>
+											{category.items.map(item =>
+												item.permissions && !hasPermission(item.permissions) ? null : (
+													<NavLink key={item.id} to={item.link}>
+														<li
+															className={`p-3 px-3 ${
+																location.pathname === item.link ? 'selected-list-element' : ''
+															}`}>
+															<span className='left-menu-tab-title'>{item.name}</span>
+														</li>
+													</NavLink>
+												)
+											)}
+										</ul>
+									</React.Fragment>
+								)
+							)}
 						</div>
 					</div>
-					<div className='left-menu-content-menu mt-4'>
-						{menuItems.map(category =>
-							category.category === 'Administracja' && !showAdministrationSection ? null : (
-								<React.Fragment key={category.category}>
-									<p className='menu-title'>{category.category}</p>
-									<ul>
-										{category.items.map(item =>
-											// Sprawdzenie uprawnień dla elementu menu
-											item.permissions && !hasPermission(item.permissions) ? null : (
-												<NavLink key={item.id} to={item.link}>
-													<li className={location.pathname === item.link ? 'active' : ''}>
-														<i className='me-2'>
-															<FontAwesomeIcon icon={item.icon} />
-														</i>
-														<span className='left-menu-tab-title'>{item.name}</span>
-													</li>
-												</NavLink>
-											)
-										)}
-									</ul>
-								</React.Fragment>
-							)
-						)}
+					<div className='col-xl-7'>
+						<div className='main-content-box p-0 pb-2 ' style={{ minHeight: '300px' }}>
+							<Outlet />
+						</div>
 					</div>
-				</div>
-				<div className='profile-layout-content'>
-					<div className='left-menu-size-button' onClick={e => setFullSizeMenu(true)}>
-						<i>
-							<FontAwesomeIcon icon='fa-solid fa-angles-right' />
-						</i>
-					</div>
-					<Outlet />
 				</div>
 			</div>
 		</>
 	)
 }
+
+{
+	/* <div className='profile-layout-content'><Outlet /></div> */
+}
+
+// {menuItems.map(category =>
+// 	category.category === 'Administracja' && !showAdministrationSection ? null : (
+// 		<React.Fragment key={category.category}>
+// 			<p className='menu-title'>{category.category}</p>
+// 			<ul>
+// 				{category.items.map(item =>
+// 					// Sprawdzenie uprawnień dla elementu menu
+// 					item.permissions && !hasPermission(item.permissions) ? null : (
+// 						<NavLink key={item.id} to={item.link}>
+// 							<li className={location.pathname === item.link ? 'active' : ''}>
+// 								<i className='me-2'>
+// 									<FontAwesomeIcon icon={item.icon} />
+// 								</i>
+// 								<span className='left-menu-tab-title'>{item.name}</span>
+// 							</li>
+// 						</NavLink>
+// 					)
+// 				)}
+// 			</ul>
+// 		</React.Fragment>
+// 	)
+// )}

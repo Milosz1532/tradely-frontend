@@ -5,7 +5,8 @@ import ProfileLayout from '../Layouts/ProfileLayout'
 
 // Profile
 import Profile from '../views/profile/Profile'
-import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
+import ProfileActiveAnnouncements from '../views/profile/ProfileActiveAnnouncements'
+import ProfileCompletedAnnouncements from '../views/profile/ProfileCompletedAnnouncements'
 import Favorites from '../views/profile/Favorites'
 import EditAccount from '../views/profile/EditAccount'
 import ChatPage from '../views/profile/ChatPage'
@@ -96,11 +97,16 @@ const router = createBrowserRouter([
 				element: <EditAccount />,
 			},
 			{
-				path: '/account/announcements',
-				element: <ProfileAnnouncements />,
+				path: '/account/active-announcements',
+				element: <ProfileActiveAnnouncements />,
 			},
 			{
-				path: '/account/favorites',
+				path: '/account/completed-announcements',
+				element: <ProfileCompletedAnnouncements />,
+			},
+
+			{
+				path: '/account/favorites-announcements',
 				element: <Favorites />,
 			},
 			// {

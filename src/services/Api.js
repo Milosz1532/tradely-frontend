@@ -289,4 +289,22 @@ export const getSubcategoryFilters = async (subcategory_id, context) => {
 	}
 }
 
+export const fetchUserActiveAnnouncements = async page => {
+	try {
+		const response = await axiosClient.get(`/profile/active-announcements?page=${page}`)
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const fetchUserCompletedAnnouncements = async page => {
+	try {
+		const response = await axiosClient.get(`/profile/completed-announcements?page=${page}`)
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
 export default axiosClient
