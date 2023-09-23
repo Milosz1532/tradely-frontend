@@ -21,6 +21,9 @@ import Button from '../../components/Layout/Button'
 
 import NoAnnouncement from '../../components/Announcements/AnnouuncementNotFound'
 
+import ProductStates from '../../utils/ProductStates'
+import PriceTypes from '../../utils/PriceTypes'
+
 const LoadingScreen = () => {
 	return (
 		<div className='container annoucement-section'>
@@ -61,6 +64,19 @@ const LoadingScreen = () => {
 	)
 }
 
+const DisplayFilterValues = ({ filters }) => {
+	return (
+		<>
+			{filters.map((filter, index) => (
+				<div className='col-6 mt-1' key={index}>
+					<span className='color-gray'>{filter.name}: </span>
+					<span className='ms-1'>{filter.filter_value || filter.custom_value}</span>
+				</div>
+			))}
+		</>
+	)
+}
+
 const ShowAnnouncement = ({ data }) => {
 	const [images, setImages] = useState(data.images)
 	const [selectedImage, setSelectedImages] = useState(0)
@@ -78,8 +94,6 @@ const ShowAnnouncement = ({ data }) => {
 			}
 		}
 	}
-
-	console.log(data)
 
 	const navigate = useNavigate()
 
@@ -108,13 +122,10 @@ const ShowAnnouncement = ({ data }) => {
 		useGrouping: true,
 	}).format(data.price)
 
-	let announcementPrice = formattedAmount
-
-	if (data.price_type === 2) {
-		announcementPrice = 'Zamienię'
-	} else if (data.price_type === 3) {
-		announcementPrice = 'Oddam za darmo'
-	}
+	const productState = ProductStates.find(state => state.id === data?.product_state)
+	const priceType = data.price
+		? formattedAmount
+		: PriceTypes.find(state => state.id === data?.price_type).name
 
 	return (
 		<>
@@ -218,21 +229,29 @@ const ShowAnnouncement = ({ data }) => {
 							</div>
 							<div className='announcement-description-title'>
 								<h4 className='announcement-title'>{data.title}</h4>
-								<h4 className='announcement-price'>{announcementPrice}</h4>
+								<h4 className='announcement-price'>{priceType}</h4>
 
 								<ul className='preview-announcement-filters'>
 									{data.tags.map(t => (
 										<li key={`announcement-${t.id}-tag-id-${t.id}`}>{t.name}</li>
 									))}
 								</ul>
-
-								<hr />
 							</div>
-							<div className='announcement-description-content'>
+							<div className='el-border-top py-2 mt-2'>
 								<h5>O przedmiocie: </h5>
 
 								{/* <ReactQuill value={data.description} readOnly={true} theme={'bubble'} /> */}
 								<pre>{data.description}</pre>
+							</div>
+
+							<div className='row el-border-top pt-2'>
+								<div className='col-6 mt-1'>
+									<span className='color-gray'>Stan produktu: </span>
+									{/* <span className='ms-1'>{ProductStates[data?.product_state]?.name}</span> */}
+									<span className='ms-1'>{productState ? productState.name : 'Nieznany'}</span>
+								</div>
+								{/* I tutaj wyświetlaj filtry: */}
+								<DisplayFilterValues filters={data.filters} />
 							</div>
 						</section>
 					</div>

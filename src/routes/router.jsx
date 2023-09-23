@@ -53,6 +53,30 @@ const router = createBrowserRouter([
 				path: '/announcements/:location/:category/:subcategory?/:keyword?',
 				element: <SearchAnnouncements />,
 			},
+			{
+				path: '/account/chat',
+				element: (
+					<AuthRoute mustByLogin={true}>
+						<ChatPage />
+					</AuthRoute>
+				),
+			},
+			{
+				path: '/account/chat/:conversation_number',
+				element: (
+					<AuthRoute mustByLogin={true}>
+						<ChatPage />
+					</AuthRoute>
+				),
+			},
+			{
+				path: '/account/chat/new/:announcement_id',
+				element: (
+					<AuthRoute mustByLogin={true}>
+						<ChatPage />
+					</AuthRoute>
+				),
+			},
 		],
 	},
 	{
@@ -79,14 +103,14 @@ const router = createBrowserRouter([
 				path: '/account/favorites',
 				element: <Favorites />,
 			},
-			{
-				path: '/account/chat',
-				element: <ChatPage />,
-			},
-			{
-				path: '/account/chat/new/:announcement_id',
-				element: <ChatPage />,
-			},
+			// {
+			// 	path: '/account/chat',
+			// 	element: <ChatPage />,
+			// },
+			// {
+			// 	path: '/account/chat/new/:announcement_id',
+			// 	element: <ChatPage />,
+			// },
 			{
 				path: '/account/InactiveAds',
 				element: (
@@ -97,6 +121,7 @@ const router = createBrowserRouter([
 			},
 		],
 	},
+
 	{
 		path: '/login',
 		element: (

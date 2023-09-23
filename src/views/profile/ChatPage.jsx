@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, NavLink } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { removeUnreadConversation } from '../../redux/actions/authActions'
 import {
@@ -18,32 +18,15 @@ import Skeleton from 'react-loading-skeleton'
 import Echo from 'laravel-echo'
 import Cookies from 'js-cookie'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ConversationElement from '../../components/Chat/ConversationElement'
+import Button from '../../components/Layout/Button'
+import { useMediaQuery } from 'react-responsive'
 
-import noImages from '/images/no-image.png'
-
-const formatDate = (date, small) => {
-	const day = String(date.getDate()).padStart(2, '0')
-	const month = String(date.getMonth() + 1).padStart(2, '0')
-	const year = date.getFullYear()
-	const hours = String(date.getHours()).padStart(2, '0')
-	const minutes = String(date.getMinutes()).padStart(2, '0')
-
-	if (small) {
-		const sec = String(date.getSeconds()).padStart(2, '0')
-		return `${hours}:${minutes}:${sec}`
-	}
-	return `${day}.${month}.${year} ${hours}:${minutes}`
-}
-
-const isHourApart = (date1, date2) => {
-	let diff = (date2.getTime() - date1.getTime()) / 1000
-	diff /= 60 * 60
-	return Math.abs(Math.round(diff))
-}
+import MessagesList from '../../components/Chat/MessagesList'
+import ConversationsList from '../../components/Chat/ConversationsList'
 
 export default function ChatPage() {
-	const { announcement_id } = useParams()
+	const { announcement_id, conversation_number } = useParams()
 	const navigate = useNavigate()
 
 	const [conversations, setConversations] = useState([])
@@ -62,33 +45,45 @@ export default function ChatPage() {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		if (!announcement_id) {
-			navigate('/account/chat')
-			return
-		}
 		const fetchAnnouncement = async () => {
-			if (announcement_id) {
+			if (announcement_id && announcement_id > 0) {
 				try {
 					const response = await getNewConversationData(announcement_id)
 					console.log(response)
 					setNewConversation(response.data)
+
 					if (response.status === 202) {
 						handleConversationClick(response.data)
-						setNewConversation(false)
+						setNewConversation(null)
 						navigate('/account/chat')
 					}
+
 					if (response.error) {
-						setNewConversation(false)
+						setNewConversation(null)
 						navigate('/account/chat')
+						console.log(`Coś`)
 					}
 				} catch (error) {
 					console.error(error)
+					setNewConversation(null)
+					navigate('/account/chat')
 				}
 			}
 		}
-		// setNewConversation(true)
+
 		fetchAnnouncement()
-	}, [announcement_id])
+	}, [announcement_id, navigate])
+
+	useEffect(() => {
+		if (conversation_number) {
+			const conversation = conversations.find(convo => convo.id == conversation_number)
+
+			if (conversation) {
+				handleConversationClick(conversation)
+				console.log(`Zmieniam`)
+			}
+		}
+	}, [conversation_number, conversations])
 
 	useEffect(() => {
 		selectedConversationRef.current = selectedConversation
@@ -101,7 +96,8 @@ export default function ChatPage() {
 			broadcaster: 'pusher',
 			cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
 			key: import.meta.env.VITE_PUSHER_APP_KEY,
-			wsHost: window.location.hostname,
+			// wsHost: window.location.hostname,
+			wsHost: import.meta.env.VITE_PUSHER_APP_HOST,
 			wsPort: 6001,
 			forceTLS: false,
 			disableStats: true,
@@ -246,7 +242,6 @@ export default function ChatPage() {
 			setLoadingMessages(true)
 			const response = await getMessages(conversationId)
 			setMessages(response.messages)
-			console.log(response)
 			setConversations(prevConversations =>
 				prevConversations.map(conversation => {
 					if (conversation.id === conversationId) {
@@ -364,260 +359,87 @@ export default function ChatPage() {
 		lastChildElement?.scrollIntoView({ behavior: 'smooth' })
 	}, [messages])
 
-	const isMessageSentByUser = message => {
-		return message.user_id === user.id
+	const [isAuthoring, setIsAuthoring] = useState(true)
+
+	const isTabletOrMobile = useMediaQuery({ maxDeviceWidth: 800 })
+
+	console.log(isTabletOrMobile)
+
+	const handleGoBack = () => {
+		setSelectedConversation(null)
+		navigate('/account/chat')
 	}
 
 	return (
-		<div className='chatPage-container'>
-			<div className='chat-menu'>
-				<ul className='chat-menu-list'>
-					{loadingConversations ? (
-						<Skeleton count={5} height={80} />
-					) : (
-						sortedConversations.map(conversation => (
-							<li key={conversation.id} onClick={() => handleConversationClick(conversation)}>
-								<div
-									className={`chat-menu-item ${
-										selectedConversation?.id === conversation.id ? 'selected' : ''
-									} ${
-										conversation?.latest_message?.user_id !== user?.id &&
-										conversation?.latest_message?.status &&
-										conversation?.latest_message?.status !== 3
-											? 'new'
-											: ''
-									}`}>
-									<div className='announcement-image'>
-										<img
-											src={
-												conversation.announcement_first_image
-													? conversation.announcement_first_image
-													: noImages
-											}
-											alt='Zdjęcie ogłoszenia'
-											draggable={false}
-										/>
-									</div>
+		<div className='container'>
+			<div className='row mt-3'>
+				{}
 
-									<div className='chat-menu-item-content'>
-										<p className='title'>
-											{conversation.announcement_title.slice(0, 25) +
-												(conversation.announcement_title.length > 25 ? '...' : '')}
-										</p>
-										{conversation.latest_message && (
-											<p
-												className={`content ${
-													conversation?.latest_message?.user_id !== user?.id &&
-													conversation?.latest_message?.status &&
-													conversation?.latest_message?.status !== 3
-														? 'new'
-														: ''
-												}`}>{`${
-												conversation?.latest_message?.user_id === user?.id
-													? 'Ty'
-													: 'Członek konwersacji'
-											}: ${
-												conversation.latest_message?.content.slice(0, 10) +
-												(conversation.latest_message?.content.length > 10 ? '...' : '')
-											}`}</p>
-										)}
-									</div>
-								</div>
-							</li>
-						))
-					)}
-				</ul>
+				{isTabletOrMobile && !newConversation && !selectedConversation && (
+					<ConversationsList
+						sortedConversations={sortedConversations}
+						selectedConversation={selectedConversation}
+						isAuthoring={isAuthoring}
+						user={user}
+						loadingConversations={loadingConversations}
+						setIsAuthoring={setIsAuthoring}
+					/>
+				)}
+				{isTabletOrMobile && !newConversation && selectedConversation && (
+					<MessagesList
+						newConversation={newConversation}
+						selectedConversation={selectedConversation}
+						loadingMessages={loadingMessages}
+						messages={messages}
+						newMessage={newMessage}
+						setNewMessage={setNewMessage}
+						messagesContainerRef={messagesContainerRef}
+						handleSendMessage={handleSendMessage}
+						user={user}
+						handleGoBack={handleGoBack}
+					/>
+				)}
+
+				{isTabletOrMobile && newConversation && (
+					<MessagesList
+						newConversation={newConversation}
+						selectedConversation={selectedConversation}
+						loadingMessages={loadingMessages}
+						messages={messages}
+						newMessage={newMessage}
+						setNewMessage={setNewMessage}
+						messagesContainerRef={messagesContainerRef}
+						handleSendMessage={handleSendMessage}
+						user={user}
+						handleGoBack={handleGoBack}
+					/>
+				)}
+
+				{!isTabletOrMobile && (
+					<>
+						<ConversationsList
+							sortedConversations={sortedConversations}
+							selectedConversation={selectedConversation}
+							isAuthoring={isAuthoring}
+							user={user}
+							loadingConversations={loadingConversations}
+							setIsAuthoring={setIsAuthoring}
+						/>
+
+						<MessagesList
+							newConversation={newConversation}
+							selectedConversation={selectedConversation}
+							loadingMessages={loadingMessages}
+							messages={messages}
+							newMessage={newMessage}
+							setNewMessage={setNewMessage}
+							messagesContainerRef={messagesContainerRef}
+							handleSendMessage={handleSendMessage}
+							user={user}
+						/>
+					</>
+				)}
 			</div>
-
-			{newConversation && (
-				<div className='chat-content'>
-					<div className='chat-content-top'>
-						<div className='chat-content-top-content'>
-							<div>
-								<p className='title'>{newConversation?.announcement?.title}</p>
-								<div className='user-active'>
-									{newConversation.user.user_last_activity === true ? (
-										<>
-											<span className='user-active-dot green'> </span>
-											<p>Dostępny</p>
-										</>
-									) : (
-										<>
-											<span className='user-active-dot orange'> </span>
-											<p>Ostatnio aktywny: {newConversation.user_last_activity}</p>
-										</>
-									)}
-								</div>
-							</div>
-							<p className='price'>{newConversation.announcement.price} zł</p>
-						</div>
-					</div>
-					<div className='chat-content-messages' ref={messagesContainerRef}></div>
-					<div className='chat-content-bottom'>
-						<hr className='my-2' />
-						<form onSubmit={handleSendMessage}>
-							<input
-								placeholder='Twoja wiadomość...'
-								type='text'
-								value={newMessage}
-								onChange={e => setNewMessage(e.target.value)}
-							/>
-
-							<button>
-								<i>
-									<FontAwesomeIcon icon='fa-regular fa-paper-plane' />
-								</i>
-							</button>
-						</form>
-					</div>
-				</div>
-			)}
-
-			{selectedConversation && !newConversation && (
-				<div className='chat-content'>
-					<div className='chat-content-top'>
-						<div className='chat-content-top-content'>
-							<div>
-								{loadingMessages ? (
-									<>
-										<Skeleton count={1} height={20} width={200} />
-									</>
-								) : (
-									<p className='title'>{selectedConversation.announcement_title}</p>
-								)}
-								<div className='user-active'>
-									{loadingMessages ? (
-										<div className='d-flex'>
-											<Skeleton className='me-2' circle={true} height={10} width={10} />
-											<Skeleton count={1} height={10} width={100} />
-										</div>
-									) : (
-										<>
-											{selectedConversation.user_last_activity === true ? (
-												<>
-													<span className='user-active-dot green'> </span>
-													<p>Dostępny</p>
-												</>
-											) : (
-												<>
-													<span className='user-active-dot orange'> </span>
-													<p>Ostatnio aktywny: {selectedConversation.user_last_activity}</p>
-												</>
-											)}
-										</>
-									)}
-								</div>
-							</div>
-							{loadingMessages ? (
-								<>
-									<Skeleton count={1} height={20} width={80} />
-								</>
-							) : (
-								<p className='price'>{selectedConversation.announcement_price} zł</p>
-							)}
-						</div>
-					</div>
-					<div className='chat-content-messages' ref={messagesContainerRef}>
-						{loadingMessages ? (
-							<>
-								{[...Array(3)].map((_, index) => (
-									<React.Fragment key={`loading-message-${index}`}>
-										<div className='skeleton-right'>
-											<Skeleton count={1} height={40} width={150} borderRadius={10} />
-										</div>
-										<div className='skeleton-right'>
-											<Skeleton count={1} height={40} width={250} borderRadius={10} />
-										</div>
-										<div className='skeleton-left'>
-											<Skeleton count={1} height={40} width={300} borderRadius={10} />
-										</div>
-										<div className='skeleton-left'>
-											<Skeleton count={1} height={40} width={140} borderRadius={10} />
-										</div>
-									</React.Fragment>
-								))}
-							</>
-						) : (
-							messages.map((message, index) => {
-								const previousMessage = messages[index - 1]
-								const nextMessage = messages[index + 1]
-								const showSenderInfo =
-									!previousMessage || previousMessage.user_id !== message.user_id
-								const showStatusInfo = !nextMessage || nextMessage.user_id !== message.user_id
-								const showDate =
-									previousMessage &&
-									isHourApart(new Date(previousMessage.created_at), new Date(message.created_at))
-
-								return (
-									<div className='d-block message' key={`messanger-chat-${message.id}`}>
-										{showDate > 0 && (
-											<div className='message-date'>{formatDate(new Date(message.created_at))}</div>
-										)}
-
-										<div
-											className={`message-area ${
-												isMessageSentByUser(message) ? 'sent' : 'received'
-											}`}>
-											{showSenderInfo && (
-												<p className='message-user'>
-													{isMessageSentByUser(message) ? 'Ty' : 'Członek konwersacji'}
-												</p>
-											)}
-											<div className='message-content'>
-												<p>{message.content}</p>
-											</div>
-											{showStatusInfo && isMessageSentByUser(message) && (
-												<i className={`message-status status-${message.status}`}>
-													{message.status === 1 && (
-														<>
-															<FontAwesomeIcon icon='fa-regular fa-paper-plane' />
-															<span>Wysłana</span>
-														</>
-													)}
-													{message.status === 2 && (
-														<>
-															<FontAwesomeIcon icon='fa-solid fa-check' />
-															<span>Dostarczona</span>
-														</>
-													)}
-													{message.status === 3 && (
-														<>
-															<FontAwesomeIcon icon='fa-solid fa-check-double' />
-															<span>Wyświetlona</span>
-														</>
-													)}
-												</i>
-											)}
-
-											<div className='message-small-date'>
-												<span>{formatDate(new Date(message.created_at), true)}</span>
-											</div>
-										</div>
-									</div>
-								)
-							})
-						)}
-					</div>
-
-					<div className='chat-content-bottom'>
-						<hr className='my-2' />
-						<form onSubmit={handleSendMessage}>
-							<input
-								placeholder='Twoja wiadomość...'
-								type='text'
-								value={newMessage}
-								onChange={e => setNewMessage(e.target.value)}
-							/>
-
-							<button>
-								<i>
-									<FontAwesomeIcon icon='fa-regular fa-paper-plane' />
-								</i>
-							</button>
-						</form>
-					</div>
-				</div>
-			)}
 		</div>
 	)
 }
