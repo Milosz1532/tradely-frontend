@@ -1,10 +1,9 @@
-import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 
 import DefaultLayout from '../Layouts/DefaultLayout'
 import ProfileLayout from '../Layouts/ProfileLayout'
 
 // Profile
-import Profile from '../views/profile/Profile'
 import ProfileActiveAnnouncements from '../views/profile/ProfileActiveAnnouncements'
 import ProfileCompletedAnnouncements from '../views/profile/ProfileCompletedAnnouncements'
 import Favorites from '../views/profile/Favorites'
@@ -89,14 +88,6 @@ const router = createBrowserRouter([
 		),
 		children: [
 			{
-				path: '/account/profile',
-				element: <Profile />,
-			},
-			{
-				path: '/account/edit',
-				element: <EditAccount />,
-			},
-			{
 				path: '/account/active-announcements',
 				element: <ProfileActiveAnnouncements />,
 			},
@@ -109,14 +100,6 @@ const router = createBrowserRouter([
 				path: '/account/favorites-announcements',
 				element: <Favorites />,
 			},
-			// {
-			// 	path: '/account/chat',
-			// 	element: <ChatPage />,
-			// },
-			// {
-			// 	path: '/account/chat/new/:announcement_id',
-			// 	element: <ChatPage />,
-			// },
 			{
 				path: '/account/InactiveAds',
 				element: (

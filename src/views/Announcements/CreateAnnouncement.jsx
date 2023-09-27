@@ -21,7 +21,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { DndProvider } from 'react-dnd'
 
 import Button from '../../components/Layout/Button'
-import CustomSelect from '../../components/Layout/CustomSelect'
+import Select from '../../components/Layout/Select'
 
 import PreviewAnnouncement from '../../components/CreateAnnouncement/PreviewAnnouncement'
 
@@ -635,7 +635,7 @@ const CreateAnnouncement = () => {
 
 	return (
 		<>
-			<div className='container mt-5'>
+			<div className='container mt-5 pb-4'>
 				<div className='row'>
 					<div className='col-lg-6 mt-2'>
 						<div className='main-content-box'>
@@ -899,28 +899,22 @@ const CreateAnnouncement = () => {
 														<label>{filter.name}</label>
 
 														{filter.input_type === 'select' && (
-															<CustomSelect
-																placeholder={filter.placeholder}
-																options={filter.values.map(value => ({
-																	value: value.id,
-																	label: value.value,
-																}))}
-																value={
-																	filterValues[filter.id]
-																		? {
-																				value: filterValues[filter.id],
-																				label: filter.values.find(
-																					value => value.id === filterValues[filter.id]
-																				)?.value,
-																		  }
-																		: null
-																}
+															<Select
+																options={filter.values}
+																defaultOption={{
+																	value: 'Wszystko',
+																}}
+																value={filter.values.find(
+																	value => value.id === filterValues[filter.id]
+																)}
 																onChange={selectedOption =>
 																	handleFilterChange(
 																		filter.id,
-																		selectedOption ? selectedOption.value : null
+																		selectedOption ? selectedOption.id : null
 																	)
 																}
+																renderOption={option => <>{option.value}</>}
+																renderDefaultOption={option => <>{option.value} </>}
 															/>
 														)}
 														{filter.input_type === 'input' && (

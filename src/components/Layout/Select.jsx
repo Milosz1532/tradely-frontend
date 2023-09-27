@@ -7,6 +7,8 @@ export default function Select({
 	disabled,
 	onChange,
 	renderOption,
+	renderDefaultOption,
+	className,
 }) {
 	const [open, setOpen] = useState(false)
 	const [selectedOption, setSelectedOption] = useState(value)
@@ -34,21 +36,28 @@ export default function Select({
 	}, [])
 
 	useEffect(() => {
-		// Aktualizacja selectedOption, jeśli prop "value" się zmieni
 		setSelectedOption(value)
 	}, [value])
 
 	return (
-		<div className={`dropdown ${disabled ? 'disabled' : ''}`} ref={dropdownRef}>
+		<div
+			className={`dropdown ${disabled ? 'disabled' : ''} ${className ? className : ''}`}
+			ref={dropdownRef}>
 			<div className={`select ${open ? 'select-clicked' : ''}`} onClick={() => setOpen(!open)}>
 				<span className='selected'>
-					{selectedOption ? renderOption(selectedOption) : defaultOption.name}
+					{selectedOption
+						? renderOption(selectedOption)
+						: renderDefaultOption
+						? renderDefaultOption(defaultOption)
+						: defaultOption?.name || options[0]?.name || ''}
 				</span>
 				<div className={`caret ${open ? 'caret-rotate' : ''}`}></div>
 			</div>
 			<ul className={`menu ${open ? 'menu-open' : ''}`}>
-				{defaultOption && (
-					<li onClick={() => handleOptionClick(defaultOption)}>{defaultOption.name}</li>
+				{defaultOption === undefined ? null : (
+					<li onClick={() => handleOptionClick(defaultOption)}>
+						{renderDefaultOption ? renderDefaultOption(defaultOption) : defaultOption.name}
+					</li>
 				)}
 
 				{options &&

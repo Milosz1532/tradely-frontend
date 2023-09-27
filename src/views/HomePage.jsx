@@ -105,79 +105,10 @@ function SliderPrevArrow(props) {
 	)
 }
 
-const AnnouncementSlider = ({ data }) => {
-	var sliderSettings = {
-		dots: false,
-		infinite: false,
-		speed: 500,
-		slidesToShow: 4,
-		initialSlide: 0,
-		nextArrow: <SlidereNextArrow />,
-		prevArrow: <SliderPrevArrow />,
-
-		responsive: [
-			{
-				breakpoint: 1024,
-				settings: {
-					slidesToShow: 3,
-					infinite: true,
-				},
-			},
-			{
-				breakpoint: 768,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2,
-					initialSlide: 2,
-				},
-			},
-			{
-				breakpoint: 480,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-				},
-			},
-		],
-	}
-
-	const announcementsList = data.map(a => (
-		<SquareAnnouncement
-			key={a.id}
-			id={a.id}
-			user_id={a.user_id}
-			title={a.title}
-			price={a.price}
-			price_type={a.price_type}
-			created_at={a.created_at}
-			image={a.first_image}
-			location={a.location}
-			category={a.category}
-			favorite_count={a.favorite_count}
-			is_favorited={a.is_favorited}
-			item={a}
-		/>
-	))
-
-	return (
-		<>
-			{data.length !== 0 && (
-				<>
-					<div className='row mt-3'>
-						<Slider {...sliderSettings}>{announcementsList}</Slider>
-					</div>
-				</>
-			)}
-		</>
-	)
-}
-
 const FeaturedAnnouncements = ({ data }) => {
 	const announcementslist = data.map((a, index) => (
 		<div
-			className={`featured-announcement-col ${
-				index < 2 ? 'col-xl-6 col-md-6 col-sm-6 col-xs-12' : 'col-xl-4 col-md-4 col-sm-4 col-xs-12 '
-			} px-3 py-2 mt-2`}
+			className={`featured-announcement-col col-xl-4 col-md-4 col-sm-4 col-xs-12 mt-2`}
 			key={a.id}>
 			<FeaturedAnnouncement
 				id={a.id}
@@ -192,155 +123,6 @@ const FeaturedAnnouncements = ({ data }) => {
 	))
 
 	return <>{announcementslist}</>
-}
-
-const AnnouncementList = ({ data }) => {
-	var sliderSettings = {
-		dots: false,
-		infinite: false,
-		speed: 500,
-		slidesToShow: 4,
-		initialSlide: 0,
-		nextArrow: <SlidereNextArrow />,
-		prevArrow: <SliderPrevArrow />,
-
-		responsive: [
-			{
-				breakpoint: 1024,
-				settings: {
-					slidesToShow: 3,
-					infinite: true,
-				},
-			},
-			{
-				breakpoint: 768,
-				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2,
-					initialSlide: 2,
-				},
-			},
-			{
-				breakpoint: 480,
-				settings: {
-					slidesToShow: 1,
-					slidesToScroll: 1,
-				},
-			},
-		],
-	}
-
-	const newAnnouncementsList = data.latest_announcements.map(a => (
-		<SquareAnnouncement
-			key={a.id}
-			id={a.id}
-			user_id={a.user_id}
-			title={a.title}
-			price={a.price}
-			created_at={a.created_at}
-			image={a.first_image}
-			location={a.location}
-			category={a.category}
-			favorite_count={a.favorite_count}
-			is_favorited={a.is_favorited}
-			item={a}
-		/>
-	))
-
-	const featuredAnnouncements = data.latest_announcements.map((a, index) => (
-		<div
-			className={`featured-announcement-col ${
-				index < 2 ? 'col-xl-6 col-md-6 col-sm-6 col-xs-12' : 'col-xl-4 col-md-4 col-sm-4 col-xs-12 '
-			} px-3 py-2 mt-2`}
-			key={a.id}>
-			<FeaturedAnnouncement
-				id={a.id}
-				title={a.title}
-				price={a.price}
-				image={a.first_image}
-				location={a.location}
-				category={a.category}
-			/>
-		</div>
-	))
-
-	const categoryAnnouncementsList = data.category_announcements.map(a => (
-		<SquareAnnouncement
-			key={a.id}
-			id={a.id}
-			user_id={a.user_id}
-			title={a.title}
-			price={a.price}
-			created_at={a.created_at}
-			image={a.first_image}
-			location={a.location}
-			category={a.category}
-			favorite_count={a.favorite_count}
-			is_favorited={a.is_favorited}
-			item={a}
-		/>
-	))
-
-	if (data.location_announcements.length !== 0) {
-		const locationAnnouncementsList = data.location_announcements.map(a => (
-			<SquareAnnouncement
-				key={a.id}
-				user_id={a.user_id}
-				id={a.id}
-				title={a.title}
-				price={a.price}
-				created_at={a.created_at}
-				image={a.first_image}
-				favorite_count={a.favorite_count}
-				is_favorited={a.is_favorited}
-				item={a}
-			/>
-		))
-	}
-
-	return (
-		<div>
-			<section className='new-announcements'>
-				{data.latest_announcements.length !== 0 && (
-					<>
-						<h2 className='announcements-section-title text-center mt-5'>Najnowsze ogłoszenia</h2>
-
-						{/* <div className='row'>{newAnnouncementsList}</div> */}
-						<div className='row mt-3'>
-							<Slider {...sliderSettings}>{newAnnouncementsList}</Slider>
-						</div>
-					</>
-				)}
-				{data.location_announcements.length !== 0 && (
-					<>
-						<h2 className='announcements-section-title text-center mt-5'>
-							Ogłoszenia w twojej okolicy
-						</h2>
-
-						<div className='row'>{locationAnnouncementsList}</div>
-					</>
-				)}
-
-				{data.category_announcements.length !== 0 && (
-					<>
-						<h2 className='announcements-section-title text-center mt-5'>Motoryzacja</h2>
-
-						{/* <div className='row'>{categoryAnnouncementsList}</div> */}
-						<div className='row mt-3'>
-							<Slider {...sliderSettings}>{categoryAnnouncementsList}</Slider>
-						</div>
-					</>
-				)}
-			</section>
-			<section>
-				<h2 className='announcements-section-title text-center mt-5'>Wyróżnione ogłoszenia</h2>
-				<p className='text-center announcements-section-subtitle'>
-					Ogłoszenia użytkowników Tradely +
-				</p>
-				<div className='row px-2 '>{featuredAnnouncements}</div>
-			</section>
-		</div>
-	)
 }
 
 export default function HomePage() {
@@ -411,7 +193,7 @@ export default function HomePage() {
 		dots: false,
 		infinite: false,
 		speed: 500,
-		slidesToShow: 4,
+		slidesToShow: 3,
 		slidesToScroll: 1,
 		initialSlide: 0,
 		nextArrow: <SlidereNextArrow />,
@@ -446,8 +228,8 @@ export default function HomePage() {
 	return (
 		<>
 			<Searchbar />
-			<div className='container px-5'>
-				<article>
+			<div className='pb-4'>
+				{/* <article>
 					{_loadingAnnouncements ? (
 						<LoadingLastViewedAnnouncements />
 					) : (
@@ -474,55 +256,134 @@ export default function HomePage() {
 							)}
 						</>
 					)}
-				</article>
+				</article> */}
 
 				{/* <h2 className='announcements-section-title text-center mt-5'>To może Cię zainteresować</h2>
 				<p className='text-center announcements-section-subtitle'>
 					Sprawdź ofertę naszych partnerów
 				</p> */}
 
-				<section>
+				<section className='container px-xl-5'>
 					{_loadingAnnouncements ? (
 						<LoadingAnnouncement />
 					) : (
 						<article>
-							<h2 className='announcements-section-title text-center mt-5'>Najnowsze ogłoszenia</h2>
-							<AnnouncementSlider data={announcementsData.latest_announcements} />
-						</article>
-					)}
+							<div className='d-flex align-items-end justify-content-between flex-wrap mt-3'>
+								<div>
+									<h2 className='announcements-section-title'>Najnowsze ogłoszenia</h2>
+									<p className='text-sm color-gray m-0'>Ogłoszenia dodane do 24 godzin</p>
+								</div>
 
-					{_loadingAnnouncements ? (
-						<LoadingAnnouncement />
-					) : (
-						<>
-							{announcementsData.nearby_announcements.length > 0 && (
-								<article>
-									<h2 className='announcements-section-title text-center mt-3'>W twojej okolicy</h2>
-									<AnnouncementSlider data={announcementsData.nearby_announcements} />
-								</article>
-							)}
-						</>
-					)}
+								<div className='d-none d-md-block text-sm me-2 cursor-pointer'>
+									<span className='me-2'>Zobacz więcej</span>
+									<i>
+										<FontAwesomeIcon icon='fa-solid fa-arrow-right' />
+									</i>
+								</div>
+							</div>
+							{/* <AnnouncementSlider data={announcementsData.latest_announcements} /> */}
 
-					{_loadingAnnouncements ? (
-						<>
-							<p>Tutaj</p>
-							<LoadingFeaturedAnnouncements />
-						</>
-					) : (
-						<article>
-							<h2 className='announcements-section-title text-center mt-3'>
-								Wyróżnione ogłoszenia
-							</h2>
-							<p className='text-center announcements-section-subtitle'>
-								Ogłoszenia użytkowników Tradely +
-							</p>
-							<div className='row px-2 '>
-								<FeaturedAnnouncements data={announcementsData.recent_announcements} />
+							<div className='row'>
+								{announcementsData.latest_announcements.map(a => (
+									<div
+										className='col-xl-3 col-md-4 col-sm-6 col-xs-12 col-6 mt-3 px-1 px-md-2 p-0'
+										key={a.id}>
+										<SquareAnnouncement
+											key={a.id}
+											id={a.id}
+											user_id={a.user_id}
+											title={a.title}
+											price={a.price}
+											price_type={a.price_type}
+											created_at={a.created_at}
+											image={a.first_image}
+											location={a.location}
+											category={a.category}
+											favorite_count={a.favorite_count}
+											is_favorited={a.is_favorited}
+											item={a}
+										/>
+									</div>
+								))}
 							</div>
 						</article>
 					)}
 				</section>
+
+				{_loadingAnnouncements ? (
+					<LoadingAnnouncement />
+				) : (
+					<section className='second-background py-4 mt-4'>
+						<div className='container px-xl-5'>
+							{announcementsData.nearby_announcements.length > 0 && (
+								<article>
+									<div className='d-flex align-items-end justify-content-between flex-wrap mt-3'>
+										<div>
+											<h2 className='announcements-section-title'>W twojej okolicy</h2>
+										</div>
+
+										<div className='d-none d-md-block text-sm me-2 cursor-pointer'>
+											<span className='me-2'>Zobacz więcej</span>
+											<i>
+												<FontAwesomeIcon icon='fa-solid fa-arrow-right' />
+											</i>
+										</div>
+									</div>
+									<div className='row'>
+										{announcementsData.nearby_announcements.map(a => (
+											<div className='col-xl-3 col-md-4 col-sm-6 col-xs-12 col-6 mt-3' key={a.id}>
+												<SquareAnnouncement
+													key={a.id}
+													id={a.id}
+													user_id={a.user_id}
+													title={a.title}
+													price={a.price}
+													price_type={a.price_type}
+													created_at={a.created_at}
+													image={a.first_image}
+													location={a.location}
+													category={a.category}
+													favorite_count={a.favorite_count}
+													is_favorited={a.is_favorited}
+													item={a}
+												/>
+											</div>
+										))}
+									</div>
+								</article>
+							)}
+						</div>
+					</section>
+				)}
+
+				{_loadingAnnouncements ? (
+					<>
+						<LoadingFeaturedAnnouncements />
+					</>
+				) : (
+					<>
+						<section className='container px-xl-5'>
+							<article>
+								<div className='d-flex align-items-end justify-content-between flex-wrap mt-3'>
+									<div>
+										<h2 className='announcements-section-title'>Wyróżnione ogłoszenia</h2>
+										<p className='text-sm color-gray m-0'>Ogłoszenia użytkowników Tradely +</p>
+									</div>
+
+									<div className='d-none d-md-block text-sm me-2 cursor-pointer'>
+										<span className='me-2'>Zobacz więcej</span>
+										<i>
+											<FontAwesomeIcon icon='fa-solid fa-arrow-right' />
+										</i>
+									</div>
+								</div>
+								<div className='row px-2 '>
+									<FeaturedAnnouncements data={announcementsData.recent_announcements} />
+								</div>
+							</article>
+						</section>
+					</>
+				)}
 			</div>
 		</>
 	)

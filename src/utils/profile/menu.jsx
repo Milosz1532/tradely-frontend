@@ -27,12 +27,12 @@ const menuItems = [
 			{
 				id: 5,
 				name: 'Informacje o mnie',
-				link: '/account/favorites',
+				link: '',
 			},
 			{
 				id: 6,
 				name: 'Moje oceny',
-				link: '/account/announcements',
+				link: '',
 			},
 			{
 				id: 7,

@@ -67,55 +67,107 @@ export function SquareAnnouncement({
 		announcementPrice = 'Oddam za darmo'
 	}
 
+	console.log(location)
+
+	// return (
+	// 	// <div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4 p-3'>
+	// 	<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+	// 		<div className='announcement-box mx-3'>
+	// 			<div className='announcement-image'>
+	// 				<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
+	// 			</div>
+	// 			<div className='announcement-content'>
+	// 				<div className='announcement-top-section'>
+	// 					<span className='announcement-category'>{category ?? 'Brak danych'}</span>
+	// 					<span className='announcement-likes'>
+	// 						<i className='me-1'>
+	// 							<FontAwesomeIcon icon='fa-solid fa-heart' />
+	// 						</i>
+	// 						{likes}
+	// 					</span>
+	// 				</div>
+
+	// 				<div className='announcement-title-section'>
+	// 					<p className='announcement-title'>{title}</p>
+	// 					<p className='announcement-price'>{announcementPrice}</p>
+	// 				</div>
+	// 				<hr />
+
+	// 				<div className='announcement-bottom'>
+	// 					<div className='announcement-date'>
+	// 						<span>{created_at}</span>
+	// 						<span>{location ?? 'Brak danych'}</span>
+	// 					</div>
+	// 					{user && user.id && user.id == user_id ? (
+	// 						false
+	// 					) : (
+	// 						<div className='announcement-buttons'>
+	// 							<i className='me-2 announcement-button' onClick={handleLikeAnnouncement}>
+	// 								<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
+	// 							</i>
+	// 							<NavLink to={`/account/chat/new/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+	// 								<i>
+	// 									<FontAwesomeIcon icon='fa-regular fa-comments' />
+	// 								</i>
+	// 							</NavLink>
+	// 						</div>
+	// 					)}
+	// 				</div>
+	// 			</div>
+	// 		</div>
+	// 	</NavLink>
+
+	// 	// </div>
+	// )
+
 	return (
-		// <div className='col-12 col-xl-3 col-lg-4 col-md-6 col-sm-12 mt-4 p-3'>
-		<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
-			<div className='announcement-box mx-3'>
-				<div className='announcement-image'>
-					<img draggable='false' src={image ? image : noImage} alt='announcement-image' />
-				</div>
-				<div className='announcement-content'>
-					<div className='announcement-top-section'>
-						<span className='announcement-category'>{category ?? 'Brak danych'}</span>
-						<span className='announcement-likes'>
-							<i className='me-1'>
-								<FontAwesomeIcon icon='fa-solid fa-heart' />
-							</i>
-							{likes}
-						</span>
-					</div>
-
-					<div className='announcement-title-section'>
-						<p className='announcement-title'>{title}</p>
-						<p className='announcement-price'>{announcementPrice}</p>
-					</div>
-					<hr />
-
-					<div className='announcement-bottom'>
-						<div className='announcement-date'>
-							<span>{created_at}</span>
-							<span>{location ?? 'Brak danych'}</span>
+		<>
+			<NavLink to={`/announcement/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
+				<div className='square-announcement-wrapper'>
+					<div className='square-announcement'>
+						<div className='image-content'>
+							<img src={image ? image : noImage} alt='' />
 						</div>
-						{user && user.id && user.id == user_id ? (
-							false
-						) : (
-							<div className='announcement-buttons'>
-								<i className='me-2 announcement-button' onClick={handleLikeAnnouncement}>
-									<FontAwesomeIcon icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`} />
-								</i>
-								<NavLink to={`/account/chat/new/${id}`} style={{ all: 'unset', cursor: 'pointer' }}>
-									<i>
-										<FontAwesomeIcon icon='fa-regular fa-comments' />
-									</i>
-								</NavLink>
+
+						<div className='square-announcement-content'>
+							<div className='square-announcement-title-section mt-2'>
+								<h4 className='title'>{title}</h4>
 							</div>
-						)}
+							<div className='square-announcement-bottom-section'>
+								<div className='city-and-date'>
+									<span>
+										{location} - {created_at}
+									</span>
+								</div>
+								<div className='price-section d-flex justify-content-between flex-wrap'>
+									<div className='price'>
+										<span>{announcementPrice}</span>
+									</div>
+									{user && user.id && user.id == user_id ? (
+										false
+									) : (
+										<div className='icons-section'>
+											<NavLink
+												to={`/account/chat/new/${id}`}
+												style={{ all: 'unset', cursor: 'pointer' }}>
+												<i>
+													<FontAwesomeIcon icon='fa-regular fa-comments' />
+												</i>
+											</NavLink>
+											<i className='ms-3 announcement-button' onClick={handleLikeAnnouncement}>
+												<FontAwesomeIcon
+													icon={`fa-${isFavorited ? 'solid' : 'regular'} fa-heart`}
+												/>
+											</i>
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-		</NavLink>
-
-		// </div>
+			</NavLink>
+		</>
 	)
 }
 

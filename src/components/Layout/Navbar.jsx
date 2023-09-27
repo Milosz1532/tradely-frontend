@@ -77,21 +77,10 @@ export default function Navbar({ fluid = false }) {
 		toast.success('Pomyślnie wylogowano!')
 	}
 
-	const [showMenu, setShowMenu] = useState(null)
-
-	const handleShowMenu = () => {
-		setShowMenu(prevState => !prevState)
-	}
-
-	const handleAnimationEnd = () => {
-		if (showMenu === false) {
-			setShowMenu(null)
-		}
-	}
-
 	return (
 		<header>
-			<article className={fluid ? 'container-fluid mt-0 pt-2 px-5 ' : 'container mt-0 pt-2 px-4'}>
+			<article
+				className={fluid ? 'container-fluid mt-0 pt-2 px-xl-5 ' : 'container mt-0 pt-2 px-xl-4'}>
 				<div className='logo'>
 					<Link to='/'>
 						<h2>Tradely</h2>
@@ -99,7 +88,7 @@ export default function Navbar({ fluid = false }) {
 				</div>
 				<div className='header-right-section'>
 					<i>
-						<NavLink to={'/account/favorites'}>
+						<NavLink to={'/account/favorites-announcements'}>
 							<FontAwesomeIcon icon='fa-regular fa-heart' />
 						</NavLink>
 					</i>
@@ -118,47 +107,52 @@ export default function Navbar({ fluid = false }) {
 
 					<div className='header-right-section-account ms-4'>
 						<div className='nav-profile' ref={userProfileRef}>
-							<span onClick={handleProfileMenu}>
-								Moje konto{' '}
-								<i>
+							<span className='header-right-section-account-button' onClick={handleProfileMenu}>
+								Moje konto
+								<i className='ms-2'>
 									<FontAwesomeIcon
 										icon={`fa-solid fa-chevron-${showUserProfile ? 'up' : 'down'}`}
 									/>
 								</i>
 							</span>
 
+							<span
+								className='header-right-section-account-mobile-button'
+								onClick={handleProfileMenu}>
+								<FontAwesomeIcon icon='fa-solid fa-user-tie' />
+							</span>
+
 							<div className={`nav-profile-dropdown ${showUserProfile ? 'active' : ''}`}>
+								<div className='nav-profile-close-icon' onClick={handleProfileMenu}>
+									<FontAwesomeIcon icon='fa-solid fa-xmark' />
+								</div>
 								<div className='nav-profile-content'>
 									{isAuthenticated ? (
 										<div className='nav-profile-Login'>
-											<div className='nav-profile-user-info'>
+											<div className='nav-profile-user-info el-border-bottom pb-3'>
 												<img draggable={false} src={userIcon} alt='user-icon' />
 												<div className='nav-profile-user-info-content'>
 													<p className='user-first_last_name'>{user && user.login}</p>
 													<p className='user-id'>ID: {user.id}</p>
 												</div>
 											</div>
-											<hr />
-											<h6 className='nav-profile-title'>
-												<i className='me-2'>
-													<FontAwesomeIcon icon='fa-solid fa-user' />
-												</i>
-												Twoje konto:
-											</h6>
+											<h6 className='color-main mt-3'>Ogłoszenia:</h6>
 											<ul>
-												<NavLink to={'/account/announcements'}>
-													<li>
-														<span>Ogłoszenia</span>
+												<NavLink to={'/account/active-announcements'}>
+													<li className='mt-2'>
+														<span>Aktywne ogłoszenia</span>
 													</li>
 												</NavLink>
-												<li>
-													<span>Wiadomości</span>
-												</li>
-												<li>
+												<NavLink to={'/account/completed-announcements'}>
+													<li className='mt-3'>
+														<span>Zakończone ogłoszenia</span>
+													</li>
+												</NavLink>
+												<li className='mt-3'>
 													<span>Otrzymane oceny</span>
 												</li>
-												<NavLink to={'/account/profile'}>
-													<li>
+												<NavLink to={'/account'}>
+													<li className='mt-3'>
 														<span>Profil</span>
 													</li>
 												</NavLink>
@@ -168,29 +162,25 @@ export default function Navbar({ fluid = false }) {
 												</li>
 											</ul>
 
-											<h6 className='nav-profile-title mt-3'>
-												<i className='me-2'>
-													<FontAwesomeIcon icon='fa-solid fa-bullhorn' />
-												</i>
-												Ogłoszenia:
-											</h6>
-											<ul>
-												<li>
-													<NavLink to={'/account/favorites'}>
+											<h6 className='color-main mt-3'>Moje konto:</h6>
+
+											<ul className='el-border-bottom pb-2'>
+												<li className='mt-3'>
+													<NavLink to={'/account/favorites-announcements'}>
 														<span>Obserwowane</span>
 													</NavLink>
 												</li>
-												<li>
+												<li className='mt-3'>
 													<span>Wyszukiwania</span>
 												</li>
 											</ul>
 
-											<hr />
-											<p style={{ cursor: 'pointer' }} onClick={handleLogoutUser}>
-												<i className='me-2'>
-													<FontAwesomeIcon icon='fa-solid fa-arrow-right-from-bracket'></FontAwesomeIcon>
-												</i>
-												Wyloguj
+											<p
+												className='clickable-label color-main cursor-pointer mt-2'
+												onClick={handleLogoutUser}>
+												<p>
+													<b>Wyloguj się</b>
+												</p>
 											</p>
 										</div>
 									) : (
@@ -220,58 +210,15 @@ export default function Navbar({ fluid = false }) {
 									)}
 								</div>
 							</div>
-							<NavLink to='/createAnnouncement'>
-								{/* <button className='btn-design btn-md ms-4'>Dodaj ogłoszenie</button> */}
-								<Button className={'ms-3'} text={'Dodaj ogłoszenie'} size={'medium'} />
-							</NavLink>
+							<div className='header-right-section-add-button d-inline'>
+								<NavLink to='/createAnnouncement'>
+									<Button className={'ms-3'} text={'Dodaj ogłoszenie'} size={'medium'} />
+								</NavLink>
+							</div>
 						</div>
 					</div>
 				</div>
-				{/* Hamburger Menu */}
-				<div className={`hamburger-menu`} onClick={handleShowMenu}>
-					<FontAwesomeIcon icon='fa-solid fa-bars' />
-				</div>
 			</article>
-			{/* Mobile Menu */}
-			<div
-				className={`mobile-menu ${
-					showMenu === true ? 'active' : showMenu === false ? 'closing' : ''
-				}`}
-				onAnimationEnd={handleAnimationEnd}>
-				<ul>
-					<li>
-						<NavLink to={'/account/favorites'}>
-							<i>
-								<FontAwesomeIcon icon='fa-regular fa-heart' />
-							</i>
-
-							<span className='ms-2'>Obserwowane</span>
-						</NavLink>
-					</li>
-					<li>
-						<NavLink to={'/account/chat'}>
-							<i>
-								<FontAwesomeIcon icon='fa-regular fa-comments' />
-							</i>
-							<span className='ms-2'>Wiadomości</span>
-						</NavLink>
-					</li>
-					<li>
-						<NavLink to={'/account/profile'}>
-							<i>
-								<FontAwesomeIcon icon='fa-regular fa-user' />
-							</i>
-							<span className='ms-2'>Moje konto</span>
-						</NavLink>
-					</li>
-					<li onClick={handleLogoutUser}>
-						<i>
-							<FontAwesomeIcon icon='fa-solid fa-door-open' />
-						</i>
-						<span className='ms-2'>Wyloguj</span>
-					</li>
-				</ul>
-			</div>
 		</header>
 	)
 }

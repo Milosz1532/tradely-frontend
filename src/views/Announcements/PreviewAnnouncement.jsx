@@ -68,7 +68,7 @@ const DisplayFilterValues = ({ filters }) => {
 	return (
 		<>
 			{filters.map((filter, index) => (
-				<div className='col-6 mt-1' key={index}>
+				<div className='col-12 col-md-6 mt-1 text-sm' key={index}>
 					<span className='color-gray'>{filter.name}: </span>
 					<span className='ms-1'>{filter.filter_value || filter.custom_value}</span>
 				</div>
@@ -165,7 +165,7 @@ const ShowAnnouncement = ({ data }) => {
 					</div>
 				</div>
 			</div>
-			<div className='container previewAnnouncement'>
+			<div className='container previewAnnouncement pb-4'>
 				<div className='row'>
 					<div className='col-12'>
 						<div className='main-content-box top-information '>
@@ -237,20 +237,19 @@ const ShowAnnouncement = ({ data }) => {
 									))}
 								</ul>
 							</div>
-							<div className='el-border-top py-2 mt-2'>
-								<h5>O przedmiocie: </h5>
+							<div className='el-border-top pt-3 mt-2'>
+								<h5 className='text-md'>O przedmiocie: </h5>
 
 								{/* <ReactQuill value={data.description} readOnly={true} theme={'bubble'} /> */}
 								<pre>{data.description}</pre>
 							</div>
 
 							<div className='row el-border-top pt-2'>
-								<div className='col-6 mt-1'>
+								<div className='col-12 col-md-6 mt-1 text-sm'>
 									<span className='color-gray'>Stan produktu: </span>
 									{/* <span className='ms-1'>{ProductStates[data?.product_state]?.name}</span> */}
 									<span className='ms-1'>{productState ? productState.name : 'Nieznany'}</span>
 								</div>
-								{/* I tutaj wyświetlaj filtry: */}
 								<DisplayFilterValues filters={data.filters} />
 							</div>
 						</section>
@@ -276,7 +275,7 @@ const ShowAnnouncement = ({ data }) => {
 									</p>
 								</div>
 							</div>
-							<div className='announcement-user-rate'>
+							<div className='announcement-user-rate mt-3'>
 								<p className='rate-title'>Opinia sprzedającego</p>
 								<p className='rate-text'>
 									<b>Bardzo dobrze:</b> Większość kupujących jest zadowolonych z tego sprzedawcy

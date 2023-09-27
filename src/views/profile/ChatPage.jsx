@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate, NavLink } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { removeUnreadConversation } from '../../redux/actions/authActions'
 import {
@@ -13,14 +13,9 @@ import {
 } from '../../services/Api'
 import { useSelector } from 'react-redux'
 import Pusher from 'pusher-js'
-import Skeleton from 'react-loading-skeleton'
 
 import Echo from 'laravel-echo'
 import Cookies from 'js-cookie'
-
-import ConversationElement from '../../components/Chat/ConversationElement'
-import Button from '../../components/Layout/Button'
-import { useMediaQuery } from 'react-responsive'
 
 import MessagesList from '../../components/Chat/MessagesList'
 import ConversationsList from '../../components/Chat/ConversationsList'
@@ -41,6 +36,8 @@ export default function ChatPage() {
 	const messagesContainerRef = useRef(null)
 	const selectedConversationRef = useRef(null)
 	const conversationIdRef = useRef(null)
+	const [isAuthoring, setIsAuthoring] = useState(true)
+	const isTabletOrMobile = useSelector(state => state.device.isTabletOrMobile)
 
 	const dispatch = useDispatch()
 
@@ -61,7 +58,6 @@ export default function ChatPage() {
 					if (response.error) {
 						setNewConversation(null)
 						navigate('/account/chat')
-						console.log(`Coś`)
 					}
 				} catch (error) {
 					console.error(error)
@@ -359,60 +355,41 @@ export default function ChatPage() {
 		lastChildElement?.scrollIntoView({ behavior: 'smooth' })
 	}, [messages])
 
-	const [isAuthoring, setIsAuthoring] = useState(true)
-
-	const isTabletOrMobile = useMediaQuery({ maxDeviceWidth: 800 })
-
-	console.log(isTabletOrMobile)
-
 	const handleGoBack = () => {
 		setSelectedConversation(null)
 		navigate('/account/chat')
 	}
 
 	return (
-		<div className='container'>
+		<div className='container ' style={{ minHeight: '80vh' }}>
 			<div className='row mt-3'>
-				{}
-
-				{isTabletOrMobile && !newConversation && !selectedConversation && (
-					<ConversationsList
-						sortedConversations={sortedConversations}
-						selectedConversation={selectedConversation}
-						isAuthoring={isAuthoring}
-						user={user}
-						loadingConversations={loadingConversations}
-						setIsAuthoring={setIsAuthoring}
-					/>
-				)}
-				{isTabletOrMobile && !newConversation && selectedConversation && (
-					<MessagesList
-						newConversation={newConversation}
-						selectedConversation={selectedConversation}
-						loadingMessages={loadingMessages}
-						messages={messages}
-						newMessage={newMessage}
-						setNewMessage={setNewMessage}
-						messagesContainerRef={messagesContainerRef}
-						handleSendMessage={handleSendMessage}
-						user={user}
-						handleGoBack={handleGoBack}
-					/>
-				)}
-
-				{isTabletOrMobile && newConversation && (
-					<MessagesList
-						newConversation={newConversation}
-						selectedConversation={selectedConversation}
-						loadingMessages={loadingMessages}
-						messages={messages}
-						newMessage={newMessage}
-						setNewMessage={setNewMessage}
-						messagesContainerRef={messagesContainerRef}
-						handleSendMessage={handleSendMessage}
-						user={user}
-						handleGoBack={handleGoBack}
-					/>
+				{isTabletOrMobile && (
+					<>
+						{!newConversation && !selectedConversation && (
+							<ConversationsList
+								sortedConversations={sortedConversations}
+								selectedConversation={selectedConversation}
+								isAuthoring={isAuthoring}
+								user={user}
+								loadingConversations={loadingConversations}
+								setIsAuthoring={setIsAuthoring}
+							/>
+						)}
+						{(newConversation || selectedConversation) && (
+							<MessagesList
+								newConversation={newConversation}
+								selectedConversation={selectedConversation}
+								loadingMessages={loadingMessages}
+								messages={messages}
+								newMessage={newMessage}
+								setNewMessage={setNewMessage}
+								messagesContainerRef={messagesContainerRef}
+								handleSendMessage={handleSendMessage}
+								user={user}
+								handleGoBack={handleGoBack}
+							/>
+						)}
+					</>
 				)}
 
 				{!isTabletOrMobile && (

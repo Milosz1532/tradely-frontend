@@ -46,7 +46,7 @@ const ConversationsList = ({
 				<ul className='chat-menu-list m-0 p-0'>
 					{loadingConversations ? (
 						<Skeleton count={5} height={80} />
-					) : (
+					) : sortedConversations.length > 0 ? (
 						sortedConversations.map(conversation => {
 							const isUserAuthor = conversation.author
 
@@ -81,6 +81,10 @@ const ConversationsList = ({
 
 							return null
 						})
+					) : (
+						<div className='text-center mt-5'>
+							<p className='color-gray'>W tej chwili nie masz żadnych konwersacji</p>
+						</div>
 					)}
 				</ul>
 			</div>

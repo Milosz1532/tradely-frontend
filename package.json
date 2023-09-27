@@ -31,9 +31,7 @@
 		"react-leaflet": "^4.2.1",
 		"react-loading": "^2.0.3",
 		"react-loading-skeleton": "^3.3.1",
-		"react-quill": "^2.0.0",
 		"react-redux": "^8.0.7",
-		"react-responsive": "^9.0.2",
 		"react-router-dom": "^6.11.2",
 		"react-select": "^5.7.4",
 		"react-slick": "^0.29.0",
@@ -45,6 +43,7 @@
 		"slick-carousel": "^1.8.1",
 		"sweetalert2": "^11.7.10",
 		"sweetalert2-react-content": "^5.0.7",
+		"swiper": "^10.3.0",
 		"yup": "^1.2.0"
 	},
 	"devDependencies": {

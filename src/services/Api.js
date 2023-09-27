@@ -236,7 +236,8 @@ export const searchAnnouncements = async (
 	filters,
 	distance,
 	amountFrom,
-	amountTo
+	amountTo,
+	sortType
 ) => {
 	try {
 		const response = await axiosClient.get('/announcements/search', {
@@ -250,6 +251,7 @@ export const searchAnnouncements = async (
 				distance: distance,
 				amountFrom: amountFrom,
 				amountTo: amountTo,
+				sortType: sortType,
 			},
 		})
 		return response.data
