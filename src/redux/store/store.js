@@ -6,7 +6,7 @@ import { setScreenSize } from '../actions/deviceActions'
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
 const checkMediaQuery = () => {
-	const newIsTabletOrMobile = window.matchMedia('(max-width: 1200px)').matches
+	const newIsTabletOrMobile = window.matchMedia('(max-width: 767px)').matches
 	store.dispatch(setScreenSize(newIsTabletOrMobile))
 }
 

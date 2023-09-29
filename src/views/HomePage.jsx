@@ -377,7 +377,7 @@ export default function HomePage() {
 										</i>
 									</div>
 								</div>
-								<div className='row px-2 '>
+								<div className='row  mt-2'>
 									<FeaturedAnnouncements data={announcementsData.recent_announcements} />
 								</div>
 							</article>

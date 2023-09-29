@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -97,19 +97,19 @@ const LoadingAnnouncementsScreen = () => {
 
 const sortOptions = [
 	{
-		id: 0,
-		name: 'Wybrane dla Ciebie',
-	},
-	{
 		id: 1,
-		name: 'Najnowsze',
+		name: 'Czas: najnowsze',
 	},
 	{
 		id: 2,
-		name: 'Cena: malejąco',
+		name: 'Czas: najstarsze',
 	},
 	{
 		id: 3,
+		name: 'Cena: malejąco',
+	},
+	{
+		id: 4,
 		name: 'Cena: rosnąco',
 	},
 ]
@@ -139,7 +139,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	}, [])
 
 	const announcementsList =
-		announcements?.data.length > 0 &&
+		announcements?.data?.length > 0 &&
 		announcements.data.map(a => {
 			if (displayStyle) {
 				return (
@@ -219,10 +219,38 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 	const [amountTo, setAmountTo] = useState(null)
 	const [mobileFilters, setMobileFilters] = useState(false)
 
+	const selectedSortTypeRef = useRef(sortType)
+	const [selectedOfferTypes, setSelectedOfferTypes] = useState({
+		priceAmount: true,
+		priceReplace: true,
+		priceFree: true,
+	})
+	const [selectedProductState, setSelectedProductState] = useState({
+		new: true,
+		used: true,
+		damaged: true,
+	})
+
 	const handleFilterChange = (filterId, selectedValue) => {
 		setFilterValues(prevFilterValues => ({
 			...prevFilterValues,
 			[filterId]: selectedValue,
+		}))
+	}
+
+	const handleProductStateChange = id => {
+		setSelectedProductState(prevTypes => ({
+			...prevTypes,
+			[id]: !prevTypes[id],
+		}))
+
+		console.log(selectedProductState)
+	}
+
+	const handleOfferTypeChange = id => {
+		setSelectedOfferTypes(prevTypes => ({
+			...prevTypes,
+			[id]: !prevTypes[id],
 		}))
 	}
 
@@ -286,12 +314,30 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		}
 		if (queryParams.get('sortType')) {
 			setSortType(sortOptions.find(s => s.id == queryParams.get('sortType')))
-			console.log(sortOptions.find(s => s.id == queryParams.get('sortType')))
 		}
 
 		const filters = filtersQueryParam ? JSON.parse(decodeURIComponent(filtersQueryParam)) : {}
-		for (const filterId in filters) {
-			handleFilterChange(filterId, filters[filterId])
+
+		if (filters) {
+			for (const filterId in filters.dynamicFilters) {
+				handleFilterChange(filterId, filters.dynamicFilters[filterId])
+			}
+			if (filters.offerPricesTypes) {
+				const selectedOfferTypes = {
+					priceAmount: filters.offerPricesTypes.includes(1),
+					priceReplace: filters.offerPricesTypes.includes(2),
+					priceFree: filters.offerPricesTypes.includes(3),
+				}
+				setSelectedOfferTypes(selectedOfferTypes)
+			}
+			if (filters.offerProductState) {
+				const offerSelectedProductState = {
+					new: filters.offerProductState.includes(1),
+					used: filters.offerProductState.includes(2),
+					damaged: filters.offerProductState.includes(3),
+				}
+				setSelectedProductState(offerSelectedProductState)
+			}
 		}
 	}, [categories, pageLocation])
 
@@ -301,19 +347,28 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 			? selectedSubcategory.name
 			: 'all_subcategories'
 
-		// Dodane zmienne dla dystansu, kwoty od i kwoty do
+		const selectedSortType = selectedSortTypeRef.current
+
 		const _distance = progressDistance || null
 		const _amountFrom = amountFrom || null
 		const _amountTo = amountTo || null
-		const _sortType = sortType.id || null
+		const _sortType = selectedSortType?.id || null
 
-		console.log(sortType)
+		const selectedOfferPricesTypes = Object.values(selectedOfferTypes)
+			.map((checked, index) => (checked ? index + 1 : null))
+			.filter(value => value !== null)
 
-		const filters = {}
+		const _selectedProductState = Object.values(selectedProductState)
+			.map((checked, index) => (checked ? index + 1 : null))
+			.filter(value => value !== null)
 
-		for (const filterId in filterValues) {
-			filters[filterId] = filterValues[filterId]
+		const filters = {
+			dynamicFilters: { ...filterValues },
+			offerPricesTypes: selectedOfferPricesTypes,
+			offerProductState: _selectedProductState,
 		}
+
+		console.log(filters)
 
 		const filtersQueryParam = encodeURIComponent(JSON.stringify(filters))
 
@@ -356,22 +411,16 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 		return updatedURL
 	}
 
-	useEffect(() => {
-		if (sortType) {
-			// handleApplyFilters()
-		}
-	}, [sortType])
-
 	return (
 		<>
 			<section className=''>
 				<div className='container px-xl-4 pb-5'>
 					<div className='row pt-4'>
 						<div
-							className={`col-xl-3 col-lg-4 search-filters-container main-content-box search-announcements-border   ${
+							className={`col-xl-3 col-lg-4 p-0 search-filters-container   ${
 								mobileFilters ? 'mobile-container' : ''
 							} `}>
-							<div className='p-0 py-2 '>
+							<div className='p-0 py-2 main-content-box search-announcements-border  '>
 								<div className='text-end'>
 									<i
 										onClick={() => setMobileFilters(false)}
@@ -388,8 +437,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 											<input
 												className='form-check-input'
 												type='checkbox'
-												value=''
 												id='search-filters-price-amount-checkbox'
+												checked={selectedOfferTypes.priceAmount}
+												onChange={() => handleOfferTypeChange('priceAmount')}
 											/>
 											<label
 												className='form-check-label'
@@ -401,8 +451,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 											<input
 												className='form-check-input'
 												type='checkbox'
-												value=''
 												id='search-filters-price-replace-checkbox'
+												checked={selectedOfferTypes.priceReplace}
+												onChange={() => handleOfferTypeChange('priceReplace')}
 											/>
 											<label
 												className='form-check-label'
@@ -415,6 +466,8 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 												className='form-check-input'
 												type='checkbox'
 												id='search-filters-price-free-checkbox'
+												checked={selectedOfferTypes.priceFree}
+												onChange={() => handleOfferTypeChange('priceFree')}
 											/>
 											<label
 												className='form-check-label'
@@ -423,6 +476,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 											</label>
 										</div>
 									</div>
+
 									<div className='search-filters-filter mt-3 px-3'>
 										<h5>Stan produktu</h5>
 
@@ -430,8 +484,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 											<input
 												className='form-check-input'
 												type='checkbox'
-												value=''
 												id='search-filters-productType-new-checkbox'
+												checked={selectedProductState.new}
+												onChange={() => handleProductStateChange('new')}
 											/>
 											<label
 												className='form-check-label'
@@ -443,8 +498,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 											<input
 												className='form-check-input'
 												type='checkbox'
-												value=''
 												id='search-filters-productType-used-checkbox'
+												checked={selectedProductState.used}
+												onChange={() => handleProductStateChange('used')}
 											/>
 											<label
 												className='form-check-label'
@@ -457,6 +513,8 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 												className='form-check-input'
 												type='checkbox'
 												id='search-filters-productType-damaged-checkbox'
+												checked={selectedProductState.damaged}
+												onChange={() => handleProductStateChange('damaged')}
 											/>
 											<label
 												className='form-check-label'
@@ -641,7 +699,7 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 							</div>
 						</div>
 						<div className='col-xl-9 col-lg-8 '>
-							<div className='search-announcements-border main-content-box py-2 px-xl-4 px-lg-4 px-md-0'>
+							<div className='search-announcements-border main-content-box py-2 px-xl-4 px-lg-4 px-md-2 px-1'>
 								<section className='d-flex flex-column justify-content-between h-100 '>
 									<div className='d-flex justify-content-between align-items-center flex-wrap '>
 										<div>
@@ -664,7 +722,9 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 												options={sortOptions}
 												value={sortType}
 												onChange={selectedOption => {
+													selectedSortTypeRef.current = selectedOption // Aktualizuj referencję
 													setSortType(selectedOption)
+													handleApplyFilters() // Wywołaj handleApplyFilters bez argumentu
 												}}
 												renderOption={option => <>{option.name}</>}
 												className={'me-2'}
@@ -817,13 +877,8 @@ function SearchAnnouncements() {
 						<p className='title me-4'>Wyszukuj po: </p>
 						<div className='d-flex flex-wrap'>
 							<div className='form-check me-4 '>
-								<input
-									className='form-check-input'
-									type='checkbox'
-									value=''
-									id='search-filters-price-amount-checkbox'
-								/>
-								<label className='form-check-label' htmlFor='search-filters-price-amount-checkbox'>
+								<input className='form-check-input' type='checkbox' value='' id='search-by-title' />
+								<label className='form-check-label' htmlFor='search-by-title'>
 									Tytule
 								</label>
 							</div>
@@ -832,20 +887,15 @@ function SearchAnnouncements() {
 									className='form-check-input'
 									type='checkbox'
 									value=''
-									id='search-filters-price-amount-checkbox'
+									id='search-by-description'
 								/>
-								<label className='form-check-label' htmlFor='search-filters-price-amount-checkbox'>
+								<label className='form-check-label' htmlFor='search-by-description'>
 									Opisie
 								</label>
 							</div>
 							<div className='form-check'>
-								<input
-									className='form-check-input'
-									type='checkbox'
-									value=''
-									id='search-filters-price-amount-checkbox'
-								/>
-								<label className='form-check-label' htmlFor='search-filters-price-amount-checkbox'>
+								<input className='form-check-input' type='checkbox' value='' id='search-by-tags' />
+								<label className='form-check-label' htmlFor='search-by-tags'>
 									Tagach
 								</label>
 							</div>

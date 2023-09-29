@@ -122,10 +122,10 @@ export default function SearchInput({ keywords }) {
 				</div>
 				<div className='header-search-section-search-button'>
 					<button onClick={handleSearch}>
-						<i>
+						<i className='me-2'>
 							<FontAwesomeIcon icon='fa-solid fa-magnifying-glass' />
 						</i>
-						<span className='ms-3'>Wyszukaj</span>
+						<span >Wyszukaj</span>
 					</button>
 				</div>
 			</div>

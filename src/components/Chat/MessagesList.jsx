@@ -42,10 +42,11 @@ const MessagesList = ({
 	const isMessageSentByUser = message => {
 		return message.user_id === user.id
 	}
+	console.log(newConversation)
 	return (
 		<>
 			{newConversation && (
-				<div className='col-xl-7'>
+				<div className='col-xl-7 col-md-7 ps-2 col-12'>
 					<div className='main-content-box p-0'>
 						<div className='main-content-header'>
 							<div className='d-flex align-items-center'>
@@ -59,8 +60,13 @@ const MessagesList = ({
 									/>
 								</div>
 								<div className='ms-2'>
-									<p className='m-0 '>Rafał</p>
-									<p className='m-0 text-xs color-gray'>Ostatnio widziany: 2 dni temu</p>
+									<p className='m-0 '>{newConversation.user.username}</p>
+									<p className='m-0 text-xs color-gray'>
+										Ostatnio widziany:
+										{newConversation.user.user_last_activity != true
+											? newConversation.user.user_last_activity
+											: 'teraz'}
+									</p>
 								</div>
 							</div>
 						</div>
@@ -84,23 +90,7 @@ const MessagesList = ({
 							</div>
 						</NavLink>
 						<div className='chat-content-messages' ref={messagesContainerRef}></div>
-						{/* <div className='chat-content-bottom'>
-                    <hr className='my-2' />
-                    <form onSubmit={handleSendMessage}>
-                        <input
-                            placeholder='Twoja wiadomość...'
-                            type='text'
-                            value={newMessage}
-                            onChange={e => setNewMessage(e.target.value)}
-                        />
 
-                        <button>
-                            <i>
-                                <FontAwesomeIcon icon='fa-regular fa-paper-plane' />
-                            </i>
-                        </button>
-                    </form>
-                </div> */}
 						<div className='chat-content-bottom el-border-top'>
 							<form onSubmit={handleSendMessage}>
 								<div className='d-flex align-items-center'>
@@ -133,7 +123,7 @@ const MessagesList = ({
 			)}
 
 			{selectedConversation && !newConversation && (
-				<div className='col-xl-7'>
+				<div className='col-xl-7 col-md-7 ps-2 col-12'>
 					<div className='main-content-box p-0'>
 						<div className='main-content-header'>
 							<div className='d-flex align-items-center'>
@@ -153,8 +143,13 @@ const MessagesList = ({
 									/>
 								</div>
 								<div className='ms-2'>
-									<p className='m-0 '>Rafał</p>
-									<p className='m-0 text-xs color-gray'>Ostatnio widziany: 2 dni temu</p>
+									<p className='m-0 '>{selectedConversation.announcement_author}</p>
+									<p className='m-0 text-xs color-gray'>
+										Ostatnio widziany:{' '}
+										{selectedConversation.user_last_activity != true
+											? selectedConversation.user_last_activity
+											: 'teraz'}
+									</p>
 								</div>
 							</div>
 						</div>

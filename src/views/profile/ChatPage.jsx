@@ -361,7 +361,7 @@ export default function ChatPage() {
 	}
 
 	return (
-		<div className='container ' style={{ minHeight: '80vh' }}>
+		<div className='container pb-3' style={{ minHeight: '80vh' }}>
 			<div className='row mt-3'>
 				{isTabletOrMobile && (
 					<>

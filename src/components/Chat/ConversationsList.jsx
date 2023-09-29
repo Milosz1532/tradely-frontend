@@ -17,7 +17,7 @@ const ConversationsList = ({
 	setIsAuthoring,
 }) => {
 	return (
-		<div className='col-xl-5'>
+		<div className='col-xl-5 col-md-5 col-12 p-0'>
 			<div className='main-content-box p-0 pb-2 sticky-column' style={{ minHeight: '300px' }}>
 				<div className='main-content-header pb-3'>
 					<h5 className='m-0'>Twoje konwersacje</h5>
