@@ -50,9 +50,9 @@ export default function ChatPage() {
 					setNewConversation(response.data)
 
 					if (response.status === 202) {
-						handleConversationClick(response.data)
 						setNewConversation(null)
-						navigate('/account/chat')
+						const conversation_id = response.data.id
+						navigate(`/account/chat/${conversation_id}`)
 					}
 
 					if (response.error) {
@@ -76,7 +76,6 @@ export default function ChatPage() {
 
 			if (conversation) {
 				handleConversationClick(conversation)
-				console.log(`Zmieniam`)
 			}
 		}
 	}, [conversation_number, conversations])

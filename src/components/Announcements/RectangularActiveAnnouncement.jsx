@@ -42,9 +42,7 @@ export const RectangularActiveAnnouncement = ({
 				</div>
 				<div className='ms-2 mt-2  w-100'>
 					<div className=''>
-						<h5 className='text-sm mb-0'>
-							<b>{title}</b>
-						</h5>
+						<h5 className='text-sm mb-0'>{title}</h5>
 						<h5 className='text-sm color-main m-0 mt-2 mb-0'>{announcementPrice}</h5>
 					</div>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 import moment from 'moment'
 
@@ -81,6 +81,8 @@ const ShowAnnouncement = ({ data }) => {
 	const [images, setImages] = useState(data.images)
 	const [selectedImage, setSelectedImages] = useState(0)
 	const [galleryModal, setGalleryModal] = useState(false)
+
+	const [displayPhoneNumber, setDisplayPhoneNumer] = useState()
 
 	const handleChangePhoto = e => {
 		if (e === 'next') {
@@ -309,8 +311,14 @@ const ShowAnnouncement = ({ data }) => {
 								</p>
 							</div>
 							<div className='d-flex justify-content-center'>
-								<Button text={'Zadzwoń'} className={'me-2'} />
-								<Button text={'Wyślij wiadomość'} color={true} />
+								<Button
+									text={displayPhoneNumber ? data?.phone_number : 'Zadzwoń'}
+									className={'me-2'}
+									onClick={() => setDisplayPhoneNumer(true)}
+								/>
+								<NavLink to={`/account/chat/new/${data.id}`}>
+									<Button text={'Wyślij wiadomość'} color={true} />
+								</NavLink>
 							</div>
 						</div>
 						<div className='main-content-box announcement-location mt-3'>

@@ -26,13 +26,13 @@ const LoadingAnnouncementsScreen = () => {
 	const skeletonArray = Array.from({ length: 5 })
 
 	return (
-		<div className='bg-white'>
+		<div className=''>
 			<div className='container'>
 				<section>
 					<div className='row pt-4'>
 						<div
-							className={`col-xl-3 col-lg-4 search-filters-container search-announcements-border`}>
-							<div className='p-0 py-2'>
+							className={`col-xl-3 col-lg-4 search-filters-container main-content-box search-announcements-border`}>
+							<div className='p-0 py-2 '>
 								<section className='search-filters '>
 									{skeletonArray.map((_, index) => (
 										<div key={index}>
@@ -69,7 +69,7 @@ const LoadingAnnouncementsScreen = () => {
 							</div>
 						</div>
 						<div className='col-xl-9 col-lg-8'>
-							<div className='search-announcements-border  py-2 px-xl-4 px-lg-4 px-md-0'>
+							<div className='search-announcements-border main-content-box py-2 px-xl-4 px-lg-4 px-md-0'>
 								<section className='d-flex flex-column justify-content-between h-100 '>
 									<div className='d-flex justify-content-between align-items-center flex-wrap mt-2'>
 										<Skeleton height={35} width={300} />
