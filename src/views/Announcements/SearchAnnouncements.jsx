@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams, useLocation } from 'react-router-dom'
+import { useEffect, useState, useRef } from 'react'
+import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import ScrollToTop from '../../ScrollToTop'
 
-import { searchAnnouncements } from '../../services/Api'
+import { searchAnnouncements, getSubcategoryFilters } from '../../services/Api'
 
-import SearchBar from '../../components/Layout/Searchbar'
 import Skeleton from 'react-loading-skeleton'
+
+import { getAnnouncementCategories } from '../../services/Api'
 
 import {
 	RectangularAnnouncement,
@@ -15,94 +16,167 @@ import {
 import { SquareAnnouncement } from '../../components/Announcements/SquareAnnouncement'
 import AnnouncementNotFound from '../../components/Announcements/AnnouuncementNotFound'
 
+import ReactSlider from 'react-slider'
+
+import Button from '../../components/Layout/Button'
+import Select from '../../components/Layout/Select'
+import SearchInput from '../../components/Layout/SearchInput'
+
 const LoadingAnnouncementsScreen = () => {
+	const skeletonArray = Array.from({ length: 5 })
+
 	return (
-		<>
-			<div className='row'>
-				<div className='col-5'>
-					<Skeleton height={40} />
-				</div>
+		<div className=''>
+			<div className='container'>
+				<section>
+					<div className='row pt-4'>
+						<div
+							className={`col-xl-3 col-lg-4 search-filters-container main-content-box search-announcements-border`}>
+							<div className='p-0 py-2 '>
+								<section className='search-filters '>
+									{skeletonArray.map((_, index) => (
+										<div key={index}>
+											<div className='w-100 mt-2'>
+												<Skeleton height={28} />
+											</div>
+											<div className='filter mt-3'>
+												<div className='filter-title'>
+													<div className='d-flex'>
+														<Skeleton width={15} height={15} borderRadius={'50%'} />
+														<Skeleton className='ms-2' width={160} />
+													</div>
+													<div className='d-flex mt-1'>
+														<Skeleton width={15} height={15} borderRadius={'50%'} />
+														<Skeleton className='ms-2' width={160} />
+													</div>
+													<div className='d-flex mt-1'>
+														<Skeleton width={15} height={15} borderRadius={'50%'} />
+														<Skeleton className='ms-2' width={160} />
+													</div>
+													<div className='d-flex mt-1'>
+														<Skeleton width={15} height={15} borderRadius={'50%'} />
+														<Skeleton className='ms-2' width={160} />
+													</div>
+												</div>
+											</div>
+										</div>
+									))}
+
+									<div className='w-75 m-auto'>
+										<Skeleton height={40} className='mt-3' />
+									</div>
+								</section>
+							</div>
+						</div>
+						<div className='col-xl-9 col-lg-8'>
+							<div className='search-announcements-border main-content-box py-2 px-xl-4 px-lg-4 px-md-0'>
+								<section className='d-flex flex-column justify-content-between h-100 '>
+									<div className='d-flex justify-content-between align-items-center flex-wrap mt-2'>
+										<Skeleton height={35} width={300} />
+
+										<div className='d-flex'>
+											<Skeleton height={35} width={100} className='me-2' />
+											<Skeleton height={35} width={100} />
+										</div>
+									</div>
+									<RectangularAnnouncementLoading />
+									<RectangularAnnouncementLoading />
+									<RectangularAnnouncementLoading />
+									<RectangularAnnouncementLoading />
+									<RectangularAnnouncementLoading />
+									<RectangularAnnouncementLoading />
+								</section>
+							</div>
+						</div>
+					</div>
+				</section>
 			</div>
-			<div className='row'>
-				<div className='col-lg-3 mt-3'>
-					<section className='search-filters '>
-						<Skeleton width={120} />
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<div className='filter mt-3'>
-							<div className='filter-title'>
-								<div className='d-flex'>
-									<Skeleton width={15} height={15} borderRadius={'50%'} />
-									<Skeleton className='ms-2' width={130} />
-								</div>
-
-								<Skeleton width={20} />
-							</div>
-							<Skeleton className='mt-3' height={30} />
-						</div>
-						<Skeleton height={30} className='mt-3' />
-					</section>
-				</div>
-				<div className='col-lg-9 mt-2'>
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-					<RectangularAnnouncementLoading />
-				</div>
-			</div>
-		</>
+		</div>
 	)
 }
 
+const sortOptions = [
+	{
+		id: 1,
+		name: 'Czas: najnowsze',
+	},
+	{
+		id: 2,
+		name: 'Czas: najstarsze',
+	},
+	{
+		id: 3,
+		name: 'Cena: malejąco',
+	},
+	{
+		id: 4,
+		name: 'Cena: rosnąco',
+	},
+]
+
 const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, totalPages }) => {
-	const [sortType, setSortType] = useState(true)
-	const AnnouncementComponent = sortType ? RectangularAnnouncement : SquareAnnouncement
-	const announcementsList = announcements.data.map(a => (
-		<AnnouncementComponent
-			key={a.id}
-			id={a.id}
-			image={a.first_image}
-			title={a.title}
-			price={a.price}
-			created_at={a.created_at}
-			tags={a.tags}
-			item={a}
-			is_favorited={a.is_favorited}
-		/>
-	))
+	const { location, category, subcategory, keyword } = useParams()
+
+	const [sortType, setSortType] = useState(null)
+
+	const [categories, setCategories] = useState([])
+
+	const [displayStyle, setDisplayStyle] = useState(false)
+
+	useEffect(() => {
+		const getCategoriesList = async () => {
+			try {
+				const categoriesData = await getAnnouncementCategories()
+				setCategories(categoriesData)
+				// setSubcategories(categoriesData.subcategories)
+			} catch {
+				setCategories([])
+			}
+		}
+		if (categories.length === 0) {
+			getCategoriesList()
+		}
+	}, [])
+
+	const announcementsList =
+		announcements?.data?.length > 0 &&
+		announcements.data.map(a => {
+			if (displayStyle) {
+				return (
+					<div className='col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12 col-6 mt-3' key={a.id}>
+						<SquareAnnouncement
+							id={a.id}
+							image={a.first_image}
+							title={a.title}
+							price={a.price}
+							city={a.location}
+							price_type={a.price_type}
+							location={a.location}
+							created_at={a.created_at}
+							tags={a.tags}
+							item={a}
+							is_favorited={a.is_favorited}
+						/>
+					</div>
+				)
+			} else {
+				return (
+					<RectangularAnnouncement
+						key={a.id}
+						id={a.id}
+						image={a.first_image}
+						title={a.title}
+						price={a.price}
+						city={a.location}
+						price_type={a.price_type}
+						created_at={a.created_at}
+						tags={a.tags}
+						item={a}
+						is_favorited={a.is_favorited}
+					/>
+				)
+			}
+		})
 
 	const generatePageNumbers = () => {
 		const pageNumbers = []
@@ -131,97 +205,618 @@ const ShowAnnouncements = ({ announcements, nextPage, prevPage, currentPage, tot
 
 	const pageNumbers = generatePageNumbers()
 
+	// FILTERS
+
+	const [selectedCategory, setSelectedCategory] = useState(false)
+	const [selectedSubcategory, setSelectedSubcategory] = useState(false)
+
+	const [subcategoryFiltersList, setSubcategoryFiltersList] = useState(false)
+	const [filterValues, setFilterValues] = useState({})
+
+	const [progressDistance, setProgressDistance] = useState(0)
+	const [sliderAmountMax, setSliderAmountMax] = useState(1000)
+	const [amountFrom, setAmountFrom] = useState(null)
+	const [amountTo, setAmountTo] = useState(null)
+	const [mobileFilters, setMobileFilters] = useState(false)
+
+	const selectedSortTypeRef = useRef(sortType)
+	const [selectedOfferTypes, setSelectedOfferTypes] = useState({
+		priceAmount: true,
+		priceReplace: true,
+		priceFree: true,
+	})
+	const [selectedProductState, setSelectedProductState] = useState({
+		new: true,
+		used: true,
+		damaged: true,
+	})
+
+	const handleFilterChange = (filterId, selectedValue) => {
+		setFilterValues(prevFilterValues => ({
+			...prevFilterValues,
+			[filterId]: selectedValue,
+		}))
+	}
+
+	const handleProductStateChange = id => {
+		setSelectedProductState(prevTypes => ({
+			...prevTypes,
+			[id]: !prevTypes[id],
+		}))
+
+		console.log(selectedProductState)
+	}
+
+	const handleOfferTypeChange = id => {
+		setSelectedOfferTypes(prevTypes => ({
+			...prevTypes,
+			[id]: !prevTypes[id],
+		}))
+	}
+
+	const handleChangeAmountRange = values => {
+		setAmountFrom(parseInt(values[0]))
+		setAmountTo(parseInt(values[1]))
+	}
+
+	useEffect(() => {
+		if (amountTo && sliderAmountMax - amountTo <= 200) {
+			setSliderAmountMax(prevMax => prevMax + 1000)
+		}
+		if (amountTo && amountTo + 2000 < sliderAmountMax) {
+			setSliderAmountMax(prevMax => prevMax - 1000)
+		}
+	}, [amountTo])
+
+	const handleAmountFromChange = value => {
+		const newValue = Math.max(0, parseInt(value))
+		setAmountFrom(newValue)
+	}
+
+	const handleAmountToChange = value => {
+		const newValue = Math.max(0, parseInt(value))
+		setAmountTo(newValue)
+	}
+
+	useEffect(() => {
+		const fetchSubcategoryFilters = async () => {
+			if (!selectedSubcategory) return
+			try {
+				const response = await getSubcategoryFilters(selectedSubcategory.id, 'search')
+				setSubcategoryFiltersList(response.filters)
+			} catch (error) {}
+		}
+		fetchSubcategoryFilters()
+	}, [selectedSubcategory])
+
+	const pageLocation = useLocation()
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		const selectedCat = categories.find(cat => cat.name === category)
+		setSelectedCategory(selectedCat ? selectedCat : null)
+
+		const selectedSubCat = selectedCat?.subcategories.find(subcat => subcat.name === subcategory)
+		setSelectedSubcategory(selectedSubCat ? selectedSubCat : null)
+
+		const queryParams = new URLSearchParams(pageLocation.search)
+
+		const filtersQueryParam = queryParams.get('filters')
+
+		if (queryParams.get('distance')) {
+			setProgressDistance(queryParams.get('distance'))
+		}
+		if (queryParams.get('amountFrom')) {
+			setAmountFrom(queryParams.get('amountFrom'))
+		}
+		if (queryParams.get('amountTo')) {
+			setAmountTo(queryParams.get('amountTo'))
+		}
+		if (queryParams.get('sortType')) {
+			setSortType(sortOptions.find(s => s.id == queryParams.get('sortType')))
+		}
+
+		const filters = filtersQueryParam ? JSON.parse(decodeURIComponent(filtersQueryParam)) : {}
+
+		if (filters) {
+			for (const filterId in filters.dynamicFilters) {
+				handleFilterChange(filterId, filters.dynamicFilters[filterId])
+			}
+			if (filters.offerPricesTypes) {
+				const selectedOfferTypes = {
+					priceAmount: filters.offerPricesTypes.includes(1),
+					priceReplace: filters.offerPricesTypes.includes(2),
+					priceFree: filters.offerPricesTypes.includes(3),
+				}
+				setSelectedOfferTypes(selectedOfferTypes)
+			}
+			if (filters.offerProductState) {
+				const offerSelectedProductState = {
+					new: filters.offerProductState.includes(1),
+					used: filters.offerProductState.includes(2),
+					damaged: filters.offerProductState.includes(3),
+				}
+				setSelectedProductState(offerSelectedProductState)
+			}
+		}
+	}, [categories, pageLocation])
+
+	const handleApplyFilters = () => {
+		const filtersCategory = selectedCategory?.id ? selectedCategory.name : 'all_categories'
+		const filtersSubcategory = selectedSubcategory?.id
+			? selectedSubcategory.name
+			: 'all_subcategories'
+
+		const selectedSortType = selectedSortTypeRef.current
+
+		const _distance = progressDistance || null
+		const _amountFrom = amountFrom || null
+		const _amountTo = amountTo || null
+		const _sortType = selectedSortType?.id || null
+
+		const selectedOfferPricesTypes = Object.values(selectedOfferTypes)
+			.map((checked, index) => (checked ? index + 1 : null))
+			.filter(value => value !== null)
+
+		const _selectedProductState = Object.values(selectedProductState)
+			.map((checked, index) => (checked ? index + 1 : null))
+			.filter(value => value !== null)
+
+		const filters = {
+			dynamicFilters: { ...filterValues },
+			offerPricesTypes: selectedOfferPricesTypes,
+			offerProductState: _selectedProductState,
+		}
+
+		console.log(filters)
+
+		const filtersQueryParam = encodeURIComponent(JSON.stringify(filters))
+
+		const newPath = `/announcements/${location}/${filtersCategory}/${filtersSubcategory}/${
+			keyword || ''
+		}?filters=${filtersQueryParam}${_distance ? `&distance=${_distance}` : ''}${
+			_amountFrom ? `&amountFrom=${_amountFrom}` : ''
+		}${_amountTo ? `&amountTo=${_amountTo}` : ''}${_sortType ? `&sortType=${_sortType}` : ''}`
+
+		navigate(newPath)
+	}
+
+	const handleChangeSelectedCategory = category => {
+		setSelectedCategory(category)
+		setSelectedSubcategory(null)
+		setSubcategoryFiltersList(null)
+		setFilterValues({})
+	}
+
+	function handleChangeSelectedSubcategory(selectedValue) {
+		setSelectedSubcategory(selectedValue)
+		setSubcategoryFiltersList(null)
+		setFilterValues({})
+	}
+
+	function updatePageParameter(newPage) {
+		const currentURL = window.location.href
+		const urlObj = new URL(currentURL)
+		const searchParams = new URLSearchParams(urlObj.search)
+
+		if (searchParams.has('page')) {
+			searchParams.set('page', newPage)
+		} else {
+			searchParams.append('page', newPage)
+		}
+
+		urlObj.search = searchParams.toString()
+		const updatedURL = urlObj.toString()
+
+		return updatedURL
+	}
+
 	return (
 		<>
-			<div className='search-page-row row'>
-				<div className='col-lg-3 '>
-					<div className='section-container h-100 '>
-						<section className='search-filters '>
-							<h5>Filtry </h5>
-							<hr />
-							<div className='filter mt-3'>
-								<div className='form-input'>
-									<label>Lokalizacja</label>
-									<input type='text' placeholder='Wprowadź lokalizację...' />
+			<section className=''>
+				<div className='container px-xl-4 pb-5'>
+					<div className='row pt-4'>
+						<div
+							className={`col-xl-3 col-lg-4 p-0 search-filters-container   ${
+								mobileFilters ? 'mobile-container' : ''
+							} `}>
+							<div className='p-0 py-2 main-content-box search-announcements-border  '>
+								<div className='text-end'>
+									<i
+										onClick={() => setMobileFilters(false)}
+										className='search-filters-filters-menu-close-btn me-3'>
+										<FontAwesomeIcon icon='fa-solid fa-xmark' />
+									</i>
 								</div>
-							</div>
-							<div className='filter mt-4'>
-								<div className='form-input'>
-									<label>Podkategoria</label>
-									<input type='text' placeholder='Wybierz podkategorię...' />
-								</div>
-							</div>
-							<div className='filter mt-4'>
-								<div className='row'>
-									<div className='col-6'>
-										<div className='form-input'>
-											<label>Cena od</label>
-											<input type='text' placeholder='0' />
+
+								<section className='search-filters '>
+									<div className='search-filters-filter px-3'>
+										<h5>Rodzaje oferty</h5>
+
+										<div className='form-check'>
+											<input
+												className='form-check-input'
+												type='checkbox'
+												id='search-filters-price-amount-checkbox'
+												checked={selectedOfferTypes.priceAmount}
+												onChange={() => handleOfferTypeChange('priceAmount')}
+											/>
+											<label
+												className='form-check-label'
+												htmlFor='search-filters-price-amount-checkbox'>
+												Kwota
+											</label>
+										</div>
+										<div className='form-check mt-2'>
+											<input
+												className='form-check-input'
+												type='checkbox'
+												id='search-filters-price-replace-checkbox'
+												checked={selectedOfferTypes.priceReplace}
+												onChange={() => handleOfferTypeChange('priceReplace')}
+											/>
+											<label
+												className='form-check-label'
+												htmlFor='search-filters-price-replace-checkbox'>
+												Zamienię
+											</label>
+										</div>
+										<div className='form-check mt-2'>
+											<input
+												className='form-check-input'
+												type='checkbox'
+												id='search-filters-price-free-checkbox'
+												checked={selectedOfferTypes.priceFree}
+												onChange={() => handleOfferTypeChange('priceFree')}
+											/>
+											<label
+												className='form-check-label'
+												htmlFor='search-filters-price-free-checkbox'>
+												Oddam za darmo
+											</label>
 										</div>
 									</div>
 
-									<div className='col-6'>
-										<div className='form-input'>
-											<label>Cena do</label>
-											<input type='text' placeholder='0' />
+									<div className='search-filters-filter mt-3 px-3'>
+										<h5>Stan produktu</h5>
+
+										<div className='form-check'>
+											<input
+												className='form-check-input'
+												type='checkbox'
+												id='search-filters-productType-new-checkbox'
+												checked={selectedProductState.new}
+												onChange={() => handleProductStateChange('new')}
+											/>
+											<label
+												className='form-check-label'
+												htmlFor='search-filters-productType-new-checkbox'>
+												Nowe
+											</label>
+										</div>
+										<div className='form-check mt-2'>
+											<input
+												className='form-check-input'
+												type='checkbox'
+												id='search-filters-productType-used-checkbox'
+												checked={selectedProductState.used}
+												onChange={() => handleProductStateChange('used')}
+											/>
+											<label
+												className='form-check-label'
+												htmlFor='search-filters-productType-used-checkbox'>
+												Używane
+											</label>
+										</div>
+										<div className='form-check mt-2'>
+											<input
+												className='form-check-input'
+												type='checkbox'
+												id='search-filters-productType-damaged-checkbox'
+												checked={selectedProductState.damaged}
+												onChange={() => handleProductStateChange('damaged')}
+											/>
+											<label
+												className='form-check-label'
+												htmlFor='search-filters-productType-damaged-checkbox'>
+												Uszkodzone
+											</label>
 										</div>
 									</div>
-								</div>
-							</div>
-							<button className='btn-design white btn-md w-100 mt-4'>Zatwierdź</button>
-						</section>
-					</div>
-				</div>
-				<div className='col-lg-9'>
-					<div className='section-container h-100'>
-						<h4>
-							Znalezione ogłoszenia: <strong>{announcements.meta.total}</strong>
-						</h4>
-						<div className='row'>{announcementsList}</div>
-					</div>
-				</div>
-			</div>
 
-			<div className='row'>
-				<div className='pagination mt-3'>
-					<div className='pagination-content'>
-						<ul>
-							<li className={currentPage <= 1 ? 'disable' : ''}>
-								<Link className='pagination-btn' to={`?page=${prevPage}`}>
-									<FontAwesomeIcon icon='fa-solid fa-angles-left' />
-								</Link>
-							</li>
-							{pageNumbers.map(pageNumber => (
-								<li key={pageNumber}>
-									<div
-										className={`pagination-page-number ${
-											pageNumber === currentPage ? 'active' : ''
-										}`}>
-										<Link
-											className={`pagination-number-btn`}
-											to={`?page=${pageNumber}`}
-											key={pageNumber}>
-											{pageNumber}
-										</Link>
+									<div className='search-filters-filter mt-3 px-3'>
+										<h5>Kategoria</h5>
+
+										<div className='form-input'>
+											<Select
+												options={categories}
+												defaultOption={{ name: 'Wszystkie kategorie', value: 'all_categories' }}
+												value={selectedCategory}
+												onChange={selectedOption => {
+													handleChangeSelectedCategory(selectedOption)
+												}}
+												renderOption={option => <>{option.name}</>}
+											/>
+										</div>
 									</div>
-								</li>
-							))}
-							<li className={currentPage >= totalPages ? 'disable' : ''}>
-								<Link className='pagination-btn' to={`?page=${nextPage}`}>
-									<FontAwesomeIcon icon='fa-solid fa-angles-right' />
-								</Link>
-							</li>
-						</ul>
+									<div className='search-filters-filter mt-3 px-3'>
+										<h5>Podkategoria</h5>
+
+										<div className='form-input'>
+											<Select
+												disabled={!selectedCategory}
+												value={selectedSubcategory}
+												options={selectedCategory?.subcategories && selectedCategory?.subcategories}
+												defaultOption={{
+													name: 'Wszystkie podkategorie',
+													value: 'all_subcategories',
+												}}
+												onChange={selectedOption => {
+													handleChangeSelectedSubcategory(selectedOption)
+												}}
+												renderOption={option => <>{option.name}</>}
+											/>
+										</div>
+									</div>
+									<div className='search-filters-filter mt-3 px-3'>
+										<h5>Odległość </h5>
+
+										<div className='mt-4'>
+											<ReactSlider
+												value={progressDistance}
+												onChange={e => setProgressDistance(e)}
+												className='standard-slider'
+												thumbClassName='standard-slider-thumb'
+												trackClassName='standard-slider-track'
+												max={100}
+												renderThumb={(props, state) => (
+													<div {...props}>
+														<div className='standard-slider-value'>
+															<span>{state.valueNow}km</span>
+														</div>
+													</div>
+												)}
+											/>
+										</div>
+									</div>
+									<div className='search-filters-filter mt-3 px-3'>
+										<h5>Kwota </h5>
+
+										<div className='row'>
+											<div className='col-6'>
+												<div className='form-input'>
+													<label htmlFor='title'>Od</label>
+													<input
+														type='number'
+														value={amountFrom}
+														placeholder='Od'
+														onChange={e => handleAmountFromChange(e.target.value)}
+													/>
+												</div>
+											</div>
+
+											<div className='col-6'>
+												<div className='form-input '>
+													<label htmlFor='title'>Do</label>
+													<input
+														type='number'
+														placeholder='Do'
+														min='0'
+														value={amountTo}
+														onChange={e => handleAmountToChange(e.target.value)}
+													/>
+												</div>
+											</div>
+										</div>
+
+										<div className='mt-4'>
+											<ReactSlider
+												className='range-slider'
+												thumbClassName='range-slider-thumb'
+												trackClassName='range-slider-track'
+												value={[amountFrom, amountTo]}
+												onChange={handleChangeAmountRange}
+												pearling
+												minDistance={1}
+												max={sliderAmountMax}
+											/>
+										</div>
+									</div>
+
+									{subcategoryFiltersList && subcategoryFiltersList.length > 0 && (
+										<>
+											{subcategoryFiltersList.map(filter => (
+												<div key={filter.id} className='search-filters-filter mt-3 px-3'>
+													<h5>{filter.name}</h5>
+
+													<div className='form-input'>
+														{filter.input_type === 'select' && (
+															<Select
+																options={filter.values}
+																defaultOption={{
+																	value: 'Wszystko',
+																}}
+																value={filter.values.find(
+																	value => value.id === filterValues[filter.id]
+																)}
+																onChange={selectedOption =>
+																	handleFilterChange(
+																		filter.id,
+																		selectedOption ? selectedOption.id : null
+																	)
+																}
+																renderOption={option => <>{option.value}</>}
+																renderDefaultOption={option => <>{option.value} </>}
+															/>
+														)}
+														{filter.input_type === 'input' && (
+															<>
+																<input
+																	type='text'
+																	placeholder={filter.placeholder}
+																	value={filterValues[filter.id] || ''}
+																	onChange={e => handleFilterChange(filter.id, e.target.value)}
+																/>
+															</>
+														)}
+													</div>
+
+													{filter.input_type === 'radio' && (
+														<>
+															{filter.values.map(value => (
+																<div key={value.id} className='form-check mt-2'>
+																	<input
+																		className='form-check-input'
+																		type='radio'
+																		name={`flexRadioDefault-${filter.id}`}
+																		id={`flexRadio-${value.id}`}
+																		checked={filterValues[filter.id]?.value === value.id}
+																		onChange={() => handleFilterChange(filter.id, value.id)}
+																	/>
+																	<label
+																		className='form-check-label'
+																		htmlFor={`flexRadio-${value.id}`}>
+																		{value.value}
+																	</label>
+																</div>
+															))}
+														</>
+													)}
+												</div>
+											))}
+										</>
+									)}
+
+									<div className='text-center mt-3 mb-3'>
+										<Button
+											color={true}
+											rounded={true}
+											className={'text-md'}
+											onClick={handleApplyFilters}
+											text={'Zatwierdź filtry'}></Button>
+									</div>
+								</section>
+							</div>
+						</div>
+						<div className='col-xl-9 col-lg-8 '>
+							<div className='search-announcements-border main-content-box py-2 px-xl-4 px-lg-4 px-md-2 px-1'>
+								<section className='d-flex flex-column justify-content-between h-100 '>
+									<div className='d-flex justify-content-between align-items-center flex-wrap '>
+										<div>
+											{announcements?.data.length > 0 && (
+												<h5 className='m-0 mt-1'>
+													Znalezione ogłoszenia:{' '}
+													<span className='color-gray'>{announcements?.meta?.total || '0'}</span>
+												</h5>
+											)}
+										</div>
+
+										<div className='d-flex align-items-center mt-1 flex-wrap'>
+											<div className='mobile-section-buttons me-2'>
+												<button className='dark-button' onClick={() => setMobileFilters(true)}>
+													Filtry
+												</button>
+											</div>
+
+											<Select
+												options={sortOptions}
+												value={sortType}
+												onChange={selectedOption => {
+													selectedSortTypeRef.current = selectedOption // Aktualizuj referencję
+													setSortType(selectedOption)
+													handleApplyFilters() // Wywołaj handleApplyFilters bez argumentu
+												}}
+												renderOption={option => <>{option.name}</>}
+												className={'me-2'}
+											/>
+
+											<div className='item-type-panel mt-1'>
+												<div
+													className={`item-type-panel-element ${
+														displayStyle === true ? 'active' : ''
+													}`}
+													onClick={() => setDisplayStyle(true)}>
+													<i>
+														<FontAwesomeIcon icon='fa-solid fa-layer-group' />
+													</i>
+												</div>
+												<div
+													className={`item-type-panel-element ${
+														displayStyle === false ? 'active' : ''
+													}`}
+													onClick={() => setDisplayStyle(false)}>
+													<i>
+														<FontAwesomeIcon icon='fa-solid fa-bars-staggered' />
+													</i>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div>
+										{announcements?.data.length > 0 ? (
+											<div className='row'>{announcementsList}</div>
+										) : (
+											<AnnouncementNotFound />
+										)}
+									</div>
+
+									{totalPages > 0 && (
+										<div className='row mt-3 px-2'>
+											<span className='pagination-total text-sm '>
+												Znalezione ogłoszenia: {announcements?.meta?.total || '0'}
+											</span>
+
+											<div className='pagination'>
+												<div className='pagination-content'>
+													<ul>
+														<li className={currentPage <= 1 ? 'disable' : ''}>
+															<Link className='pagination-btn ' to={updatePageParameter(prevPage)}>
+																<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+															</Link>
+														</li>
+														{pageNumbers.map(pageNumber => (
+															<li key={pageNumber}>
+																<div
+																	className={`pagination-page-number ${
+																		pageNumber === currentPage ? 'active' : ''
+																	}`}>
+																	<Link
+																		className={`pagination-number-btn`}
+																		to={updatePageParameter(pageNumber)}
+																		key={pageNumber}>
+																		{pageNumber}
+																	</Link>
+																</div>
+															</li>
+														))}
+														<li className={currentPage >= totalPages ? 'disable' : ''}>
+															<Link className='pagination-btn' to={updatePageParameter(nextPage)}>
+																<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+															</Link>
+														</li>
+													</ul>
+
+													<span className='pagination-total-pages text-sm'>
+														Wyniki: 1 - {totalPages}
+													</span>
+												</div>
+											</div>
+										</div>
+									)}
+								</section>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
+			</section>
 		</>
 	)
 }
 
 function SearchAnnouncements() {
-	const { location, category, keyword } = useParams()
-	const [announcements, setAnnouncements] = useState(false)
+	const { location, category, subcategory, keyword } = useParams()
+
+	const [announcements, setAnnouncements] = useState([])
 	const [loadingAnnouncements, setLoadingAnnouncements] = useState(true)
 
 	const page_location = useLocation()
@@ -231,23 +826,35 @@ function SearchAnnouncements() {
 	const nextPage = currentPage + 1
 	const prevPage = currentPage - 1
 
-	const maxPages = 10 // Maksymalna liczba stron
+	const maxPages = 10
 
 	useEffect(() => {
 		const fetchAnnouncements = async () => {
 			try {
+				const queryParams = new URLSearchParams(page_location.search)
+
+				const filtersQueryParam = queryParams.get('filters')
+				const distanceQueryParam = queryParams.get('distance')
+				const amountFromsQueryParam = queryParams.get('amountFrom')
+				const amountToQueryParam = queryParams.get('amountTo')
+				const sortTypeQueryParam = queryParams.get('sortType')
 				const announcementsData = await searchAnnouncements(
 					location,
 					category,
+					subcategory,
 					keyword,
-					currentPage
+					currentPage,
+					filtersQueryParam,
+					distanceQueryParam,
+					amountFromsQueryParam,
+					amountToQueryParam,
+					sortTypeQueryParam
 				)
 				setTimeout(() => {
 					setAnnouncements(announcementsData)
 					setLoadingAnnouncements(false)
 				}, 500)
 			} catch (error) {
-				console.error('Wystąpił błąd podczas pobierania ogłoszeń:', error)
 				setLoadingAnnouncements(false)
 			}
 		}
@@ -255,23 +862,54 @@ function SearchAnnouncements() {
 		setLoadingAnnouncements(true)
 		fetchAnnouncements()
 		window.scrollTo(0, 0)
-	}, [location, category, keyword, currentPage])
+	}, [page_location])
 
-	const totalPages = announcements ? announcements.meta.last_page : maxPages
+	const totalPages = announcements?.data?.length > 0 ? announcements.meta.last_page : 0
 
 	return (
 		<>
-			<section className='preview-announcement-search-section mb-3'>
+			{/* <SearchBar keywords={keyword} /> */}
+
+			<section className='search-announcements-search-bar'>
 				<div className='container'>
-					<h2>Wyszukaj ogłoszenie</h2>
-					<SearchBar />
+					<SearchInput keywords={keyword} />
+					<div className='search-options mt-3 d-flex flex-wrap '>
+						<p className='title me-4'>Wyszukuj po: </p>
+						<div className='d-flex flex-wrap'>
+							<div className='form-check me-4 '>
+								<input className='form-check-input' type='checkbox' value='' id='search-by-title' />
+								<label className='form-check-label' htmlFor='search-by-title'>
+									Tytule
+								</label>
+							</div>
+							<div className='form-check me-4'>
+								<input
+									className='form-check-input'
+									type='checkbox'
+									value=''
+									id='search-by-description'
+								/>
+								<label className='form-check-label' htmlFor='search-by-description'>
+									Opisie
+								</label>
+							</div>
+							<div className='form-check'>
+								<input className='form-check-input' type='checkbox' value='' id='search-by-tags' />
+								<label className='form-check-label' htmlFor='search-by-tags'>
+									Tagach
+								</label>
+							</div>
+						</div>
+					</div>
 				</div>
 			</section>
 
-			<section className='search-announcements container ' style={{ minHeight: '400px' }}>
+			{/* <h2 className='announcements-section-title text-center mt-5 mb-3'>Wyniki wyszukiwania</h2> */}
+
+			<section className='search-announcements ' style={{ minHeight: '400px' }}>
 				{loadingAnnouncements ? (
 					<LoadingAnnouncementsScreen />
-				) : announcements && announcements.data.length > 0 ? (
+				) : (
 					<ShowAnnouncements
 						announcements={announcements}
 						nextPage={nextPage}
@@ -279,8 +917,6 @@ function SearchAnnouncements() {
 						currentPage={currentPage}
 						totalPages={totalPages}
 					/>
-				) : (
-					<AnnouncementNotFound />
 				)}
 			</section>
 		</>
@@ -288,27 +924,3 @@ function SearchAnnouncements() {
 }
 
 export default SearchAnnouncements
-
-// Filters
-{
-	/* <div className='search-announcements-filters'>
-				<div className='row mb-4'>
-					<h4 className='home-title mt-0'>Filtry</h4>
-					<div className='col-2'>
-						<div className='standard-input-design'>
-							<p>Cena od:</p>
-							<input type='number' min={0} style={{ height: '40px' }} />
-						</div>
-					</div>
-					<div className='col-2 '>
-						<div className='standard-input-design'>
-							<p>Cena do:</p>
-							<input type='number' min={0} style={{ height: '40px' }} />
-						</div>
-					</div>
-					<div className='col-2 align-self-end'>
-						<button className='btn-design btn-sm'>Zastosuj filtry</button>
-					</div>
-				</div>
-			</div> */
-}

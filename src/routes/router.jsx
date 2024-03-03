@@ -1,11 +1,11 @@
-import { Navigate, createBrowserRouter, useLocation } from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 
 import DefaultLayout from '../Layouts/DefaultLayout'
 import ProfileLayout from '../Layouts/ProfileLayout'
 
 // Profile
-import Profile from '../views/profile/Profile'
-import ProfileAnnouncements from '../views/profile/ProfileAnnouncements'
+import ProfileActiveAnnouncements from '../views/profile/ProfileActiveAnnouncements'
+import ProfileCompletedAnnouncements from '../views/profile/ProfileCompletedAnnouncements'
 import Favorites from '../views/profile/Favorites'
 import EditAccount from '../views/profile/EditAccount'
 import ChatPage from '../views/profile/ChatPage'
@@ -50,8 +50,32 @@ const router = createBrowserRouter([
 				element: <PreviewAnnouncement />,
 			},
 			{
-				path: '/announcements/:location/:category/:keyword?',
+				path: '/announcements/:location/:category/:subcategory?/:keyword?',
 				element: <SearchAnnouncements />,
+			},
+			{
+				path: '/account/chat',
+				element: (
+					<AuthRoute mustByLogin={true}>
+						<ChatPage />
+					</AuthRoute>
+				),
+			},
+			{
+				path: '/account/chat/:conversation_number',
+				element: (
+					<AuthRoute mustByLogin={true}>
+						<ChatPage />
+					</AuthRoute>
+				),
+			},
+			{
+				path: '/account/chat/new/:announcement_id',
+				element: (
+					<AuthRoute mustByLogin={true}>
+						<ChatPage />
+					</AuthRoute>
+				),
 			},
 		],
 	},
@@ -64,28 +88,17 @@ const router = createBrowserRouter([
 		),
 		children: [
 			{
-				path: '/account/profile',
-				element: <Profile />,
+				path: '/account/active-announcements',
+				element: <ProfileActiveAnnouncements />,
 			},
 			{
-				path: '/account/edit',
-				element: <EditAccount />,
+				path: '/account/completed-announcements',
+				element: <ProfileCompletedAnnouncements />,
 			},
+
 			{
-				path: '/account/announcements',
-				element: <ProfileAnnouncements />,
-			},
-			{
-				path: '/account/favorites',
+				path: '/account/favorites-announcements',
 				element: <Favorites />,
-			},
-			{
-				path: '/account/chat',
-				element: <ChatPage />,
-			},
-			{
-				path: '/account/chat/new/:announcement_id',
-				element: <ChatPage />,
 			},
 			{
 				path: '/account/InactiveAds',
@@ -97,6 +110,7 @@ const router = createBrowserRouter([
 			},
 		],
 	},
+
 	{
 		path: '/login',
 		element: (

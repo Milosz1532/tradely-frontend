@@ -1,72 +1,28 @@
 import React from 'react'
 import 'leaflet/dist/leaflet.css'
-import { MapContainer, TileLayer, useMap, Marker, Circle, Pane } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Circle } from 'react-leaflet'
 
-const CityMarker = ({ position, name }) => {
-	const map = useMap()
-	map.setView(position, map.getZoom())
-
-	return (
-		// <Marker position={position}>
-		// 	<Circle center={position} radius={2500} />
-		// </Marker>
-		<Circle center={position} radius={2500} />
-	)
+const CityMarker = ({ position }) => {
+	return <Circle center={position} radius={2500} />
 }
 
-const NotFound = () => {
-	return <p>City not found</p>
-}
+const Map = ({ city = null, latitude, longitude }) => {
+	const cityPosition = [latitude, longitude]
 
-const Map = ({ city = null }) => {
-	const [cityPosition, setCityPosition] = React.useState(null)
-	const [isLoading, setIsLoading] = React.useState(true)
-	const cityName = city
-
-	if (city == null) {
-		return <NotFound />
+	if (!latitude || !longitude) {
+		return <p>City not found</p>
 	}
 
-	React.useEffect(() => {
-		const geocodeCity = async () => {
-			try {
-				const response = await fetch(
-					`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-						cityName
-					)}&format=json&limit=1`
-				)
-
-				const data = await response.json()
-
-				if (data.length > 0) {
-					const { lat, lon } = data[0]
-					setCityPosition([parseFloat(lat), parseFloat(lon)])
-				}
-			} catch (error) {
-				// console.log('Błąd geokodowania:', error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
-		geocodeCity()
-	}, [cityName])
-
-
 	return (
-		<>
-			{isLoading && <div>Szukam lokalizacji...</div>}
-			{!isLoading && !cityPosition && <NotFound />}
-			{!isLoading && cityPosition && (
-				<MapContainer center={cityPosition} zoom={11} scrollWheelZoom={false}>
-					<TileLayer
-						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-						url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-					/>
-					<CityMarker position={cityPosition} name={cityName} />
-				</MapContainer>
-			)}
-		</>
+		<div>
+			<MapContainer center={cityPosition} zoom={11} scrollWheelZoom={false}>
+				<TileLayer
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+				/>
+				<CityMarker position={cityPosition} />
+			</MapContainer>
+		</div>
 	)
 }
 

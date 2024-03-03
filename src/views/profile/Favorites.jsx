@@ -26,11 +26,10 @@ export default function Favorites() {
 	return (
 		<div className='container-fluid'>
 			<div className='row'>
-				<h5 className='tab-title'>
-					Obserwowane ogłoszenia ({favoritesState && favoritesState.length})
-				</h5>
+				<div className='main-content-header pb-3'>
+					<h5 className='m-0 ms-2'>Moje polubione ogłoszenia</h5>
+				</div>
 				<article className='account-box'>
-					{/* Jeśli isLoading jest true, wyświetl ekran ładowania */}
 					{isVerifying ? (
 						<FavoritesAnnouncementsListLoading />
 					) : favoritesState && favoritesState.length > 0 ? (
@@ -45,7 +44,6 @@ export default function Favorites() {
 									tags={a.tags}
 									item={a}
 								/>
-								<hr key={`hr-${a.id}`} />
 							</React.Fragment>
 						))
 					) : (

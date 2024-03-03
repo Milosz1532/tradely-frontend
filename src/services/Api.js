@@ -227,14 +227,31 @@ export const getAnnouncementCategories = async () => {
 	}
 }
 
-export const searchAnnouncements = async (location, category, keyword, page) => {
+export const searchAnnouncements = async (
+	location,
+	category,
+	subcategory,
+	keyword,
+	page,
+	filters,
+	distance,
+	amountFrom,
+	amountTo,
+	sortType
+) => {
 	try {
 		const response = await axiosClient.get('/announcements/search', {
 			params: {
 				location: location,
 				category: category,
+				subcategory: subcategory,
 				keyword: keyword,
 				page: page,
+				filters: filters,
+				distance: distance,
+				amountFrom: amountFrom,
+				amountTo: amountTo,
+				sortType: sortType,
 			},
 		})
 		return response.data
@@ -243,10 +260,50 @@ export const searchAnnouncements = async (location, category, keyword, page) => 
 	}
 }
 
-export const indexAnnouncements = async () => {
+export const indexAnnouncements = async (recentAnnouncementIds, userLatitude, userLongitude) => {
 	try {
-		const response = await axiosClient.get('/announcements')
+		const queryParams = {
+			recentAnnouncementIds: recentAnnouncementIds.join(','),
+		}
+
+		// Dodaj współrzędne użytkownika do zapytania, jeśli są dostępne
+		if (userLatitude && userLongitude) {
+			queryParams.userLatitude = userLatitude
+			queryParams.userLongitude = userLongitude
+		}
+
+		const response = await axiosClient.get('/announcements', {
+			params: queryParams,
+		})
+
 		return response
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const getSubcategoryFilters = async (subcategory_id, context) => {
+	try {
+		const response = await axiosClient.get(`/subcategoriesFilters/${subcategory_id}/${context}`)
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const fetchUserActiveAnnouncements = async page => {
+	try {
+		const response = await axiosClient.get(`/profile/active-announcements?page=${page}`)
+		return response.data
+	} catch (error) {
+		throw error.response ? error.response.data : error
+	}
+}
+
+export const fetchUserCompletedAnnouncements = async page => {
+	try {
+		const response = await axiosClient.get(`/profile/completed-announcements?page=${page}`)
+		return response.data
 	} catch (error) {
 		throw error.response ? error.response.data : error
 	}

@@ -2,54 +2,47 @@ import { permissions } from '../Permissions'
 
 const menuItems = [
 	{
-		category: 'Profil',
+		category: 'Ogłoszenia',
 		items: [
 			{
 				id: 1,
-				name: 'Profil',
-				link: '/account/profile',
-				icon: 'fa-regular fa-user',
+				name: 'Aktywne ogłoszenia',
+				link: '/account/active-announcements',
 			},
 			{
 				id: 2,
-				name: 'Edycja konta',
-				link: '/account/edit',
-				icon: 'fa-regular fa-pen-to-square',
+				name: 'Zakończone ogłoszenia',
+				link: '/account/completed-announcements',
 			},
 			{
 				id: 3,
-				name: 'Moje oceny',
-				link: '',
-				icon: 'fa-regular fa-star',
-			},
-			{
-				id: 4,
-				name: 'Wystawione oceny',
-				link: '',
-				icon: 'fa-regular fa-smile',
+				name: 'Polubione ogłoszenia',
+				link: '/account/favorites-announcements',
 			},
 		],
 	},
 	{
-		category: 'Ogłoszenia',
+		category: 'Moje konto',
 		items: [
 			{
 				id: 5,
-				name: 'Obserwowane',
-				link: '/account/favorites',
-				icon: 'fa-regular fa-heart',
+				name: 'Informacje o mnie',
+				link: '',
 			},
 			{
 				id: 6,
-				name: 'Moje ogłoszenia',
-				link: '/account/announcements',
-				icon: 'fa-solid fa-bullhorn',
+				name: 'Moje oceny',
+				link: '',
 			},
 			{
 				id: 7,
-				name: 'Wiadomości',
+				name: 'Wystawione oceny',
 				link: '/account/chat',
-				icon: 'fa-regular fa-comments',
+			},
+			{
+				id: 8,
+				name: 'Tradely +',
+				link: '/account/chat',
 			},
 		],
 	},
@@ -57,17 +50,15 @@ const menuItems = [
 		category: 'Administracja',
 		items: [
 			{
-				id: 8,
+				id: 9,
 				name: 'Oczekujące ogłoszenia',
 				link: '/account/InactiveAds',
-				icon: 'fa-regular fa-heart',
 				permissions: permissions.ANNOUNCEMENT.EDIT,
 			},
 			{
-				id: 9,
+				id: 10,
 				name: 'Zgłoszenia',
 				link: '',
-				icon: 'fa-regular fa-comments',
 				permissions: permissions.ANNOUNCEMENT.EDIT,
 			},
 		],

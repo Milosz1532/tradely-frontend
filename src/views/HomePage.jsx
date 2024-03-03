@@ -1,149 +1,128 @@
 import React, { useState, useEffect } from 'react'
+import Searchbar from '../components/Layout/Searchbar'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import {
 	SquareAnnouncement,
 	SquareAnnouncementLoading,
 } from '../components/Announcements/SquareAnnouncement'
+import FeaturedAnnouncement from '../components/Announcements/FeaturedAnnouncement'
+import {
+	LastViewedAnnouncement,
+	LoadingLastViewedAnnouncement,
+} from '../components/Announcements/LastViewedAnnouncement'
 
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
-import Searchbar from '../components/Layout/Searchbar'
-import { Category, LoadingCategory } from '../components/Home/Category'
-
 import { indexAnnouncements, getAnnouncementCategories } from '../services/Api'
 
-import '../assets/styles/Home.scss'
+import Skeleton from 'react-loading-skeleton'
 
-// Images //
-import searchBackground from '/images/search-background.jpg'
-import adBackground from '/images/advertisement.jpg'
+const LoadingLastViewedAnnouncements = () => {
+	return (
+		<div className='container mt-5'>
+			<div className='m-auto' style={{ width: '35%' }}>
+				<Skeleton height={35} />
+			</div>
+			<div className='row mt-3'>
+				<div className='col-lg-4 col-md-4'>
+					<LoadingLastViewedAnnouncement />
+				</div>
+				<div className='col-lg-4 col-md-4'>
+					<LoadingLastViewedAnnouncement />
+				</div>
+				<div className='col-lg-4 col-md-4'>
+					<LoadingLastViewedAnnouncement />
+				</div>
+			</div>
+		</div>
+	)
+}
 
 const LoadingAnnouncement = () => {
 	return (
 		<div className='container mt-5'>
-			<div className='section-container mt-3 '>
-				<h2 className='home-title'>Najnowsze ogłoszenia</h2>
-
-				<div className='row'>
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-				</div>
+			<div className='m-auto' style={{ width: '35%' }}>
+				<Skeleton height={35} />
 			</div>
-
-			<div className='section-container mt-3 '>
-				<div className='row'>
-					<h2 className='home-title'>W twojej okolicy</h2>
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-					<SquareAnnouncementLoading />
-				</div>
+			<div className='row'>
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
+				<SquareAnnouncementLoading />
 			</div>
 		</div>
 	)
 }
 
-const LoadingCategories = () => {
-	return <></>
+const LoadingFeaturedAnnouncements = () => {
+	return (
+		<>
+			<div className='m-auto' style={{ width: '35%' }}>
+				<Skeleton height={35} />
+			</div>
+
+			<div className='row mt-3'>
+				<div className='col-6 mt-2'>
+					<Skeleton height={200} />
+				</div>
+				<div className='col-6 mt-2'>
+					<Skeleton height={200} />
+				</div>
+				<div className='col-4 mt-2'>
+					<Skeleton height={250} />
+				</div>
+				<div className='col-4 mt-2'>
+					<Skeleton height={250} />
+				</div>
+				<div className='col-4 mt-2'>
+					<Skeleton height={250} />
+				</div>
+			</div>
+		</>
+	)
 }
 
-const AnnouncementList = ({ data }) => {
-	const newAnnouncementsList = data.latest_announcements.map(a => (
-		<SquareAnnouncement
-			key={a.id}
-			id={a.id}
-			user_id={a.user_id}
-			title={a.title}
-			price={a.price}
-			created_at={a.created_at}
-			image={a.first_image}
-			location={a.location}
-			category={a.category}
-			favorite_count={a.favorite_count}
-			is_favorited={a.is_favorited}
-			item={a}
-		/>
-	))
+function SlidereNextArrow(props) {
+	const { onClick } = props
+	return (
+		<div className='slider-next-arrow' onClick={onClick}>
+			<FontAwesomeIcon icon='fa-solid fa-angle-right' />
+		</div>
+	)
+}
 
-	const categoryAnnouncementsList = data.category_announcements.map(a => (
-		<SquareAnnouncement
-			key={a.id}
-			id={a.id}
-			user_id={a.user_id}
-			title={a.title}
-			price={a.price}
-			created_at={a.created_at}
-			image={a.first_image}
-			location={a.location}
-			category={a.category}
-			favorite_count={a.favorite_count}
-			is_favorited={a.is_favorited}
-			item={a}
-		/>
-	))
+function SliderPrevArrow(props) {
+	const { onClick } = props
+	return (
+		<div className='slider-prev-arrow' onClick={onClick}>
+			<i>
+				<FontAwesomeIcon icon='fa-solid fa-angle-left' />
+			</i>
+		</div>
+	)
+}
 
-	if (data.location_announcements.length !== 0) {
-		const locationAnnouncementsList = data.location_announcements.map(a => (
-			<SquareAnnouncement
-				key={a.id}
-				user_id={a.user_id}
+const FeaturedAnnouncements = ({ data }) => {
+	const announcementslist = data.map((a, index) => (
+		<div
+			className={`featured-announcement-col col-xl-4 col-md-4 col-sm-4 col-xs-12 mt-2`}
+			key={a.id}>
+			<FeaturedAnnouncement
 				id={a.id}
 				title={a.title}
 				price={a.price}
-				created_at={a.created_at}
+				price_type={a.price_type}
 				image={a.first_image}
-				favorite_count={a.favorite_count}
-				is_favorited={a.is_favorited}
-				item={a}
+				location={a.location}
+				category={a.category}
 			/>
-		))
-	}
-
-	return (
-		<div className='container'>
-			<section className='new-announcements'>
-				{data.latest_announcements.length !== 0 && (
-					<>
-						<div className='section-container mt-3 '>
-							<h2 className='home-title'>Najnowsze ogłoszenia</h2>
-
-							<div className='row'>{newAnnouncementsList}</div>
-						</div>
-					</>
-				)}
-				{data.location_announcements.length !== 0 && (
-					<>
-						<div className='section-container mt-3'>
-							<h2 className='home-title'>W twojej okolicy</h2>
-							<div className='row'>{locationAnnouncementsList}</div>
-						</div>
-					</>
-				)}
-
-				{data.category_announcements.length !== 0 && (
-					<>
-						<div className='section-container mt-3'>
-							<h2 className='home-title'>Motoryzacja</h2>
-
-							<div className='row'>{categoryAnnouncementsList}</div>
-						</div>
-					</>
-				)}
-			</section>
 		</div>
-	)
+	))
+
+	return <>{announcementslist}</>
 }
 
 export default function HomePage() {
@@ -156,18 +135,53 @@ export default function HomePage() {
 		const loadAnnouncements = async () => {
 			_setLoadingAnnouncements(true)
 			try {
-				const response = await indexAnnouncements()
-				setAnnouncementsData(response.data)
+				const recentAnnouncements = JSON.parse(localStorage.getItem('recentAnnouncements')) || []
+
+				const getPosition = () => {
+					return new Promise((resolve, reject) => {
+						if ('geolocation' in navigator) {
+							navigator.geolocation.getCurrentPosition(
+								position => {
+									const userLatitude = position.coords.latitude
+									const userLongitude = position.coords.longitude
+									resolve({ userLatitude, userLongitude })
+								},
+								error => {
+									console.error('Błąd pobierania współrzędnych geograficznych:', error.message)
+									resolve(null)
+								}
+							)
+						} else {
+							resolve(null)
+						}
+					})
+				}
+
+				const position = await getPosition()
+
+				if (position) {
+					const { userLatitude, userLongitude } = position
+					const response = await indexAnnouncements(
+						recentAnnouncements,
+						userLatitude,
+						userLongitude
+					)
+					setAnnouncementsData(response.data)
+				} else {
+					const response = await indexAnnouncements(recentAnnouncements)
+					setAnnouncementsData(response.data)
+				}
+
 				_setLoadingAnnouncements(false)
-			} catch {}
+			} catch (error) {}
 		}
+
 		const fetchCategories = async () => {
 			_setLoadingCategories(true)
 			try {
 				const response = await getAnnouncementCategories()
 				setCategories(response)
 				_setLoadingCategories(false)
-				console.log(response)
 			} catch {}
 		}
 
@@ -175,13 +189,16 @@ export default function HomePage() {
 		fetchCategories()
 	}, [])
 
-	var settings = {
+	var lastViewedSliderSettings = {
 		dots: false,
 		infinite: false,
 		speed: 500,
-		slidesToShow: 4,
+		slidesToShow: 3,
 		slidesToScroll: 1,
 		initialSlide: 0,
+		nextArrow: <SlidereNextArrow />,
+		prevArrow: <SliderPrevArrow />,
+
 		responsive: [
 			{
 				breakpoint: 1024,
@@ -194,8 +211,7 @@ export default function HomePage() {
 			{
 				breakpoint: 768,
 				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2,
+					slidesToShow: 1,
 					initialSlide: 2,
 				},
 			},
@@ -211,71 +227,164 @@ export default function HomePage() {
 
 	return (
 		<>
-			<section className='search-section' style={{ backgroundImage: `url(${searchBackground}` }}>
-				<div className='container p-5'>
-					<div className='row'>
-						<div className='search-section-title'>
-							<h1>WORLD’S LARGEST MARKETPLACE</h1>
-							<p>The best place to buy your house, sell your car or find a job in Poland</p>
-						</div>
-						<Searchbar />
-					</div>
-				</div>
-			</section>
-
-			<div className='container '>
-				<section className='pupular-categories'>
-					<div className='pupular-categories-content'>
-						<h2>Popularne kategorie</h2>
-
-						<div className='row mx-auto'>
-							{_loadingCategories ? (
-								<Slider {...settings}>
-									<LoadingCategory />
-									<LoadingCategory />
-									<LoadingCategory />
-									<LoadingCategory />
-								</Slider>
-							) : (
-								<Slider {...settings}>
-									{categories.map(category => (
-										<Category
-											key={category.id}
-											id={category.id}
-											name={category.name}
-											image={category.image_path}
-										/>
-									))}
-								</Slider>
+			<Searchbar />
+			<div className='pb-4'>
+				{/* <article>
+					{_loadingAnnouncements ? (
+						<LoadingLastViewedAnnouncements />
+					) : (
+						<>
+							{announcementsData.recent_announcements.length > 0 && (
+								<article>
+									<h2 className='announcements-section-title text-center pt-3'>
+										Twoje ostatnie wyszukiwania
+									</h2>
+									<Slider {...lastViewedSliderSettings}>
+										{announcementsData.recent_announcements.map(a => (
+											<div key={a.id} className='py-3'>
+												<LastViewedAnnouncement
+													id={a.id}
+													image={a.first_image}
+													title={a.title}
+													price={a.price}
+													price_type={a.price_type}
+												/>
+											</div>
+										))}
+									</Slider>
+								</article>
 							)}
+						</>
+					)}
+				</article> */}
 
-							{/* <Category />
-								<Category bg={`red`} />
-								<Category bg={`green`} />
-								<Category bg={`yellow`} />
-								<Category bg={`blue`} />
-								<Category bg={`purple`} />
-								<Category bg={`orange`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} />
-								<Category bg={`green`} /> */}
-						</div>
-					</div>
+				{/* <h2 className='announcements-section-title text-center mt-5'>To może Cię zainteresować</h2>
+				<p className='text-center announcements-section-subtitle'>
+					Sprawdź ofertę naszych partnerów
+				</p> */}
+
+				<section className='container px-xl-5'>
+					{_loadingAnnouncements ? (
+						<LoadingAnnouncement />
+					) : (
+						<article>
+							<div className='d-flex align-items-end justify-content-between flex-wrap mt-3'>
+								<div>
+									<h2 className='announcements-section-title'>Najnowsze ogłoszenia</h2>
+									<p className='text-sm color-gray m-0'>Ogłoszenia dodane do 24 godzin</p>
+								</div>
+
+								<div className='d-none d-md-block text-sm me-2 cursor-pointer'>
+									<span className='me-2'>Zobacz więcej</span>
+									<i>
+										<FontAwesomeIcon icon='fa-solid fa-arrow-right' />
+									</i>
+								</div>
+							</div>
+							{/* <AnnouncementSlider data={announcementsData.latest_announcements} /> */}
+
+							<div className='row'>
+								{announcementsData.latest_announcements.map(a => (
+									<div
+										className='col-xl-3 col-md-4 col-sm-6 col-xs-12 col-6 mt-3 px-1 px-md-2 p-0'
+										key={a.id}>
+										<SquareAnnouncement
+											key={a.id}
+											id={a.id}
+											user_id={a.user_id}
+											title={a.title}
+											price={a.price}
+											price_type={a.price_type}
+											created_at={a.created_at}
+											image={a.first_image}
+											location={a.location}
+											category={a.category}
+											favorite_count={a.favorite_count}
+											is_favorited={a.is_favorited}
+											item={a}
+										/>
+									</div>
+								))}
+							</div>
+						</article>
+					)}
 				</section>
-			</div>
-			<section className='advertisement-section' style={{ backgroundImage: `url(${adBackground}` }}>
-				<div className='advertisement-content-company'>
-					<h1>Miejsce na twoją reklamę</h1>
-				</div>
-			</section>
 
-			{_loadingAnnouncements ? (
-				<LoadingAnnouncement />
-			) : (
-				<AnnouncementList data={announcementsData} />
-			)}
+				{_loadingAnnouncements ? (
+					<LoadingAnnouncement />
+				) : (
+					<section className='second-background py-4 mt-4'>
+						<div className='container px-xl-5'>
+							{announcementsData.nearby_announcements.length > 0 && (
+								<article>
+									<div className='d-flex align-items-end justify-content-between flex-wrap mt-3'>
+										<div>
+											<h2 className='announcements-section-title'>W twojej okolicy</h2>
+										</div>
+
+										<div className='d-none d-md-block text-sm me-2 cursor-pointer'>
+											<span className='me-2'>Zobacz więcej</span>
+											<i>
+												<FontAwesomeIcon icon='fa-solid fa-arrow-right' />
+											</i>
+										</div>
+									</div>
+									<div className='row'>
+										{announcementsData.nearby_announcements.map(a => (
+											<div className='col-xl-3 col-md-4 col-sm-6 col-xs-12 col-6 mt-3' key={a.id}>
+												<SquareAnnouncement
+													key={a.id}
+													id={a.id}
+													user_id={a.user_id}
+													title={a.title}
+													price={a.price}
+													price_type={a.price_type}
+													created_at={a.created_at}
+													image={a.first_image}
+													location={a.location}
+													category={a.category}
+													favorite_count={a.favorite_count}
+													is_favorited={a.is_favorited}
+													item={a}
+												/>
+											</div>
+										))}
+									</div>
+								</article>
+							)}
+						</div>
+					</section>
+				)}
+
+				{_loadingAnnouncements ? (
+					<>
+						<LoadingFeaturedAnnouncements />
+					</>
+				) : (
+					<>
+						<section className='container px-xl-5'>
+							<article>
+								<div className='d-flex align-items-end justify-content-between flex-wrap mt-3'>
+									<div>
+										<h2 className='announcements-section-title'>Wyróżnione ogłoszenia</h2>
+										<p className='text-sm color-gray m-0'>Ogłoszenia użytkowników Tradely +</p>
+									</div>
+
+									<div className='d-none d-md-block text-sm me-2 cursor-pointer'>
+										<span className='me-2'>Zobacz więcej</span>
+										<i>
+											<FontAwesomeIcon icon='fa-solid fa-arrow-right' />
+										</i>
+									</div>
+								</div>
+								<div className='row  mt-2'>
+									<FeaturedAnnouncements data={announcementsData.recent_announcements} />
+								</div>
+							</article>
+						</section>
+					</>
+				)}
+			</div>
 		</>
 	)
 }

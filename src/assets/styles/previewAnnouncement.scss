@@ -1,53 +1,40 @@
 $main-color: #67ade0;
 $text-color: #828282;
 $light-text-color: #fff;
-$section-background: #f8f8f8;
+$section-background: #fff;
 $border-color: #e6e6e6;
 
 .top-information {
-	margin: 10px 0;
-	background-color: $section-background;
-	color: $text-color;
-	border: 1px solid $border-color;
-	-webkit-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	-moz-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	border-radius: 7px;
-	color: $text-color;
-	padding: 20px;
 	p {
 		margin: 0;
 	}
 	.top-information-category {
-		color: $main-color;
 		font-size: 12px;
 	}
 
 	.top-information-back {
 		font-weight: bold;
-		color: $text-color;
 		font-size: 20px;
+		cursor: pointer;
+		opacity: 0.6;
+		transition: opacity 0.4s;
+		&:hover {
+			opacity: 1;
+		}
+		display: inline-flex;
+		align-items: center;
 	}
 
 	.top-information-announcement-id {
-		color: $text-color;
 		font-size: 12px;
 	}
 }
 
-.announcement-section {
-	background-color: $section-background;
-	color: $text-color;
-	border: 1px solid $border-color;
-	-webkit-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	-moz-box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	box-shadow: 0px 0px 10px 0px rgba(237, 237, 237, 1);
-	border-radius: 7px;
-	color: $text-color;
-	padding: 20px;
-}
-
 .announcement-image-section {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	.image {
 		position: relative;
 		display: flex;
@@ -59,6 +46,8 @@ $border-color: #e6e6e6;
 		img {
 			max-width: 100%;
 			max-height: 100%;
+			border-radius: 10px;
+			cursor: pointer;
 		}
 		.image-arrows {
 			.arrow-left,
@@ -134,7 +123,7 @@ $border-color: #e6e6e6;
 			}
 
 			.user-first_last_name {
-				font-weight: bold;
+				font-weight: 500;
 				font-size: 16px;
 			}
 		}
@@ -147,8 +136,8 @@ $border-color: #e6e6e6;
 		border-radius: 8px;
 		border: 1px solid $border-color;
 		.rate-title {
-			font-size: 16px;
-			font-weight: bold;
+			font-size: 15px;
+			font-weight: 500;
 			margin: 0px 0px 5px 0px;
 		}
 
@@ -209,5 +198,128 @@ $border-color: #e6e6e6;
 .announcement-description-title {
 	.announcement-price {
 		color: $main-color;
+	}
+}
+
+.map-container {
+	position: relative;
+	background-color: red;
+	z-index: 1;
+}
+
+@keyframes fade-in {
+	from {
+		scale: 0;
+	}
+	to {
+		scale: 1;
+	}
+}
+
+.gallery-modal {
+	background-color: rgb(54, 54, 54);
+	width: 100%;
+	height: 100%;
+	position: fixed;
+
+	top: 0;
+	left: 0;
+	z-index: 80;
+	overflow-y: scroll;
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+	animation: fade-out 300ms forwards;
+	display: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	&.active {
+		display: block;
+		animation: fade-in 300ms forwards;
+	}
+
+	.gallery-model-close {
+		display: flex;
+		justify-content: end;
+		padding-top: 20px;
+		color: $light-text-color;
+		i {
+			font-size: 35px;
+			cursor: pointer;
+		}
+	}
+
+	.gallery-modal-main-image {
+		position: relative;
+		img {
+			width: 100%;
+			max-height: 80vh;
+			object-fit: contain;
+		}
+
+		.image-arrows {
+			.arrow-left,
+			.arrow-right {
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 50px;
+				height: 50px;
+				background-color: rgba(180, 180, 180, 0.23);
+				border-radius: 50%;
+				color: $light-text-color;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 24px;
+				cursor: pointer;
+				opacity: 0.7;
+				transition: background-color 0.3s ease;
+
+				&:hover {
+					opacity: 1;
+				}
+			}
+
+			.arrow-left {
+				left: 0;
+			}
+
+			.arrow-right {
+				right: 0;
+			}
+		}
+	}
+	.gallery-modal-other-images {
+		text-align: center;
+		margin-top: 20px;
+		.gallery-model-other-images-container {
+			width: 80px;
+			height: 80px;
+			display: inline-block;
+			margin: 3px 5px;
+			opacity: 0.6;
+			&.active {
+				border: 2px solid $main-color;
+				opacity: 1;
+			}
+		}
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			cursor: pointer;
+			transition: all 0.4s;
+
+			&:hover {
+				transform: scale(1.02);
+			}
+		}
 	}
 }
