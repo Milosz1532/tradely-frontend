@@ -2,24 +2,55 @@
 
 ![Grafika_glowna](APP_SCREENS/Screenshot_10.png)
 
-Tradely to dynamiczna aplikacja internetowa, której głównym celem jest umożliwienie użytkownikom dodawania i przeglądania ogłoszeń. Jest to portal ogłoszeniowy zaprojektowany w celu pokazania umiejętności w zakresie tworzenia zaawansowanych aplikacji internetowych.
+Tradely is a dynamic web application designed to allow users to add and browse advertisements. It is a classifieds portal aimed at showcasing skills in creating advanced web applications.
 
-Za pomocą Tradely użytkownicy mogą łatwo dodawać nowe ogłoszenia, przeglądać istniejące oferty oraz korzystać z funkcji wyszukiwania, aby znaleźć interesujące ich produkty lub usługi. Aplikacja została zbudowana z wykorzystaniem szerokiego zakresu technologii, w tym HTML, CSS i JavaScript, które są podstawą interfejsu użytkownika.
+With Tradely, users can easily add new advertisements, browse existing listings, and use search functionality to find products or services of interest. The application is built using a wide range of technologies, including HTML, CSS, and JavaScript, which form the foundation of the user interface.
 
-Jednak to, co wyróżnia Tradely, to jego zaawansowane funkcje front-endowe, które zostały zaimplementowane przy użyciu popularnych bibliotek i frameworków, takich jak React i Redux. Dzięki temu aplikacja oferuje użytkownikom płynne i interaktywne doświadczenie przeglądania ogłoszeń.
+What sets Tradely apart are its advanced front-end features implemented using popular libraries and frameworks such as React and Redux. This ensures the application offers users a smooth and interactive browsing experience.
 
-Dodatkowo, komunikacja między front-endem a back-endem odbywa się za pośrednictwem interfejsu API, co pozwala na skuteczne przekazywanie danych między różnymi warstwami aplikacji. To podejście umożliwia łatwe skalowanie i rozbudowę funkcjonalności Tradely w przyszłości.
+Additionally, communication between the front-end and back-end is handled through an API, allowing efficient data transfer between different layers of the application. This approach facilitates easy scaling and expansion of Tradely's functionalities in the future.
 
-## Możliwości aplikacji:
-- System logowania i rejestracji kont.
-- Możliwość darmowego dodawania ogłoszeń, obejmujących sprzedaż, zamianę oraz darmowe oferty.
-- Wyszukiwanie ogłoszeń z dynamicznymi filtrami dostosowanymi do każdej kategorii i podkategorii.
-- Możliwość wyszukiwania ogłoszeń według lokalizacji.
-- Chat na żywo oparty na WebSockets z wykorzystaniem technologii Laravel.
-- Funkcję polubień ogłoszeń oraz możliwość zarządzania nimi.
-- Indywidualne uprawnienia i role administracyjne, umożliwiające edycję, usuwanie ogłoszeń, blokowanie użytkowników oraz zgłaszanie treści.
+## Application Features:
+-  Account login and registration system.
+-  Ability to add free advertisements, including for sale, exchange, and free offers.
+-  Search functionality with dynamic filters tailored to each category and subcategory.
+-  Search advertisements by location.
+-  Live chat based on WebSockets using Laravel technology.
+-  Features to like advertisements and manage them.
+-  Individual permissions and administrative roles, allowing for editing, deleting advertisements, blocking users, and reporting content.
 
-## Wykorzystane technologie:
+## Installation and Setup
+
+A step by step series of examples that tell you how to get a development
+environment running
+
+
+- Clone the repository:
+
+```
+git clone https://github.com/milosz1532/tradely-frontend.git
+```
+
+- Navigate to the project directory:
+
+```
+cd tradely-frontend
+```
+
+- Install dependencies:
+
+```
+npm install
+```
+
+- Start the development server:
+
+```
+npm run dev
+```
+
+
+## Technologies Used:
 - React.js
 - Redux
 - React-router
@@ -28,7 +59,13 @@ Dodatkowo, komunikacja między front-endem a back-endem odbywa się za pośredni
 - SCSS
 - FontAwesome
 
-## Zdjecia aplikacji:
+[![Technologies](https://skillicons.dev/icons?i=html,sass,react,redux,bootstrap)](https://skillicons.dev)
+
+## Backend
+
+The backend was developed by me using Laravel, and the project is available as a separate repository at: https://github.com/Milosz1532/tradely-backend.
+
+## Application Screenshots:
 ![Grafika](APP_SCREENS/Screenshot_8.png)
 
 ![Grafika](APP_SCREENS/Screenshot_9.png)
